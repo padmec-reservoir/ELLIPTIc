@@ -1,0 +1,8 @@
+cov_html/
+cov_annotate/
+build/
+.cache/
+.eggs/
+dist/
+
+*.pyc
