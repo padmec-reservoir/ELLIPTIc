@@ -1,5 +1,5 @@
 # coding=utf-8
-from Physical import Physical
+from Physical import PhysicalBase
 
 
 class PhysicalMap(object):
@@ -10,7 +10,7 @@ class PhysicalMap(object):
 
     def __setitem__(self, id, value):
         """Adiciona um novo valor físico associado a um ID"""
-        if isinstance(value, Physical):
+        if isinstance(value, PhysicalBase):
             self.physical_values[id] = value
         else:
             raise ValueError("O valor físico deve herdar da classe Physical!")

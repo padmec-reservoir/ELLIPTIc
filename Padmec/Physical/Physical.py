@@ -2,7 +2,7 @@
 import numpy as np
 
 
-class Physical(object):
+class PhysicalBase(object):
     """Define interface para propriedades físicas"""
     @property
     def value(self):
@@ -15,15 +15,15 @@ class Physical(object):
         raise NotImplementedError
 
 
-class Dirichlet(Physical):
+class Dirichlet(PhysicalBase):
     """Define uma condição de contorno do tipo Dirichlet"""
     def __init__(self, v):
-        super(Physical, self).__init__()
+        super(PhysicalBase, self).__init__()
 
         self._value = None
         self.value = v
 
-    @Physical.value.getter
+    @PhysicalBase.value.getter
     def value(self):
         return self._value
 
@@ -36,41 +36,41 @@ class Dirichlet(Physical):
                              "utilizar valores do tipo float.")
 
 
-class Neumann(Physical):
+class Neumann(PhysicalBase):
     # TODO
     pass
 
 
-class Robin(Physical):
+class Robin(PhysicalBase):
     # TODO
     pass
 
 
-class Wall(Physical):
+class Wall(PhysicalBase):
     # TODO
     pass
 
 
-class Symmetric(Physical):
+class Symmetric(PhysicalBase):
     """Define uma condição de contorno do tipo simétrico"""
     def __init__(self):
-        super(Physical, self).__init__()
+        super(PhysicalBase, self).__init__()
 
     # TODO: No futuro isso deve significar fluxo nulo!
-    @Physical.value.getter
+    @PhysicalBase.value.getter
     def value(self):
         return Symmetric
 
 
-class Permeability(Physical):
+class Permeability(PhysicalBase):
     """Define uma condição de permeabilidade (tensor de segunda ordem)"""
     def __init__(self, v):
-        super(Physical, self).__init__()
+        super(PhysicalBase, self).__init__()
 
         self._value = None
         self.value = v
 
-    @Physical.value.getter
+    @PhysicalBase.value.getter
     def value(self):
         return self._value
 
@@ -83,6 +83,6 @@ class Permeability(Physical):
                              "de segunda ordem utilizando arrays do numpy.")
 
 
-class InitialCondition(Physical):
+class InitialCondition(PhysicalBase):
     """Define interface para condições iniciais"""
     pass

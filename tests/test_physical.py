@@ -1,19 +1,20 @@
 import pytest
 import numpy
 
-from Padmec.Physical import Physical, PhysicalMap
+from Padmec.Physical import PhysicalMap
+from Padmec import Physical
 
 
 class TestPhysical:
 
-    def test_physical(self):
-        phys = Physical.Physical()
+    def test_PhysicalBase(self):
+        phys = Physical.PhysicalBase()
         with pytest.raises(NotImplementedError):
             phys.value = 1
         with pytest.raises(NotImplementedError):
             phys.value
 
-    def test_dirichlet(self):
+    def test_Dirichlet(self):
         with pytest.raises(ValueError):
             phys = Physical.Dirichlet(5)
 
@@ -21,7 +22,7 @@ class TestPhysical:
 
         assert phys.value == pytest.approx(5.0)
 
-    def test_symmetric(self):
+    def test_Symmetric(self):
         phys = Physical.Symmetric()
 
         assert phys.value is Physical.Symmetric
@@ -29,7 +30,7 @@ class TestPhysical:
         with pytest.raises(NotImplementedError):
             phys.value = 5.0
 
-    def test_permeability(self):
+    def test_Permeability(self):
         with pytest.raises(ValueError):
             phys = Physical.Permeability(5)
 
@@ -42,7 +43,7 @@ class TestPhysical:
 class TestPhysicalMap:
 
     def setup(self):
-        self.map = PhysicalMap.PhysicalMap()
+        self.map = PhysicalMap()
 
     def test_add_physical(self):
         self.map[101] = Physical.Dirichlet(5.0)
