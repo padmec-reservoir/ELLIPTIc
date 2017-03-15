@@ -5,11 +5,11 @@ from Mesh import Mesh
 
 
 class MeshFactory(object):
-    """Factory de malhas que utilizam o MOAB como backend."""
+    """Mesh factory that uses MOAB as backend."""
 
     def load_mesh(self, filename, physical):
-        """Carrega um arquivo de malha utilizando o MOAB."""
-        print "Carregando arquivo de malha..."
+        """Loads a mesh file using MOAB."""
+        print "Loading mesh file..."
         mb = core.Core()
         mb.load_file(filename)
 
@@ -17,5 +17,6 @@ class MeshFactory(object):
         the_mesh._save_tags()
         the_mesh._save_physical_tags()
         the_mesh._generate_dense_elements()
+        the_mesh._create_maps()
 
         return the_mesh

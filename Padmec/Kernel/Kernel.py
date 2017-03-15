@@ -28,14 +28,17 @@ class KernelBase(object):
             stencils
         target_dim -- Dimensão dos elementos do stencil
         depth -- Profundidade do stencil
+        depends -- Outros kernels que devem ser executados antes deste
     """
     elem_dim = -1
     bridge_dim = -1
     target_dim = -1
     depth = -1
 
+    depends = []
+
     @classmethod
-    def run_kernel(cls, elems):
+    def run(cls, elems):
         """Executa o kernel nos elementos elems. O retorno do kernel depende
         do seu tipo, e deve sempre estar associado ao preenchimento de uma
         matriz ou vetor.

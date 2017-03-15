@@ -3,25 +3,25 @@ from Physical import PhysicalBase
 
 
 class PhysicalMap(object):
-    """Classe responsável por gerenciar valores iniciais,
-    condições de contorno, propriedades físicas, etc"""
+    """Class responsible for managing initial values, boundary conditions,
+    physical properties, etc..."""
     def __init__(self):
         self.physical_values = {}
 
     def __setitem__(self, id, value):
-        """Adiciona um novo valor físico associado a um ID"""
+        """Adds a new physical value associated with an ID"""
         if isinstance(value, PhysicalBase):
             self.physical_values[id] = value
         else:
-            raise ValueError("O valor físico deve herdar da classe Physical!")
+            raise ValueError("The physical value must inherit from Physical.")
 
     def __getitem__(self, id):
         return self.physical_values[id]
 
     def __contains__(self, id):
-        """Checa se o id físico foi definido"""
+        """Checks if the physical ID was defined"""
         return id in self.physical_values
 
     def tags(self):
-        """Retorna todas as tags e os valores definidos"""
+        """Returns all tags and associated physical values"""
         return self.physical_values.iteritems()

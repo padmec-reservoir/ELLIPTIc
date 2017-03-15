@@ -3,20 +3,20 @@ import numpy as np
 
 
 class PhysicalBase(object):
-    """Define interface para propriedades físicas"""
+    """Define interface for physical properties"""
     @property
     def value(self):
-        """Obtém o valor da propriedade"""
+        """Get the property value"""
         raise NotImplementedError
 
     @value.setter
     def value(self, v):
-        """Define o valor da propriedade"""
+        """Defines the property value"""
         raise NotImplementedError
 
 
 class Dirichlet(PhysicalBase):
-    """Define uma condição de contorno do tipo Dirichlet"""
+    """Defines a boundary condition of Dirichlet type"""
     def __init__(self, v):
         super(PhysicalBase, self).__init__()
 
@@ -32,8 +32,8 @@ class Dirichlet(PhysicalBase):
         if isinstance(v, float):
             self._value = v
         else:
-            raise ValueError("Condições de contorno do tipo Dirichlet devem "
-                             "utilizar valores do tipo float.")
+            raise ValueError("Boundary conditions of Dirichlet type must use "
+                             "float type.")
 
 
 class Neumann(PhysicalBase):
@@ -52,7 +52,7 @@ class Wall(PhysicalBase):
 
 
 class Symmetric(PhysicalBase):
-    """Define uma condição de contorno do tipo simétrico"""
+    """Defines boundary condition of symmetrical nature"""
     def __init__(self):
         super(PhysicalBase, self).__init__()
 
@@ -63,7 +63,7 @@ class Symmetric(PhysicalBase):
 
 
 class Permeability(PhysicalBase):
-    """Define uma condição de permeabilidade (tensor de segunda ordem)"""
+    """Defines permeability boundary condition"""
     def __init__(self, v):
         super(PhysicalBase, self).__init__()
 
@@ -79,10 +79,10 @@ class Permeability(PhysicalBase):
         if isinstance(v, np.ndarray) and v.shape == (3, 3):
             self._value = v
         else:
-            raise ValueError("Condições de permeabilidade devem ser tensores "
-                             "de segunda ordem utilizando arrays do numpy.")
+            raise ValueError("Permeability conditions must be second order "
+                             "tensors using numpy arrays.")
 
 
 class InitialCondition(PhysicalBase):
-    """Define interface para condições iniciais"""
+    """Defines interface for initial conditions"""
     pass

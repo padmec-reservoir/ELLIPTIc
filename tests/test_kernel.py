@@ -1,3 +1,4 @@
+"""Basically lots of integration tests with some unit tests."""
 import numpy
 import pytest
 
@@ -6,6 +7,7 @@ from Padmec.Kernel import (KernelBase, TPFA, check_kernel, preprocess,
 from Padmec.Mesh.MeshFactory import MeshFactory
 from Padmec.Physical.PhysicalMap import PhysicalMap
 from Padmec.Physical import Physical
+from Padmec.Solver import MatrixManager
 
 
 class TestKernel:
@@ -16,10 +18,10 @@ class TestKernel:
         assert k.target_dim == -1
         assert k.depth == -1
 
-    def test_KernelBase_call_raises_NotImplementedError(self):
+    def test_KernelBase_run_raises_NotImplementedError(self):
         k = KernelBase
         with pytest.raises(NotImplementedError):
-            k.run_kernel(None)
+            k.run(None)
 
     def test_check_kernel_raises_ValueError_when_elem_dim_not_set(self):
         class BadKernel(KernelBase):
@@ -57,9 +59,70 @@ class TestKernel:
         with pytest.raises(ValueError):
             check_kernel(BadKernel)
 
+    def test_preprocess_kernel_with_name(self):
+        @preprocess('my_name')
+        class PreprocessKernel(KernelBase):
+            pass
+
+        assert PreprocessKernel.name == 'my_name'
+
+    def test_preprocess_kernel_without_name(self):
+        @preprocess('')
+        class PreprocessKernel(KernelBase):
+            pass
+
+        assert PreprocessKernel.name == 'PreprocessKernel'
+
+    def test_fill_matrix_kernel_with_name(self):
+        @fill_matrix('my_name')
+        class FillMatrixKernel(KernelBase):
+            pass
+
+        assert FillMatrixKernel.name == 'my_name'
+
+    def test_fill_matrix_kernel_without_name(self):
+        @fill_matrix()
+        class FillMatrixKernel(KernelBase):
+            pass
+
+        assert FillMatrixKernel.name == 'FillMatrixKernel'
+
+    def test_fill_matrix_kernel_with_same_names_raises_KeyError(self):
+        matrix_manager = MatrixManager()
+        matrix_manager.create_map(0, 0)
+
+        @fill_matrix()
+        class FillMatrixKernel(KernelBase):
+            elem_dim = 0
+
+        @fill_matrix('FillMatrixKernel')
+        class FillMatrixKernel2(KernelBase):
+            elem_dim = 0
+
+        FillMatrixKernel.create_array(matrix_manager)
+
+        with pytest.raises(KeyError):
+            FillMatrixKernel2.create_array(matrix_manager)
+
+    def test_preprocess_kernel_with_same_names_raises_KeyError(self):
+        matrix_manager = MatrixManager()
+        matrix_manager.create_map(0, 0)
+
+        @preprocess()
+        class PreprocessKernel(KernelBase):
+            elem_dim = 0
+
+        @preprocess('PreprocessKernel')
+        class PreprocessKernel2(KernelBase):
+            elem_dim = 0
+
+        PreprocessKernel.create_array(matrix_manager)
+
+        with pytest.raises(KeyError):
+            PreprocessKernel2.create_array(matrix_manager)
+
 
 class TestTPFA:
-    """This is basically an integration test."""
 
     def setup(self):
         self.physical = PhysicalMap()
@@ -74,5 +137,5 @@ class TestTPFA:
 
         self.tpfa = TPFA
 
-    def _test_run_kernel(self):
+    def test_run_kernel(self):
         self.m.run_kernel(self.tpfa)

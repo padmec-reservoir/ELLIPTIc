@@ -1,21 +1,51 @@
 
-def preprocess(kernel_class):
-    # TODO: Finish me!
-    orig_call = kernel_class.__call__
+def preprocess(vector_name=""):
 
-    def __call__(self, adj):
-        orig_call(self, adj)
+    def dec(kernel_class):
+        if not vector_name:
+            kernel_class.name = kernel_class.__name__
+        else:
+            kernel_class.name = vector_name
 
-    kernel_class.__call__ = __call__
-    return kernel_class
+        orig_run = kernel_class.run
+
+        @classmethod
+        def run(cls, adj):
+            orig_run(adj)
+
+        @classmethod
+        def create_array(cls, matrix_manager):
+            matrix_manager.create_vector(
+                kernel_class.elem_dim, kernel_class.name)
+
+        kernel_class.run = run
+        kernel_class.create_array = create_array
+        return kernel_class
+
+    return dec
 
 
-def fill_matrix(kernel_class):
-    # TODO: Finish me!
-    orig_call = kernel_class.__call__
+def fill_matrix(matrix_name=""):
 
-    def __call__(self, adj):
-        orig_call(self, adj)
+    def dec(kernel_class):
+        if not matrix_name:
+            kernel_class.name = kernel_class.__name__
+        else:
+            kernel_class.name = matrix_name
 
-    kernel_class.__call__ = __call__
-    return kernel_class
+        orig_run = kernel_class.run
+
+        @classmethod
+        def run(cls, adj):
+            orig_run(adj)
+
+        @classmethod
+        def create_array(cls, matrix_manager):
+            matrix_manager.create_matrix(
+                kernel_class.elem_dim, kernel_class.name)
+
+        kernel_class.run = run
+        kernel_class.create_array = create_array
+        return kernel_class
+
+    return dec
