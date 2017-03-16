@@ -9,6 +9,7 @@ class EquivPerm(KernelBase):
     bridge_dim = 2
     target_dim = 3
     depth = 1
+    solution_dim = 2
 
     @classmethod
     def run(self, elems):
@@ -22,6 +23,7 @@ class TPFA(KernelBase):
     bridge_dim = 2
     target_dim = 3
     depth = 1
+    solution_dim = 3
 
     depends = [EquivPerm]
 

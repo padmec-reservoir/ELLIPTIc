@@ -28,6 +28,7 @@ class TestKernel:
             bridge_dim = 1
             target_dim = 1
             depth = 1
+            solution_dim = 1
 
         with pytest.raises(ValueError):
             check_kernel(BadKernel)
@@ -37,6 +38,7 @@ class TestKernel:
             elem_dim = 1
             target_dim = 1
             depth = 1
+            solution_dim = 1
 
         with pytest.raises(ValueError):
             check_kernel(BadKernel)
@@ -46,6 +48,7 @@ class TestKernel:
             elem_dim = 1
             bridge_dim = 1
             depth = 1
+            solution_dim = 1
 
         with pytest.raises(ValueError):
             check_kernel(BadKernel)
@@ -55,6 +58,17 @@ class TestKernel:
             elem_dim = 1
             bridge_dim = 1
             target_dim = 1
+            solution_dim = 1
+
+        with pytest.raises(ValueError):
+            check_kernel(BadKernel)
+
+    def test_check_kernel_raises_ValueError_when_solution_dim_not_set(self):
+        class BadKernel(KernelBase):
+            elem_dim = 1
+            bridge_dim = 1
+            target_dim = 1
+            depth = 1
 
         with pytest.raises(ValueError):
             check_kernel(BadKernel)
@@ -93,11 +107,11 @@ class TestKernel:
 
         @fill_matrix()
         class FillMatrixKernel(KernelBase):
-            elem_dim = 0
+            solution_dim = 0
 
         @fill_matrix('FillMatrixKernel')
         class FillMatrixKernel2(KernelBase):
-            elem_dim = 0
+            solution_dim = 0
 
         FillMatrixKernel.create_array(matrix_manager)
 
@@ -110,11 +124,11 @@ class TestKernel:
 
         @preprocess()
         class PreprocessKernel(KernelBase):
-            elem_dim = 0
+            solution_dim = 0
 
         @preprocess('PreprocessKernel')
         class PreprocessKernel2(KernelBase):
-            elem_dim = 0
+            solution_dim = 0
 
         PreprocessKernel.create_array(matrix_manager)
 

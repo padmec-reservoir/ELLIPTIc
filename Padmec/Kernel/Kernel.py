@@ -18,22 +18,28 @@ def check_kernel(kernel_class):
         raise ValueError('Value of depth not initialized in {0}'.format(
             kernel_class.__name__))
 
+    if kernel_class.solution_dim == -1:
+        raise ValueError('Value of solution_dim not initialized in {0}'.format(
+            kernel_class.__name__))
+
 
 class KernelBase(object):
-    """Classe que define a interface do Kernel.
+    """Class which defines the Kernel interface.
 
-    Propriedades:
-        elem_dim -- É a dimensão dos elementos que o kernel opera sobre
-        bridge_dim -- Dimensão intermediária utilizada na obtenção dos
-            stencils
-        target_dim -- Dimensão dos elementos do stencil
-        depth -- Profundidade do stencil
-        depends -- Outros kernels que devem ser executados antes deste
+    Properties:
+        elem_dim -- Dimension of the elements which the kernel operates at
+        bridge_dim -- Intermediary dimension to obtain the adjacencies
+        target_dim -- Dimension of the adjacent elements
+        depth -- Adjacency depth
+        solution_dim -- Dimension of the elements that will hold the solution
+            calculated in this kernel
+        depends -- List of other kernels that are supposed to run before this
     """
     elem_dim = -1
     bridge_dim = -1
     target_dim = -1
     depth = -1
+    solution_dim = -1
 
     depends = []
 

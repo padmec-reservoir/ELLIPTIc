@@ -16,7 +16,7 @@ def preprocess(vector_name=""):
         @classmethod
         def create_array(cls, matrix_manager):
             matrix_manager.create_vector(
-                kernel_class.elem_dim, kernel_class.name)
+                kernel_class.solution_dim, kernel_class.name)
 
         kernel_class.run = run
         kernel_class.create_array = create_array
@@ -42,7 +42,7 @@ def fill_matrix(matrix_name=""):
         @classmethod
         def create_array(cls, matrix_manager):
             matrix_manager.create_matrix(
-                kernel_class.elem_dim, kernel_class.name)
+                kernel_class.solution_dim, kernel_class.name)
 
         kernel_class.run = run
         kernel_class.create_array = create_array
