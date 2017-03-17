@@ -58,13 +58,16 @@ class KernelBase(object):
 
     @classmethod
     def run(cls, elem, adj, m):
-        """Executa o kernel nos elementos elems. O retorno do kernel depende
-        do seu tipo, e deve sempre estar associado ao preenchimento de uma
-        matriz ou vetor.
+        """Runs the kernel over the elements elems. The kernel return value
+        depends on its type, and should always be associated with the filling
+        of a matrix or vector.
 
-        Caso o kernel seja do tipo fill_matrix, o retorno deve ser uma lista de
-        (linha, colunas, valores).
+        If the kernel is of type preprocess, the return value must be a list of
+        (line, value) values.
 
-        Caso o kernel seja do tipo preprocess, o retorno deve ser uma lista de
-        (linha, valor)."""
+        If the kernel is of type fill_matrix, the return must be a dictionary
+        that contains the keys 'set' and 'sum'. Both keys should have a list of
+        (line, columns, values) value. The 'set' values will be set on the
+        matrix, and the 'sum' values will be summed.
+        """
         raise NotImplementedError

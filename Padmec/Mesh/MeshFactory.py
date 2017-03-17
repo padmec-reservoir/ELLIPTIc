@@ -17,6 +17,7 @@ class MeshFactory(object):
         the_mesh._save_tags()
         the_mesh._save_physical_tags()
         the_mesh._generate_dense_elements()
-        the_mesh._create_maps()
-
+        the_mesh._create_matrix_maps()
+        the_mesh._create_id_maps()
+        
         return the_mesh

@@ -32,9 +32,9 @@ class EquivPerm(KernelBase):
     solution_dim = 2
 
     @classmethod
-    def run(self, elem, adj, m):
+    def run(self, edge, adj, m):
         if len(adj) > 1:
-            edge_center = self.get_center(elem, m)
+            edge_center = self.get_center(edge, m)
             el1_center = self.get_center(adj[0], m)
             el2_center = self.get_center(adj[1], m)
             dx1 = np.linalg.norm(el1_center - edge_center)
@@ -44,9 +44,28 @@ class EquivPerm(KernelBase):
 
             K_equiv = (2*K1*K2) / (K1*dx2 + K2*dx1)
 
-            return K_equiv
+            return [(edge, K_equiv)]
         else:
-            return 0
+            return [(edge, 0)]
+
+
+@fill_matrix()
+class FillDiag(KernelBase):
+    """Preenche a diagonal dos volumes"""
+    elem_dim = 3
+    bridge_dim = 3
+    target_dim = 3
+    depth = 1
+    solution_dim = 3
+
+    @classmethod
+    def run(self, elem, adj, m):
+        results = {
+            'set': [(elem, [elem], [0])],
+            'sum': []
+        }
+
+        return results
 
 
 @fill_matrix()
@@ -58,8 +77,13 @@ class TPFAKernel(KernelBase):
     depth = 1
     solution_dim = 3
 
-    depends = [EquivPerm]
+    depends = [EquivPerm, FillDiag]
 
     @classmethod
     def run(self, elem, adj, m):
-        pass
+        results = {
+            'set': [(elem, [elem], [0])],
+            'sum': []
+        }
+
+        return results

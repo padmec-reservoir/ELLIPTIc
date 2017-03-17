@@ -28,5 +28,17 @@ class MatrixManager(object):
         else:
             raise KeyError("Vector name already defined")
 
+    def get_matrix(self, name):
+        return self.matrix[name]
+
+    def get_vector(self, name):
+        return self.vector[name]
+
     def fill_vector(self, name, row, value):
         self.vector[name][row] = value
+
+    def fill_matrix(self, name, row, cols, values):
+        self.matrix[name].InsertGlobalValues(row, values, cols)
+
+    def sum_into_matrix(self, name, row, cols, values):
+        self.vector[name].SumIntoGlobalValues(row, values, cols)

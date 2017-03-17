@@ -1,4 +1,6 @@
 # coding=utf-8
+from collections import defaultdict
+
 from pymoab import types
 from pymoab import topo_util
 import numpy as np
@@ -13,6 +15,7 @@ class Mesh(object):
         self.physical_manager = physical
         self.moab = mb
         self.tag2entset = {}
+        self.id_map = {}
         self.mesh_topo_util = topo_util.MeshTopoUtil(mb)
         self.root_set = mb.get_root_set()
 
@@ -42,20 +45,23 @@ class Mesh(object):
         all_verts = self.moab.get_entities_by_dimension(self.root_set, 0)
         self.mesh_topo_util.construct_aentities(all_verts)
 
-    def _create_maps(self):
-        all_verts = self.moab.get_entities_by_dimension(self.root_set, 0)
-        all_edges = self.moab.get_entities_by_dimension(self.root_set, 1)
-        all_faces = self.moab.get_entities_by_dimension(self.root_set, 2)
-        all_volumes = self.moab.get_entities_by_dimension(self.root_set, 3)
+    def _create_matrix_maps(self):
+        for dim in range(4):
+            all_ents = self.moab.get_entities_by_dimension(self.root_set, dim)
+            self.matrix_manager.create_map(dim, len(all_ents))
 
-        self.matrix_manager.create_map(0, len(all_verts))
-        self.matrix_manager.create_map(1, len(all_edges))
-        self.matrix_manager.create_map(2, len(all_faces))
-        self.matrix_manager.create_map(3, len(all_volumes))
+    def _create_id_maps(self):
+        for dim in range(4):
+            all_ents = self.moab.get_entities_by_dimension(self.root_set, dim)
+            idx = 0
+            for ent in all_ents:
+                self.id_map[ent] = idx
+                idx += 1
 
     def run_kernel(self, kernel):
         """Excetures a kernel in the mesh"""
         check_kernel(kernel)
+
         elems = self.moab.get_entities_by_dimension(
             self.root_set, kernel.elem_dim)
 
@@ -73,3 +79,5 @@ class Mesh(object):
                 kernel.depth)
 
             kernel.run(elem, adj, self)
+
+        print kernel.get_array(self.matrix_manager)
