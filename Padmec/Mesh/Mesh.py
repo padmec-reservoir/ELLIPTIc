@@ -72,4 +72,4 @@ class Mesh(object):
                 kernel.target_dim,
                 kernel.depth)
 
-            kernel.run(adj)
+            kernel.run(elem, adj, self)

@@ -21,7 +21,3 @@ class PhysicalMap(object):
     def __contains__(self, id):
         """Checks if the physical ID was defined"""
         return id in self.physical_values
-
-    def tags(self):
-        """Returns all tags and associated physical values"""
-        return self.physical_values.iteritems()

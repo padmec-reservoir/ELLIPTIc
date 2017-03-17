@@ -10,8 +10,8 @@ def preprocess(vector_name=""):
         orig_run = kernel_class.run
 
         @classmethod
-        def run(cls, adj):
-            orig_run(adj)
+        def run(cls, elem, adj, mb):
+            orig_run(elem, adj, mb)
 
         @classmethod
         def create_array(cls, matrix_manager):
@@ -36,8 +36,8 @@ def fill_matrix(matrix_name=""):
         orig_run = kernel_class.run
 
         @classmethod
-        def run(cls, adj):
-            orig_run(adj)
+        def run(cls, elem, adj, mb):
+            orig_run(elem, adj, mb)
 
         @classmethod
         def create_array(cls, matrix_manager):

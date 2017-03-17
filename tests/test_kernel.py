@@ -21,7 +21,7 @@ class TestKernel:
     def test_KernelBase_run_raises_NotImplementedError(self):
         k = KernelBase
         with pytest.raises(NotImplementedError):
-            k.run(None)
+            k.run(None, None, None)
 
     def test_check_kernel_raises_ValueError_when_elem_dim_not_set(self):
         class BadKernel(KernelBase):
@@ -143,13 +143,13 @@ class TestTPFA:
         self.physical[101] = Physical.Dirichlet(1.0)
         self.physical[102] = Physical.Dirichlet(-1.0)
         self.physical[103] = Physical.Symmetric()
-        self.physical[50] = Physical.Permeability(numpy.eye(3))
+        self.physical[50] = TPFA.TPFAPermeability(1.0)
 
         meshfile = 'tests/cube_small.h5m'
         mf = MeshFactory()
         self.m = mf.load_mesh(meshfile, self.physical)
 
-        self.tpfa = TPFA
+        self.tpfa = TPFA.TPFAKernel
 
     def test_run_kernel(self):
         self.m.run_kernel(self.tpfa)

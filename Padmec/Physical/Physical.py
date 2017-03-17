@@ -63,7 +63,7 @@ class Symmetric(PhysicalBase):
 
 
 class Permeability(PhysicalBase):
-    """Defines permeability boundary condition"""
+    """Defines permeability initial condition"""
     def __init__(self, v):
         super(PhysicalBase, self).__init__()
 

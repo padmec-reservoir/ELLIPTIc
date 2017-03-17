@@ -27,3 +27,6 @@ class MatrixManager(object):
             self.vector[name] = Epetra.Vector(self.std_map[dim])
         else:
             raise KeyError("Vector name already defined")
+
+    def fill_vector(self, name, row, value):
+        self.vector[name][row] = value
