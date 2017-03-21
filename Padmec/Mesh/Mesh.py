@@ -79,5 +79,3 @@ class Mesh(object):
                 kernel.depth)
 
             kernel.run(elem, adj, self)
-
-        print kernel.get_array(self.matrix_manager)
