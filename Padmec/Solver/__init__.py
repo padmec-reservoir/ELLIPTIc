@@ -1,3 +1,3 @@
-__all__ = ['MatrixManager']
+__all__ = ['MatrixManager', 'ReadOnlyMatrix']
 
-from MatrixManager import MatrixManager
+from MatrixManager import MatrixManager, ReadOnlyMatrix

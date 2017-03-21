@@ -1,8 +1,11 @@
+from Padmec.Solver import ReadOnlyMatrix
+
 
 class KernelDecorator(object):
 
-    def __init__(self, name=""):
+    def __init__(self, name="", share=False):
         self.name = name
+        self.share = share
 
     def _set_kernel_name(self, kernel_class):
         if not self.name:
@@ -30,27 +33,38 @@ class KernelDecorator(object):
     def _define_get_array(self, kernel_class):
         kernel_class.get_array = self.get_array()
 
+    def _set_dependency_vectors_attributes(self, kernel_class):
+        @classmethod
+        def set_dependency_vectors(cls, mesh):
+            for dep in kernel_class.depends:
+                ar = dep.get_array(mesh.matrix_manager)
+                readonly_ar = ReadOnlyMatrix(ar, mesh.id_map)
+                setattr(kernel_class, dep.name + '_array', readonly_ar)
+
+        kernel_class.set_dependency_vectors = set_dependency_vectors
+
     def __call__(self, kernel_class):
         self._set_kernel_name(kernel_class)
         self._replace_run(kernel_class)
         self._define_create_array(kernel_class)
         self._define_fill_array(kernel_class)
         self._define_get_array(kernel_class)
+        self._set_dependency_vectors_attributes(kernel_class)
 
         return kernel_class
 
 
 class preprocess(KernelDecorator):
 
-    def create_array(cls, kernel_class):
+    def create_array(self, kernel_class):
         @classmethod
         def new_create_array(cls, matrix_manager):
             matrix_manager.create_vector(
-                kernel_class.solution_dim, kernel_class.name)
+                kernel_class.solution_dim, kernel_class.name, self.share)
 
         return new_create_array
 
-    def fill_array(cls):
+    def fill_array(self):
         @classmethod
         def new_fill_array(cls, vals, matrix_manager, id_map):
             for elem, value in vals:
@@ -59,7 +73,7 @@ class preprocess(KernelDecorator):
 
         return new_fill_array
 
-    def get_array(cls):
+    def get_array(self):
         @classmethod
         def new_get_array(cls, matrix_manager):
             return matrix_manager.get_vector(cls.name)
@@ -69,15 +83,15 @@ class preprocess(KernelDecorator):
 
 class fill_matrix(KernelDecorator):
 
-    def create_array(cls, kernel_class):
+    def create_array(self, kernel_class):
         @classmethod
         def new_create_array(cls, matrix_manager):
             matrix_manager.create_matrix(
-                kernel_class.solution_dim, kernel_class.name)
+                kernel_class.solution_dim, kernel_class.name, self.share)
 
         return new_create_array
 
-    def fill_array(cls):
+    def fill_array(self):
         @classmethod
         def new_fill_array(cls, vals, matrix_manager, id_map):
             set_values = vals['set']
@@ -94,7 +108,7 @@ class fill_matrix(KernelDecorator):
 
         return new_fill_array
 
-    def get_array(cls):
+    def get_array(self):
         @classmethod
         def new_get_array(cls, matrix_manager):
             return matrix_manager.get_matrix(cls.name)

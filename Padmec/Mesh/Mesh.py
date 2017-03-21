@@ -1,6 +1,4 @@
 # coding=utf-8
-from collections import defaultdict
-
 from pymoab import types
 from pymoab import topo_util
 import numpy as np
@@ -65,11 +63,12 @@ class Mesh(object):
         elems = self.moab.get_entities_by_dimension(
             self.root_set, kernel.elem_dim)
 
-        kernel.create_array(self.matrix_manager)
-
         # TODO: Check for dependencies already run, and circular dependencies
         for dep in kernel.depends:
             self.run_kernel(dep)
+
+        kernel.create_array(self.matrix_manager)
+        kernel.set_dependency_vectors(self)
 
         for elem in elems:
             adj = self.mesh_topo_util.get_bridge_adjacencies(

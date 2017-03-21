@@ -32,15 +32,15 @@ class EquivPerm(KernelBase):
     solution_dim = 2
 
     @classmethod
-    def run(self, edge, adj, m):
+    def run(cls, edge, adj, m):
         if len(adj) > 1:
-            edge_center = self.get_center(edge, m)
-            el1_center = self.get_center(adj[0], m)
-            el2_center = self.get_center(adj[1], m)
+            edge_center = cls.get_center(edge, m)
+            el1_center = cls.get_center(adj[0], m)
+            el2_center = cls.get_center(adj[1], m)
             dx1 = np.linalg.norm(el1_center - edge_center)
             dx2 = np.linalg.norm(el2_center - edge_center)
-            K1 = self.get_physical(adj[0], m).value
-            K2 = self.get_physical(adj[1], m).value
+            K1 = cls.get_physical(adj[0], m).value
+            K2 = cls.get_physical(adj[1], m).value
 
             K_equiv = (2*K1*K2) / (K1*dx2 + K2*dx1)
 
@@ -49,7 +49,7 @@ class EquivPerm(KernelBase):
             return [(edge, 0)]
 
 
-@fill_matrix()
+@fill_matrix(name="T", share=True)
 class FillDiag(KernelBase):
     """Preenche a diagonal dos volumes"""
     elem_dim = 3
@@ -59,7 +59,7 @@ class FillDiag(KernelBase):
     solution_dim = 3
 
     @classmethod
-    def run(self, elem, adj, m):
+    def run(cls, elem, adj, m):
         results = {
             'set': [(elem, [elem], [0])],
             'sum': []
@@ -68,7 +68,7 @@ class FillDiag(KernelBase):
         return results
 
 
-@fill_matrix()
+@fill_matrix(name="T", share=True)
 class TPFAKernel(KernelBase):
     """Kernel de exemplo TPFA"""
     elem_dim = 2
@@ -80,10 +80,13 @@ class TPFAKernel(KernelBase):
     depends = [EquivPerm, FillDiag]
 
     @classmethod
-    def run(self, elem, adj, m):
+    def run(cls, elem, adj, m):
         results = {
-            'set': [(elem, [elem], [0])],
+            'set': [],
             'sum': []
         }
+
+        for e in adj:
+            results['sum'].append((e, [e], [1]))
 
         return results
