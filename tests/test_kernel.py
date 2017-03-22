@@ -1,5 +1,5 @@
 """Basically lots of integration tests with some unit tests."""
-import numpy
+import numpy as np
 import pytest
 
 from Padmec.Kernel import (KernelBase, TPFA, check_kernel, fill_vector,
@@ -153,7 +153,3 @@ class TestTPFA:
 
     def test_run_kernel(self):
         self.m.run_kernel(self.tpfa)
-
-        A = self.tpfa.get_array(self.m.matrix_manager)
-        A.FillComplete()
-        print A

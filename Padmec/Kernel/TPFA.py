@@ -60,17 +60,23 @@ class FillDiag(KernelBase):
 
     @classmethod
     def run(cls, m, elem, adj):
+        value = 0
+
+        adj_faces_physical = cls.get_adj_physical(
+            m, elem, 2, 2, phys_type=Dirichlet)
+        if adj_faces_physical:
+            value = 1
 
         results = {
-            'set': [(elem, [elem], [0])],
+            'set': [(elem, [elem], [value])],
             'sum': []
         }
 
         return results
 
 
-@fill_matrix(name="B", share=True)
-class FillInitialAndBoundary(KernelBase):
+@fill_vector(name="b")
+class FillBoundary(KernelBase):
     """Preenche a diagonal dos volumes"""
     elem_dim = 3
     bridge_dim = 3
@@ -80,12 +86,14 @@ class FillInitialAndBoundary(KernelBase):
 
     @classmethod
     def run(cls, m, elem, adj):
-        results = {
-            'set': [(elem, [elem], [0])],
-            'sum': []
-        }
+        value = 0
 
-        return results
+        adj_faces_physical = cls.get_adj_physical(
+            m, elem, 2, 2, phys_type=Dirichlet)
+        if adj_faces_physical:
+            value = adj_faces_physical.value
+
+        return [(elem, value)]
 
 
 @fill_matrix(name="T", share=True)
@@ -97,7 +105,7 @@ class TPFAKernel(KernelBase):
     depth = 1
     solution_dim = 3
 
-    depends = [EquivPerm, FillDiag]
+    depends = [EquivPerm, FillDiag, FillBoundary]
 
     @classmethod
     def run(cls, m, elem, adj):
@@ -108,14 +116,14 @@ class TPFAKernel(KernelBase):
 
         K_equiv = cls.EquivPerm_array[elem]
 
-        adj0_faces_physical = cls.get_adj_physical(
-            m, adj[0], 2, 2, phys_type=Dirichlet)
-
-        adj1_faces_physical = cls.get_adj_physical(
-            m, adj[0], 2, 2, phys_type=Dirichlet)
-
         adj = list(adj)
         if len(adj) == 2:
+            adj0_faces_physical = cls.get_adj_physical(
+                m, adj[0], 2, 2, phys_type=Dirichlet)
+
+            adj1_faces_physical = cls.get_adj_physical(
+                m, adj[1], 2, 2, phys_type=Dirichlet)
+
             if not adj0_faces_physical:
                 results['set'].append((adj[0], [adj[1]], [-K_equiv]))
                 results['sum'].append((adj[0], [adj[0]], [K_equiv]))
