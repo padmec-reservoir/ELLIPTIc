@@ -17,8 +17,8 @@ class KernelDecorator(object):
         orig_run = kernel_class.run
 
         @classmethod
-        def new_run(cls, elem, adj, mesh):
-            vals = orig_run(elem, adj, mesh)
+        def new_run(cls, mesh, elem, adj):
+            vals = orig_run(mesh, elem, adj)
             cls.fill_array(
                 vals, mesh.matrix_manager, mesh.id_map)
 
@@ -54,7 +54,7 @@ class KernelDecorator(object):
         return kernel_class
 
 
-class preprocess(KernelDecorator):
+class fill_vector(KernelDecorator):
 
     def create_array(self, kernel_class):
         @classmethod

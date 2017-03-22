@@ -2,7 +2,7 @@
 import numpy
 import pytest
 
-from Padmec.Kernel import (KernelBase, TPFA, check_kernel, preprocess,
+from Padmec.Kernel import (KernelBase, TPFA, check_kernel, fill_vector,
                            fill_matrix)
 from Padmec.Mesh.MeshFactory import MeshFactory
 from Padmec.Physical.PhysicalMap import PhysicalMap
@@ -73,19 +73,19 @@ class TestKernel:
         with pytest.raises(ValueError):
             check_kernel(BadKernel)
 
-    def test_preprocess_kernel_with_name(self):
-        @preprocess('my_name')
-        class PreprocessKernel(KernelBase):
+    def test_fill_vector_kernel_with_name(self):
+        @fill_vector('my_name')
+        class FillVectorKernel(KernelBase):
             pass
 
-        assert PreprocessKernel.name == 'my_name'
+        assert FillVectorKernel.name == 'my_name'
 
-    def test_preprocess_kernel_without_name(self):
-        @preprocess('')
-        class PreprocessKernel(KernelBase):
+    def test_fill_vector_kernel_without_name(self):
+        @fill_vector('')
+        class FillVectorKernel(KernelBase):
             pass
 
-        assert PreprocessKernel.name == 'PreprocessKernel'
+        assert FillVectorKernel.name == 'FillVectorKernel'
 
     def test_fill_matrix_kernel_with_name(self):
         @fill_matrix('my_name')
@@ -118,22 +118,22 @@ class TestKernel:
         with pytest.raises(KeyError):
             FillMatrixKernel2.create_array(matrix_manager)
 
-    def test_preprocess_kernel_with_same_names_raises_KeyError(self):
+    def test_fill_vector_kernel_with_same_names_raises_KeyError(self):
         matrix_manager = MatrixManager()
         matrix_manager.create_map(0, 0)
 
-        @preprocess()
-        class PreprocessKernel(KernelBase):
+        @fill_vector()
+        class FillVectorKernel(KernelBase):
             solution_dim = 0
 
-        @preprocess('PreprocessKernel')
-        class PreprocessKernel2(KernelBase):
+        @fill_vector('FillVectorKernel')
+        class FillVectorKernel2(KernelBase):
             solution_dim = 0
 
-        PreprocessKernel.create_array(matrix_manager)
+        FillVectorKernel.create_array(matrix_manager)
 
         with pytest.raises(KeyError):
-            PreprocessKernel2.create_array(matrix_manager)
+            FillVectorKernel2.create_array(matrix_manager)
 
 
 class TestTPFA:
@@ -153,3 +153,7 @@ class TestTPFA:
 
     def test_run_kernel(self):
         self.m.run_kernel(self.tpfa)
+
+        A = self.tpfa.get_array(self.m.matrix_manager)
+        A.FillComplete()
+        print A

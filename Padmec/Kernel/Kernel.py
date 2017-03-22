@@ -45,25 +45,57 @@ class KernelBase(object):
     depends = []
 
     @classmethod
-    def get_physical(cls, elem, m):
+    def get_physical(cls, m, elem):
         for tag, elemset in m.tag2entset.iteritems():
             if elem in elemset:
                 return m.physical_manager[tag]
 
     @classmethod
-    def get_center(cls, elem, m):
+    def get_adj(cls, m, elem, bridge_dim,
+                target_dim, depth=1):
+        adj = m.mesh_topo_util.get_bridge_adjacencies(
+            np.asarray([elem]),
+            bridge_dim,
+            target_dim,
+            depth)
+
+        return adj
+
+    @classmethod
+    def get_adj_physical(cls, m, elem, bridge_dim,
+                         target_dim, depth=1, phys_type=None):
+        adj = m.mesh_topo_util.get_bridge_adjacencies(
+            np.asarray([elem]),
+            bridge_dim,
+            target_dim,
+            depth)
+        adj = set(adj)
+        physicals = []
+        for tag, elemset in m.tag2entset.iteritems():
+            if adj.intersection(elemset):
+                phys = m.physical_manager[tag]
+                if isinstance(phys, phys_type):
+                    return phys
+
+                physicals.append(m.physical_manager[tag])
+
+        if not phys_type:
+            return physicals
+
+    @classmethod
+    def get_center(cls, m, elem):
         """Average vertex coords"""
         return m.mesh_topo_util.get_average_position(
             np.array([elem], dtype='uint64'))
 
     @classmethod
-    def run(cls, elem, adj, m):
+    def run(cls, m, elem, adj):
         """Runs the kernel over the elements elems. The kernel return value
         depends on its type, and should always be associated with the filling
         of a matrix or vector.
 
-        If the kernel is of type preprocess, the return value must be a list of
-        (line, value) values.
+        If the kernel is of type fill_vector, the return value must be a list
+        of (line, value) values.
 
         If the kernel is of type fill_matrix, the return must be a dictionary
         that contains the keys 'set' and 'sum'. Both keys should have a list of
