@@ -1,4 +1,4 @@
-from Padmec.Solver import ReadOnlyMatrix
+from padpy.Solver import ReadOnlyMatrix
 
 
 class KernelDecorator(object):

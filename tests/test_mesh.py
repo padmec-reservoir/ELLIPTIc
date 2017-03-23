@@ -1,9 +1,9 @@
 import pytest
 import numpy
 
-from Padmec.Mesh import MeshFactory
-from Padmec.Physical import PhysicalMap
-from Padmec import Physical
+from padpy.Mesh import MeshFactory
+from padpy.Physical import PhysicalMap
+from padpy import Physical
 
 
 class TestMesh:

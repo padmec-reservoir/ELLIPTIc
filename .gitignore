@@ -4,7 +4,7 @@ build/
 .cache/
 .eggs/
 dist/
-UNKNOWN.egg-info/
+padpy.egg-info/
 
 .coverage
 *.pyc

@@ -3,8 +3,8 @@ from pymoab import types
 from pymoab import topo_util
 import numpy as np
 
-from Padmec.Solver import MatrixManager
-from Padmec.Kernel import check_kernel
+from padpy.Solver import MatrixManager
+from padpy.Kernel import check_kernel
 
 
 class Mesh(object):

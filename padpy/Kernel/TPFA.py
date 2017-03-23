@@ -2,7 +2,7 @@ import numpy as np
 
 from Kernel import KernelBase
 from kernel_decorators import fill_matrix, fill_vector
-from Padmec.Physical import PhysicalBase, Dirichlet
+from padpy.Physical import PhysicalBase, Dirichlet
 
 
 class TPFAPermeability(PhysicalBase):

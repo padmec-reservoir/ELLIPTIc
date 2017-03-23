@@ -1,9 +1,9 @@
 import numpy
 
-from Padmec.Kernel import TPFA
-from Padmec.Mesh.MeshFactory import MeshFactory
-from Padmec.Physical.PhysicalMap import PhysicalMap
-from Padmec.Physical import Physical
+from padpy.Kernel import TPFA
+from padpy.Mesh.MeshFactory import MeshFactory
+from padpy.Physical.PhysicalMap import PhysicalMap
+from padpy.Physical import Physical
 
 
 physical = PhysicalMap()
