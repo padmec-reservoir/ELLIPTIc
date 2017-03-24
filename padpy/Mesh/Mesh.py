@@ -10,7 +10,12 @@ from padpy.Kernel import check_kernel
 
 
 class Mesh(object):
-    """Defines mesh behavior using MOAB as library"""
+    """Defines mesh behavior using MOAB as library.
+    A Mesh should only be associated with one problem at a time.
+
+    Disclaimer: This class is tightly coupled with the entire system. If you
+    wish to extend it, you may need to replicate behavior from the MOAB
+    library."""
     def __init__(self, mb, physical):
         self.physical_manager = physical
         self.moab = mb
@@ -60,15 +65,19 @@ class Mesh(object):
                 idx += 1
 
     def create_double_solution_tag(self, tag_name):
+        """Creates a solution tag of type double with the name tag_name."""
         self.tags[tag_name] = self.moab.tag_get_handle(
             tag_name, 1, types.MB_TYPE_DOUBLE, True)
 
     def set_solution(self, tag_name, dimension, vector):
+        """Sets the solution of name tag_name, on elements of the given
+        dimension, with the values from the given vector."""
         ents = self.moab.get_entities_by_dimension(self.root_set, dimension)
         self.moab.tag_set_data(self.tags[tag_name], ents, np.asarray(vector))
 
     def run_kernel(self, kernel):
-        """Excecutes a kernel in the mesh"""
+        """Excecutes a kernel in the mesh. Its dependencies are run
+        recursively."""
         check_kernel(kernel)
 
         elems = self.moab.get_entities_by_dimension(

@@ -4,6 +4,8 @@ comm = Epetra.PyComm()
 
 
 class ReadOnlyMatrix(object):
+    """Matrix wrapper. Defines a read-only matrix. Also abstracts the usage
+    of the id_map for accessing the matrix."""
     # TODO: Test me
 
     def __init__(self, matobj, id_map):
@@ -18,6 +20,11 @@ class ReadOnlyMatrix(object):
 
 
 class MatrixManager(object):
+    """Class responsible for managing matrices and vectors.
+
+    Disclaimer: This class is tightly coupled with the entire system. If you
+    wish to extend it, you may need to replicate behavior from the Trilinos
+    library."""
     def __init__(self):
         self.std_map = {}
 

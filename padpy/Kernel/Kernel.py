@@ -46,6 +46,7 @@ class KernelBase(object):
 
     @classmethod
     def get_physical(cls, m, elem):
+        """Gets the first physical found for a given element."""
         for tag, elemset in m.tag2entset.iteritems():
             if elem in elemset:
                 return m.physical_manager[tag]
@@ -53,6 +54,8 @@ class KernelBase(object):
     @classmethod
     def get_adj(cls, m, elem, bridge_dim,
                 target_dim, depth=1):
+        """Returns the elements adjacent to the element elem, through
+        bridge_dim, with dimension target_dim with the given depth."""
         adj = m.mesh_topo_util.get_bridge_adjacencies(
             np.asarray([elem]),
             bridge_dim,
@@ -64,6 +67,7 @@ class KernelBase(object):
     @classmethod
     def get_adj_physical(cls, m, elem, bridge_dim,
                          target_dim, depth=1, phys_type=None):
+        # TODO: phys_type ser um array
         adj = m.mesh_topo_util.get_bridge_adjacencies(
             np.asarray([elem]),
             bridge_dim,
