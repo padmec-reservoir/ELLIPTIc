@@ -47,6 +47,9 @@ class MatrixManager(object):
     def get_matrix(self, name):
         return self.matrix[name]
 
+    def get_matrices(self):
+        return self.matrix.values()
+
     def get_vector(self, name):
         return self.vector[name]
 

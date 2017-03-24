@@ -8,3 +8,4 @@ padpy.egg-info/
 
 .coverage
 *.pyc
+*.c
