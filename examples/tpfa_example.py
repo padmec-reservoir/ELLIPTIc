@@ -1,12 +1,8 @@
-import numpy as np
-
 from padpy.Kernel import TPFA
 from padpy.Mesh.MeshFactory import MeshFactory
 from padpy.Physical.PhysicalMap import PhysicalMap
 from padpy.Physical import Physical
 from padpy.Problem import Pipeline, LinearProblem
-from pymoab import types
-from PyTrilinos import Epetra, AztecOO
 
 
 physical = PhysicalMap()
@@ -25,10 +21,7 @@ pipeline = Pipeline([
 
 problem = LinearProblem(mesh=m, pipeline=pipeline, solution_dim=3)
 
-problem.run_pipeline()
-problem.fill_matrices()
-
-problem.setup_linear_problem(A_name='T', b_name='b')
-problem.solve()
+runner = TPFA.TPFARunner(problem)
+runner.run()
 
 problem.export_solution(solution_name="Pressure", file_name="output.vtk")

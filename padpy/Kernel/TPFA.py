@@ -3,6 +3,7 @@ import numpy as np
 from Kernel import KernelBase
 from kernel_decorators import fill_matrix, fill_vector
 from padpy.Physical import PhysicalBase, Dirichlet
+from padpy.Problem import RunnerBase
 
 
 class TPFAPermeability(PhysicalBase):
@@ -20,6 +21,16 @@ class TPFAPermeability(PhysicalBase):
     @value.setter
     def value(self, v):
         self._value = v
+
+
+class TPFARunner(RunnerBase):
+
+    def run(self):
+        self.problem.run_pipeline()
+        self.problem.fill_matrices()
+
+        self.problem.setup_linear_problem(A_name='T', b_name='b')
+        self.problem.solve()
 
 
 @fill_vector()

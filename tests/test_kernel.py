@@ -149,6 +149,3 @@ class TestTPFA:
         self.m = mf.load_mesh(meshfile, self.physical)
 
         self.tpfa = TPFA.TPFAKernel
-
-    def test_run_kernel(self):
-        self.m.run_kernel(self.tpfa)
