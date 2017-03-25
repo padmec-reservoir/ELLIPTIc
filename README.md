@@ -1,5 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/padpy/badge/?version=latest)](http://padpy.readthedocs.io/en/latest/?badge=latest)
-[![Coverage](https://github.com/gpkc/padpy/blob/master/cov.svg)](https://github.com/dbrgn/coverage-badge)
+[![Coverage](https://raw.githubusercontent.com/gpkc/padpy/master/cov.svg)](https://github.com/dbrgn/coverage-badge)
 
 # Dependencies
 * [PyMoab](https://bitbucket.org/fathomteam/moab/overview)
