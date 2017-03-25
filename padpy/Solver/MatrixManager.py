@@ -1,7 +1,5 @@
 from PyTrilinos import Epetra
 
-comm = Epetra.PyComm()
-
 
 class ReadOnlyMatrix(object):
     """Matrix wrapper. Defines a read-only matrix. Also abstracts the usage
@@ -31,14 +29,16 @@ class MatrixManager(object):
     library.
 
     """
+
     def __init__(self):
+        self.comm = Epetra.PyComm()
         self.std_map = {}
 
         self.matrix = {}
         self.vector = {}
 
     def create_map(self, dim, len_elems):
-        self.std_map[dim] = Epetra.Map(len_elems, 0, comm)
+        self.std_map[dim] = Epetra.Map(len_elems, 0, self.comm)
 
     def create_matrix(self, dim, name, share=False):
         if name not in self.matrix:

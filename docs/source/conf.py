@@ -36,6 +36,7 @@ extensions = ['sphinx.ext.autodoc',
 
 napoleon_include_init_with_doc = False
 napoleon_include_special_with_doc = True
+autodoc_mock_imports = ['PyTrilinos', 'numpy', 'pymoab']
 
 
 def linkcode_resolve(domain, info):
