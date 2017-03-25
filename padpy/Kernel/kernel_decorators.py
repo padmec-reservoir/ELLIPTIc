@@ -2,7 +2,7 @@ from padpy.Solver import ReadOnlyMatrix
 
 
 class KernelDecorator(object):
-
+    """Base decorator class for kernel decorators."""
     def __init__(self, name="", share=False):
         self.name = name
         self.share = share
