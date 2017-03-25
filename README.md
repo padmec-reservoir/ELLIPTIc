@@ -9,4 +9,7 @@
 Please refer to the [documentation page](https://bitbucket.org/ned/coveragepy).
 
 # Testing
-Run `python setup.py test`
+Run `python setup.py test`.
+
+# Building and installing
+Run `python setup.py build` and `python setup.py install`.
