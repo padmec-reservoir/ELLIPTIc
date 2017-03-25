@@ -1,6 +1,10 @@
 [![Documentation Status](https://readthedocs.org/projects/padpy/badge/?version=latest)](http://padpy.readthedocs.io/en/latest/?badge=latest)
 ![Coverage](https://cdn.rawgit.com/gpkc/padpy/master/cov.svg)
 
+<p align="center">
+  <img src="https://cdn.rawgit.com/gpkc/padpy/master/pic.png" width="300"/>
+</p>
+
 # Dependencies
 * [PyMoab](https://bitbucket.org/fathomteam/moab/overview)
 * [PyTrilinos](https://github.com/trilinos/Trilinos)
