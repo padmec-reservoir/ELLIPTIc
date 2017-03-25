@@ -2,7 +2,20 @@ from padpy.Solver import ReadOnlyMatrix
 
 
 class KernelDecorator(object):
-    """Base decorator class for kernel decorators."""
+    """Base decorator class for kernel decorators.
+
+    Parameters
+    ----------
+    name: string, optional
+        Name of the array associated with this kernel. If not set,
+        defaults to the kernel's class name.
+    share: bool, optional
+        If the array associated with this kernel could be used as the name
+        parameter of other kernel classes. If not set, defaults to False.
+        If set to True, other kernel classes could have the ability to
+        access and modify the same associated array.
+
+    """
     def __init__(self, name="", share=False):
         self.name = name
         self.share = share
@@ -55,7 +68,9 @@ class KernelDecorator(object):
 
 
 class fill_vector(KernelDecorator):
+    """Defines a decorator for kernels that will fill a vector array.
 
+    """
     def create_array(self, kernel_class):
         @classmethod
         def new_create_array(cls, matrix_manager):
@@ -82,7 +97,9 @@ class fill_vector(KernelDecorator):
 
 
 class fill_matrix(KernelDecorator):
+    """Defines a decorator for kernels that will fill a matrix array.
 
+    """
     def create_array(self, kernel_class):
         @classmethod
         def new_create_array(cls, matrix_manager):

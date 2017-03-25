@@ -9,3 +9,5 @@ padpy.egg-info/
 .coverage
 *.pyc
 *.c
+
+docs/build

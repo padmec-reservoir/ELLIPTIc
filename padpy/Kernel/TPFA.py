@@ -7,7 +7,9 @@ from padpy.Problem import RunnerBase
 
 
 class TPFAPermeability(PhysicalBase):
-    """Defines permeability boundary condition"""
+    """Defines a scalar permeability.
+
+    """
     def __init__(self, v):
         super(PhysicalBase, self).__init__()
 
@@ -24,7 +26,9 @@ class TPFAPermeability(PhysicalBase):
 
 
 class TPFARunner(RunnerBase):
+    """Runner class for the TPFA method.
 
+    """
     def run(self):
         self.problem.run_pipeline()
         self.problem.fill_matrices()
@@ -35,7 +39,9 @@ class TPFARunner(RunnerBase):
 
 @fill_vector()
 class EquivPerm(KernelBase):
-    """Kernel que calcula a permeabilidade equivalente nas faces"""
+    """Kernel which calculates the equivalent permeability in the faces.
+
+    """
     elem_dim = 2
     bridge_dim = 2
     target_dim = 3
@@ -62,7 +68,9 @@ class EquivPerm(KernelBase):
 
 @fill_matrix(name="T", share=True)
 class FillDiag(KernelBase):
-    """Preenche a diagonal dos volumes"""
+    """Fills the matrix diagonals.
+
+    """
     elem_dim = 3
     bridge_dim = 3
     target_dim = 3
@@ -71,10 +79,12 @@ class FillDiag(KernelBase):
 
     @classmethod
     def run(cls, m, elem, adj):
+        # Default value
         value = 0
 
         adj_faces_physical = cls.get_adj_physical(
             m, elem, 2, 2, phys_type=Dirichlet)
+        # If the current element has a boundary condition, sets value to 1
         if adj_faces_physical:
             value = 1
 
@@ -88,7 +98,9 @@ class FillDiag(KernelBase):
 
 @fill_vector(name="b")
 class FillBoundary(KernelBase):
-    """Preenche a diagonal dos volumes"""
+    """Fills the vector 'b' with boundary conditions.
+
+    """
     elem_dim = 3
     bridge_dim = 3
     target_dim = 3
@@ -109,7 +121,10 @@ class FillBoundary(KernelBase):
 
 @fill_matrix(name="T", share=True)
 class TPFAKernel(KernelBase):
-    """Kernel de exemplo TPFA"""
+    """Example kernel for the TPFA method. This kernel iterates on the mesh
+    faces and fills the transmissibility matrix accordingly.
+
+    """
     elem_dim = 2
     bridge_dim = 2
     target_dim = 3
@@ -125,10 +140,14 @@ class TPFAKernel(KernelBase):
             'sum': []
         }
 
+        # Gets the equivalent permeability for the face
         K_equiv = cls.EquivPerm_array[elem]
 
         adj = list(adj)
+        # If the face has two adjacend volumes
         if len(adj) == 2:
+            # Check if those volumes do not have any faces with boundary
+            # conditions of type Dirichlet
             adj0_faces_physical = cls.get_adj_physical(
                 m, adj[0], 2, 2, phys_type=Dirichlet)
 

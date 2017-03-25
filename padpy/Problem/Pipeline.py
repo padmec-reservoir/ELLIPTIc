@@ -6,10 +6,18 @@ class Pipeline(object):
     sequence of kernels, and can be extended using the bitwise or operator with
     both another pipeline, or a single kernel.
 
-    Example:
-        kernels = [kernel1, kernel2, kernel3]
-        pipeline = Pipeline(kernels)  # Creating a pipeline
-        pipeline = pipeline | kernel4  # Extending a pipeline with a kernel"""
+    Parameters
+    ----------
+    kernels: list of padpy.Kernel.Kernel.Kernel
+        List of kernels to compose this pipeline.
+
+    Example
+    -------
+    >>> kernels = [kernel1, kernel2, kernel3]
+    >>> pipeline = Pipeline(kernels)  # Creating a pipeline
+    >>> pipeline = pipeline | kernel4  # Extending a pipeline with a kernel
+
+    """
     def __init__(self, kernels):
         self.kernels = kernels
 

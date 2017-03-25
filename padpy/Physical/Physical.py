@@ -3,20 +3,24 @@ import numpy as np
 
 
 class PhysicalBase(object):
-    """Define interface for physical properties"""
+    """Defines the interface for physical properties.
+
+    A subclass should override the `value` property getter and setter
+    accordingly.
+    """
     @property
     def value(self):
-        """Get the property value"""
         raise NotImplementedError
 
     @value.setter
     def value(self, v):
-        """Defines the property value"""
         raise NotImplementedError
 
 
 class Dirichlet(PhysicalBase):
-    """Defines a boundary condition of Dirichlet type"""
+    """Defines a boundary condition of Dirichlet type.
+
+    """
     def __init__(self, v):
         super(PhysicalBase, self).__init__()
 
@@ -52,18 +56,28 @@ class Wall(PhysicalBase):
 
 
 class Symmetric(PhysicalBase):
-    """Defines boundary condition of symmetrical nature"""
+    """Defines the boundary condition of symmetrical nature.
+
+    """
     def __init__(self):
         super(PhysicalBase, self).__init__()
 
-    # TODO: No futuro isso deve significar fluxo nulo!
     @PhysicalBase.value.getter
     def value(self):
         return Symmetric
 
 
-class Permeability(PhysicalBase):
-    """Defines permeability initial condition"""
+class InitialCondition(PhysicalBase):
+    """Defines the interface for initial conditions.
+
+    """
+    pass
+
+
+class Permeability(InitialCondition):
+    """Defines the permeability initial condition.
+
+    """
     def __init__(self, v):
         super(PhysicalBase, self).__init__()
 
@@ -81,8 +95,3 @@ class Permeability(PhysicalBase):
         else:
             raise ValueError("Permeability conditions must be second order "
                              "tensors using numpy arrays.")
-
-
-class InitialCondition(PhysicalBase):
-    """Defines interface for initial conditions"""
-    pass

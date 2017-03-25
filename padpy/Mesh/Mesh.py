@@ -13,9 +13,13 @@ class Mesh(object):
     """Defines mesh behavior using MOAB as library.
     A Mesh should only be associated with one problem at a time.
 
-    Disclaimer: This class is tightly coupled with the entire system. If you
+    Note
+    ----
+    This class is tightly coupled with the entire system. If you
     wish to extend it, you may need to replicate behavior from the MOAB
-    library."""
+    library.
+
+    """
     def __init__(self, mb, physical):
         self.physical_manager = physical
         self.moab = mb
@@ -47,7 +51,9 @@ class Mesh(object):
             self.tag2entset[tag_id[0]] = {e for e in elems}
 
     def _generate_dense_elements(self):
-        """Generates all aentities"""
+        """Generates all aentities
+
+        """
         all_verts = self.moab.get_entities_by_dimension(self.root_set, 0)
         self.mesh_topo_util.construct_aentities(all_verts)
 
@@ -65,19 +71,44 @@ class Mesh(object):
                 idx += 1
 
     def create_double_solution_tag(self, tag_name):
-        """Creates a solution tag of type double with the name tag_name."""
+        """Creates a solution tag of type double with the name `tag_name`.
+
+        Parameters
+        ----------
+        tag_name: string
+            Name of the tag.
+
+        """
         self.tags[tag_name] = self.moab.tag_get_handle(
             tag_name, 1, types.MB_TYPE_DOUBLE, True)
 
     def set_solution(self, tag_name, dimension, vector):
-        """Sets the solution of name tag_name, on elements of the given
-        dimension, with the values from the given vector."""
+        """Sets the solution of name `tag_name`, on elements of the given
+        `dimension`, with the values from the given `vector`.
+
+        Parameters
+        ----------
+        tag_name: string
+            Name of the tag.
+        dimension: unsigned int
+            Dimension of the target elements which will hold the solution.
+        vector: PyTrilinos.Epetra.Vector vector or numpy.ndarray
+            Array containing the solution.
+
+        """
         ents = self.moab.get_entities_by_dimension(self.root_set, dimension)
         self.moab.tag_set_data(self.tags[tag_name], ents, np.asarray(vector))
 
     def run_kernel(self, kernel):
-        """Excecutes a kernel in the mesh. Its dependencies are run
-        recursively."""
+        """Excecutes a `kernel` in the mesh. Its dependencies are run
+        recursively.
+
+        Parameters
+        ----------
+        kernel: padpy.Kernel.Kernel.Kernel
+            Kernel to be run.
+
+        """
         check_kernel(kernel)
 
         elems = self.moab.get_entities_by_dimension(

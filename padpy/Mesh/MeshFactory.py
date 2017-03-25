@@ -5,10 +5,21 @@ from Mesh import Mesh
 
 
 class MeshFactory(object):
-    """Mesh factory that uses MOAB as backend."""
+    """Mesh factory for meshes that use MOAB as backend.
+
+    """
 
     def load_mesh(self, filename, physical):
-        """Loads a mesh file using MOAB."""
+        """Loads a mesh file using MOAB.
+
+        Parameters
+        ----------
+        filename: string
+            Path to the file to be open.
+        physical: padpy.Physical.PhysicalMap.PhysicalMap
+            PhysicalMap to be associated with the mesh.
+
+        """
         print "Loading mesh file..."
         mb = core.Core()
         mb.load_file(filename)
@@ -19,5 +30,5 @@ class MeshFactory(object):
         the_mesh._generate_dense_elements()
         the_mesh._create_matrix_maps()
         the_mesh._create_id_maps()
-        
+
         return the_mesh
