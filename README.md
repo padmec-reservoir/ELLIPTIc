@@ -2,7 +2,7 @@
 ![Coverage](https://cdn.rawgit.com/gpkc/padpy/master/cov.svg)
 
 <p align="center">
-  <img src="https://cdn.rawgit.com/gpkc/padpy/master/pic.png" width="300"/>
+  <img src="https://cdn.rawgit.com/gpkc/padpy/master/pic.png" width="600"/>
 </p>
 
 # Dependencies
