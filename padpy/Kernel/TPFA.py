@@ -29,7 +29,7 @@ class TPFARunner(RunnerBase):
     """Runner class for the TPFA method.
 
     """
-    def run(self):
+    def _run(self):
         self.problem.run_pipeline()
         self.problem.fill_matrices()
 
@@ -83,7 +83,7 @@ class FillDiag(KernelBase):
         value = 0
 
         adj_faces_physical = cls.get_adj_physical(
-            m, elem, 2, 2, phys_type=Dirichlet)
+            m, elem, cls.elem_dim-1, cls.elem_dim-1, phys_type=Dirichlet)
         # If the current element has a boundary condition, sets value to 1
         if adj_faces_physical:
             value = 1
@@ -112,7 +112,7 @@ class FillBoundary(KernelBase):
         value = 0
 
         adj_faces_physical = cls.get_adj_physical(
-            m, elem, 2, 2, phys_type=Dirichlet)
+            m, elem, cls.elem_dim-1, cls.elem_dim-1, phys_type=Dirichlet)
         if adj_faces_physical:
             value = adj_faces_physical.value
 
@@ -149,10 +149,12 @@ class TPFAKernel(KernelBase):
             # Check if those volumes do not have any faces with boundary
             # conditions of type Dirichlet
             adj0_faces_physical = cls.get_adj_physical(
-                m, adj[0], 2, 2, phys_type=Dirichlet)
+                m, adj[0], cls.target_dim-1,
+                cls.target_dim-1, phys_type=Dirichlet)
 
             adj1_faces_physical = cls.get_adj_physical(
-                m, adj[1], 2, 2, phys_type=Dirichlet)
+                m, adj[1], cls.target_dim-1,
+                cls.target_dim-1, phys_type=Dirichlet)
 
             if not adj0_faces_physical:
                 results['set'].append((adj[0], [adj[1]], [-K_equiv]))

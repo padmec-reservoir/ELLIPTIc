@@ -41,10 +41,11 @@ class Mesh(object):
 
         print "Loading physical tags..."
         for tag in physical_sets:
-            tag_id = self.moab.tag_get_data(self.physical_tag, np.array([tag]))
+            tag_id = self.moab.tag_get_data(
+                self.physical_tag, np.array([tag]), flat=True)
 
             if tag_id[0] not in self.physical_manager:
-                raise ValueError("Tag {0} not defined in the physical"
+                raise ValueError("Tag {0} not defined in the physical "
                                  "properties structure".format(tag_id))
 
             elems = self.moab.get_entities_by_handle(tag, True)
@@ -121,7 +122,7 @@ class Mesh(object):
         kernel.create_array(self.matrix_manager)
         kernel.set_dependency_vectors(self)
 
-        print "Running kernel", kernel.__name__
+        print "Running kernel", kernel.kernel.__name__
         t0 = time.time()
         count = 0
         percent = 0
@@ -140,5 +141,5 @@ class Mesh(object):
 
             kernel.run(self, elem, adj)
 
-        print "took", time.time() - t0, "seconds... Ran over ",\
+        print "\ntook", time.time() - t0, "seconds... Ran over",\
             len(elems), "elems\n"

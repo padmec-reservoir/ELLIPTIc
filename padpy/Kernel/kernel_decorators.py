@@ -20,9 +20,9 @@ class KernelDecorator(object):
         self.name = name
         self.share = share
 
-    def _set_kernel_name(self, kernel_class):
+    def _set_kernel_name(self, original_kernel_class, kernel_class):
         if not self.name:
-            kernel_class.name = kernel_class.__name__
+            kernel_class.name = original_kernel_class.__name__
         else:
             kernel_class.name = self.name
 
@@ -57,14 +57,18 @@ class KernelDecorator(object):
         kernel_class.set_dependency_vectors = set_dependency_vectors
 
     def __call__(self, kernel_class):
-        self._set_kernel_name(kernel_class)
-        self._replace_run(kernel_class)
-        self._define_create_array(kernel_class)
-        self._define_fill_array(kernel_class)
-        self._define_get_array(kernel_class)
-        self._set_dependency_vectors_attributes(kernel_class)
+        class KernelClass(kernel_class):
+            kernel = kernel_class
+            pass
 
-        return kernel_class
+        self._set_kernel_name(kernel_class, KernelClass)
+        self._replace_run(KernelClass)
+        self._define_create_array(KernelClass)
+        self._define_fill_array(KernelClass)
+        self._define_get_array(KernelClass)
+        self._set_dependency_vectors_attributes(KernelClass)
+
+        return KernelClass
 
 
 class fill_vector(KernelDecorator):
