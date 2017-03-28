@@ -82,11 +82,14 @@ class FillDiag(KernelBase):
         # Default value
         value = 0
 
-        adj_faces_physical = cls.get_adj_physical(
-            m, elem, cls.elem_dim-1, cls.elem_dim-1, phys_type=Dirichlet)
-        # If the current element has a boundary condition, sets value to 1
-        if adj_faces_physical:
-            value = 1
+        for dim in range(0, cls.elem_dim):
+            adj_faces_physical = cls.get_adj_physical(
+                m, elem, dim, dim, phys_type=Dirichlet)
+            # If the current element has a boundary condition,
+            # sets value to 1
+            if adj_faces_physical:
+                    value = 1
+                    break
 
         results = {
             'set': [(elem, [elem], [value])],
@@ -111,10 +114,14 @@ class FillBoundary(KernelBase):
     def run(cls, m, elem, adj):
         value = 0
 
-        adj_faces_physical = cls.get_adj_physical(
-            m, elem, cls.elem_dim-1, cls.elem_dim-1, phys_type=Dirichlet)
-        if adj_faces_physical:
-            value = adj_faces_physical.value
+        for dim in range(0, cls.elem_dim):
+            adj_faces_physical = cls.get_adj_physical(
+                m, elem, dim, dim, phys_type=Dirichlet)
+            # If the current element has a boundary condition,
+            # sets value to 1
+            if adj_faces_physical:
+                    value = adj_faces_physical.value
+                    break
 
         return [(elem, value)]
 
