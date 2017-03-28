@@ -25,6 +25,7 @@ class LinearProblem(ProblemBase):
 
         self.linearProblem = Epetra.LinearProblem(self.A, self.x, self.b)
         self.solver = AztecOO.AztecOO(self.linearProblem)
+        self.solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_last)
 
     def solve(self):
         self.solver.Iterate(10000, 1e-9)
