@@ -155,13 +155,19 @@ class TPFAKernel(KernelBase):
         if len(adj) == 2:
             # Check if those volumes do not have any faces with boundary
             # conditions of type Dirichlet
-            adj0_faces_physical = cls.get_adj_physical(
-                m, adj[0], cls.target_dim-1,
-                cls.target_dim-1, phys_type=Dirichlet)
+            for dim in range(0, cls.elem_dim):
+                adj0_faces_physical = cls.get_adj_physical(
+                    m, adj[0], dim, dim, phys_type=Dirichlet)
+                # Uses the first Dirichlet condition found
+                if adj0_faces_physical:
+                        break
 
-            adj1_faces_physical = cls.get_adj_physical(
-                m, adj[1], cls.target_dim-1,
-                cls.target_dim-1, phys_type=Dirichlet)
+            for dim in range(0, cls.elem_dim):
+                adj1_faces_physical = cls.get_adj_physical(
+                    m, adj[1], dim, dim, phys_type=Dirichlet)
+                # Uses the first Dirichlet condition found
+                if adj1_faces_physical:
+                        break
 
             if not adj0_faces_physical:
                 results['set'].append((adj[0], [adj[1]], [-K_equiv]))
