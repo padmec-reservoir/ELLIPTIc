@@ -10,6 +10,8 @@ Welcome to padpy's documentation!
    :maxdepth: 4
    :caption: Contents:
 
+   tutorials
+
    examples
 
    packages
