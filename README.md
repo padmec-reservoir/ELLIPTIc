@@ -1,4 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/padpy/badge/?version=latest)](http://padpy.readthedocs.io/en/latest/?badge=latest)
+[![Code Health](https://landscape.io/github/gpkc/padpy/master/landscape.svg?style=flat)](https://landscape.io/github/gpkc/padpy/master)
 ![Coverage](https://cdn.rawgit.com/gpkc/padpy/master/cov.svg)
 
 <p align="center">
@@ -10,7 +11,7 @@
 * [PyTrilinos](https://github.com/trilinos/Trilinos)
 
 # Documentation
-Please refer to the [documentation page](https://bitbucket.org/ned/coveragepy).
+Please refer to the [documentation page](http://padpy.readthedocs.io/en/latest/).
 
 # Testing
 Run `python setup.py test`.
