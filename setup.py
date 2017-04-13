@@ -1,10 +1,24 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
+
+
+USE_CYTHON = False
+
+extensions = []
+
+if USE_CYTHON:
+    extensions = [
+        Extension("*", ["elliptic/Kernel/*.py"]),
+        Extension("*", ["elliptic/Mesh/*.py"])
+    ]
+    from Cython.Build import cythonize
+    extensions = cythonize(extensions)
 
 setup(
-    name="padpy",
-    version='0.0.1',
+    name="ELLIPTIc",
+    version='0.1.0',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov'],
     packages=find_packages(),
-    license='LICENSE'
+    license='LICENSE',
+    ext_modules=extensions
 )

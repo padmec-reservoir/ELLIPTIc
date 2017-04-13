@@ -1,8 +1,9 @@
 [![Documentation Status](https://readthedocs.org/projects/padpy/badge/?version=latest)](http://padpy.readthedocs.io/en/latest/?badge=latest)
-![Coverage](https://cdn.rawgit.com/gpkc/padpy/master/cov.svg)
+[![Code Health](https://landscape.io/github/gpkc/padpy/master/landscape.svg?style=flat)](https://landscape.io/github/gpkc/padpy/master)
+![Coverage](https://cdn.rawgit.com/gpkc/elliptic/master/cov.svg)
 
 <p align="center">
-  <img src="https://cdn.rawgit.com/gpkc/padpy/master/pic.png" width="600"/>
+  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="600"/>
 </p>
 
 # Dependencies

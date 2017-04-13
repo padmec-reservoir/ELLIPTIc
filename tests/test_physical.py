@@ -1,8 +1,8 @@
 import pytest
 import numpy
 
-from padpy.Physical import PhysicalMap
-from padpy import Physical
+from elliptic.Physical import PhysicalMap
+from elliptic import Physical
 
 
 class TestPhysical:

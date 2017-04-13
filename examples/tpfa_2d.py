@@ -1,9 +1,9 @@
-from padpy.Kernel import TPFA
-from padpy.Mesh.MeshFactory import MeshFactory
-from padpy.Physical.PhysicalMap import PhysicalMap
-from padpy.Physical import Physical
-from padpy.Problem import Pipeline, LinearProblem
-from padpy.Kernel.kernel_decorators import fill_matrix, fill_vector
+from elliptic.Kernel import TPFA
+from elliptic.Mesh.MeshFactory import MeshFactory
+from elliptic.Physical.PhysicalMap import PhysicalMap
+from elliptic.Physical import Physical
+from elliptic.Problem import Pipeline, LinearProblem
+from elliptic.Kernel.kernel_decorators import fill_matrix, fill_vector
 
 
 @fill_vector()

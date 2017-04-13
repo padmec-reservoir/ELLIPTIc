@@ -4,8 +4,8 @@ Packages
 .. toctree::
   :caption: Packages:
 
-  padpy.Kernel
-  padpy.Mesh
-  padpy.Physical
-  padpy.Problem
-  padpy.Solver
+  elliptic.Kernel
+  elliptic.Mesh
+  elliptic.Physical
+  elliptic.Problem
+  elliptic.Solver

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# padpy documentation build configuration file, created by
+# ELLIPTIc documentation build configuration file, created by
 # sphinx-quickstart on Sat Mar 25 15:56:12 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -62,7 +62,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'padpy'
+project = u'elliptic'
 copyright = u'2017, Universidade Federal de Pernambuco'
 author = u'Guilherme Caminha'
 
@@ -116,7 +116,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'padpydoc'
+htmlhelp_basename = 'ellipticdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -143,7 +143,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'padpy.tex', u'padpy Documentation',
+    (master_doc, 'elliptic.tex', u'ELLIPTIc Documentation',
      u'Guilherme Caminha', 'manual'),
 ]
 
@@ -153,7 +153,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'padpy', u'padpy Documentation',
+    (master_doc, 'elliptic', u'ELLIPTIc Documentation',
      [author], 1)
 ]
 
@@ -164,7 +164,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'padpy', u'padpy Documentation',
-     author, 'padpy', 'One line description of project.',
+    (master_doc, 'elliptic', u'ELLIPTIc Documentation',
+     author, 'elliptic', 'One line description of project.',
      'Miscellaneous'),
 ]

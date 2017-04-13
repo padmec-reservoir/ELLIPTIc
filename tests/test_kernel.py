@@ -1,12 +1,12 @@
 """Basically lots of integration tests with some unit tests."""
 import pytest
 
-from padpy.Kernel import (KernelBase, TPFA, check_kernel, fill_vector,
-                          fill_matrix)
-from padpy.Mesh.MeshFactory import MeshFactory
-from padpy.Physical.PhysicalMap import PhysicalMap
-from padpy.Physical import Physical
-from padpy.Solver import MatrixManager
+from elliptic.Kernel import (KernelBase, TPFA, check_kernel, fill_vector,
+                             fill_matrix)
+from elliptic.Mesh.MeshFactory import MeshFactory
+from elliptic.Physical.PhysicalMap import PhysicalMap
+from elliptic.Physical import Physical
+from elliptic.Solver import MatrixManager
 
 
 class TestKernel:

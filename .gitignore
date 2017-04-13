@@ -4,7 +4,7 @@ build/
 .cache/
 .eggs/
 dist/
-padpy.egg-info/
+ELLIPTIc.egg-info/
 
 .coverage
 *.pyc
