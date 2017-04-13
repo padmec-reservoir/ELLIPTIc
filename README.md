@@ -10,6 +10,13 @@
   <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="600"/>
 </p>
 
+# ELLIPTIc
+ELLIPTIc, the ExtensibLe LIbrary for Physical simulaTIons, is a library / framework for prototyping, testing and running large scale physical simulations.
+
+It is built on top of Python, and uses the [PyMoab](https://bitbucket.org/fathomteam/moab/overview) and [PyTrilinos](https://github.com/trilinos/Trilinos) libraries to handle the internal mesh data structure, and matrix solving, respectively.
+
+Currently, ELLIPTIc only runs on Python 2.7, since PyTrilinos only supports this version. Also, parallelism through MPI4Py is stale for now, since the PyMoab doesn't yet support it.
+
 # Dependencies
 * [PyMoab](https://bitbucket.org/fathomteam/moab/overview)
 * [PyTrilinos](https://github.com/trilinos/Trilinos)
