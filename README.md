@@ -11,7 +11,7 @@
 * [PyTrilinos](https://github.com/trilinos/Trilinos)
 
 # Documentation
-Please refer to the [documentation page](https://bitbucket.org/ned/coveragepy).
+Please refer to the [documentation page](http://padpy.readthedocs.io/en/latest/).
 
 # Testing
 Run `python setup.py test`.
