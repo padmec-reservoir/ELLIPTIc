@@ -3,6 +3,10 @@
 ![Coverage](https://cdn.rawgit.com/gpkc/elliptic/master/cov.svg)
 
 <p align="center">
+  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/logo.png"/>
+</p>
+
+<p align="center">
   <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="600"/>
 </p>
 
