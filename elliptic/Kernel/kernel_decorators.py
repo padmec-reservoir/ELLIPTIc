@@ -30,8 +30,8 @@ class KernelDecorator(object):
         orig_run = kernel_class.run
 
         @classmethod
-        def new_run(cls, mesh, elem, adj):
-            vals = orig_run(mesh, elem, adj)
+        def new_run(cls, mesh, elem):
+            vals = orig_run(mesh, elem)
             cls.fill_array(
                 vals, mesh.matrix_manager, mesh.id_map)
 

@@ -129,7 +129,7 @@ class Mesh(object):
 
         kernel.kernel.check_kernel()
 
-        elems = self.get_entities_by_meshset('ROOT', kernel.elem_dim)
+        elems = kernel.get_elements(self)
 
         # TODO: Check for dependencies already run, and circular dependencies
         for dep in kernel.depends:
@@ -149,13 +149,7 @@ class Mesh(object):
                 print '\r', percent, "%",
                 count = 0
 
-            adj = self.mesh_topo_util.get_bridge_adjacencies(
-                np.asarray([elem]),
-                kernel.bridge_dim,
-                kernel.target_dim,
-                kernel.depth)
-
-            kernel.run(self, elem, adj)
+            kernel.run(self, elem)
 
         print "\ntook", time.time() - t0, "seconds... Ran over",\
             len(elems), "elems\n"

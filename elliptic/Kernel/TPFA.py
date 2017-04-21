@@ -1,6 +1,6 @@
 import numpy as np
 
-from KernelBase import KernelBase
+from EntityKernel import DimensionEntityKernel
 from kernel_decorators import fill_matrix, fill_vector
 from elliptic.Physical import PhysicalBase, Dirichlet
 from elliptic.Problem import RunnerBase
@@ -38,20 +38,22 @@ class TPFARunner(RunnerBase):
 
 
 @fill_vector()
-class EquivPerm(KernelBase):
+class EquivPerm(DimensionEntityKernel):
     """Kernel which calculates the equivalent permeability in the faces.
 
     """
-    elem_dim = 2
+    entity_dim = 2
     bridge_dim = 2
     target_dim = 3
     depth = 1
     solution_dim = 2
 
     @classmethod
-    def run(cls, m, edge, adj):
+    def run(cls, m, elem):
+        adj = cls.get_adj(m, elem, cls.bridge_dim, cls.target_dim, cls.depth)
+
         if len(adj) > 1:
-            edge_center = cls.get_center(m, edge)
+            edge_center = cls.get_center(m, elem)
             el1_center = cls.get_center(m, adj[0])
             el2_center = cls.get_center(m, adj[1])
             dx1 = np.linalg.norm(el1_center - edge_center)
@@ -61,28 +63,28 @@ class EquivPerm(KernelBase):
 
             K_equiv = (2*K1*K2) / (K1*dx2 + K2*dx1)
 
-            return [(edge, K_equiv)]
+            return [(elem, K_equiv)]
         else:
-            return [(edge, 0)]
+            return [(elem, 0)]
 
 
 @fill_matrix(name="T", share=True)
-class FillDiag(KernelBase):
+class FillDiag(DimensionEntityKernel):
     """Fills the matrix diagonals.
 
     """
-    elem_dim = 3
+    entity_dim = 3
     bridge_dim = 3
     target_dim = 3
     depth = 1
     solution_dim = 3
 
     @classmethod
-    def run(cls, m, elem, adj):
+    def run(cls, m, elem):
         # Default value
         value = 0
 
-        for dim in range(0, cls.elem_dim):
+        for dim in range(0, cls.entity_dim):
             adj_faces_physical = cls.get_adj_physical(
                 m, elem, dim, dim, phys_type=Dirichlet)
             # If the current element has a boundary condition,
@@ -100,21 +102,21 @@ class FillDiag(KernelBase):
 
 
 @fill_vector(name="b")
-class FillBoundary(KernelBase):
+class FillBoundary(DimensionEntityKernel):
     """Fills the vector 'b' with boundary conditions.
 
     """
-    elem_dim = 3
+    entity_dim = 3
     bridge_dim = 3
     target_dim = 3
     depth = 1
     solution_dim = 3
 
     @classmethod
-    def run(cls, m, elem, adj):
+    def run(cls, m, elem):
         value = 0
 
-        for dim in range(0, cls.elem_dim):
+        for dim in range(0, cls.entity_dim):
             adj_faces_physical = cls.get_adj_physical(
                 m, elem, dim, dim, phys_type=Dirichlet)
             # If the current element has a boundary condition,
@@ -127,12 +129,12 @@ class FillBoundary(KernelBase):
 
 
 @fill_matrix(name="T", share=True)
-class TPFAKernel(KernelBase):
+class TPFAKernel(DimensionEntityKernel):
     """Example kernel for the TPFA method. This kernel iterates on the mesh
     faces and fills the transmissibility matrix accordingly.
 
     """
-    elem_dim = 2
+    entity_dim = 2
     bridge_dim = 2
     target_dim = 3
     depth = 1
@@ -141,7 +143,7 @@ class TPFAKernel(KernelBase):
     depends = [EquivPerm, FillDiag, FillBoundary]
 
     @classmethod
-    def run(cls, m, elem, adj):
+    def run(cls, m, elem):
         results = {
             'set': [],
             'sum': []
@@ -150,19 +152,21 @@ class TPFAKernel(KernelBase):
         # Gets the equivalent permeability for the face
         K_equiv = cls.EquivPerm_array[elem]
 
+        adj = cls.get_adj(m, elem, cls.bridge_dim, cls.target_dim, cls.depth)
         adj = list(adj)
+
         # If the face has two adjacend volumes
         if len(adj) == 2:
             # Check if those volumes do not have any faces with boundary
             # conditions of type Dirichlet
-            for dim in range(0, cls.elem_dim):
+            for dim in range(0, cls.entity_dim):
                 adj0_faces_physical = cls.get_adj_physical(
                     m, adj[0], dim, dim, phys_type=Dirichlet)
                 # Uses the first Dirichlet condition found
                 if adj0_faces_physical:
                         break
 
-            for dim in range(0, cls.elem_dim):
+            for dim in range(0, cls.entity_dim):
                 adj1_faces_physical = cls.get_adj_physical(
                     m, adj[1], dim, dim, phys_type=Dirichlet)
                 # Uses the first Dirichlet condition found

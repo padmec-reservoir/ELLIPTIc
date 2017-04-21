@@ -2,28 +2,6 @@ import numpy as np
 from elliptic.Physical import PhysicalBase
 
 
-def check_kernel(kernel_class):
-    if kernel_class.elem_dim == -1:
-        raise ValueError('Value of elem_dim not initialized in {0}'.format(
-            kernel_class.__name__))
-
-    if kernel_class.bridge_dim == -1:
-        raise ValueError('Value of bridge_dim not initialized in {0}'.format(
-            kernel_class.__name__))
-
-    if kernel_class.target_dim == -1:
-        raise ValueError('Value of target_dim not initialized in {0}'.format(
-            kernel_class.__name__))
-
-    if kernel_class.depth == -1:
-        raise ValueError('Value of depth not initialized in {0}'.format(
-            kernel_class.__name__))
-
-    if kernel_class.solution_dim == -1:
-        raise ValueError('Value of solution_dim not initialized in {0}'.format(
-            kernel_class.__name__))
-
-
 class KernelBase(object):
     """Class which defines the Kernel interface.
 
@@ -44,7 +22,7 @@ class KernelBase(object):
         pass
 
     @classmethod
-    def get_elements(cls):
+    def get_elements(cls, m):
         """Gets the elements that this Kernel iterates on.
 
         """
@@ -171,7 +149,7 @@ class KernelBase(object):
             np.array([elem], dtype='uint64'))
 
     @classmethod
-    def run(cls, m, elem, adj):
+    def run(cls, m, elem):
         """Runs the kernel over the elements elems. The kernel return value
         depends on its type (defined by a kernel decorator), and should always
         be associated with the filling of a matrix or vector.

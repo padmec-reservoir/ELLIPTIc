@@ -14,12 +14,12 @@ class TestKernelBase:
     def test_run_raises_NotImplementedError(self):
         k = KernelBase
         with pytest.raises(NotImplementedError):
-            k.run(None, None, None)
+            k.run(None, None)
 
     def test_get_elements_raises_NotImplementedError(self):
         k = KernelBase
         with pytest.raises(NotImplementedError):
-            k.get_elements()
+            k.get_elements(None)
 
     def test_test_kernel(self):
         k = KernelBase
