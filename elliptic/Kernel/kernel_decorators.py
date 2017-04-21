@@ -59,7 +59,6 @@ class KernelDecorator(object):
     def __call__(self, kernel_class):
         class KernelClass(kernel_class):
             kernel = kernel_class
-            pass
 
         self._set_kernel_name(kernel_class, KernelClass)
         self._replace_run(KernelClass)

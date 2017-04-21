@@ -6,7 +6,6 @@ from pymoab import topo_util
 import numpy as np
 
 from elliptic.Solver import MatrixManager
-from elliptic.Kernel import check_kernel
 
 
 class Mesh(object):
@@ -26,7 +25,7 @@ class Mesh(object):
         self.tag2entset = {}
         self.id_map = {}
         self.mesh_topo_util = topo_util.MeshTopoUtil(mb)
-        self.root_set = mb.get_root_set()
+        self.meshsets = {'ROOT': mb.get_root_set()}
         self.tags = {}
 
         self.matrix_manager = MatrixManager()
@@ -55,21 +54,38 @@ class Mesh(object):
         """Generates all aentities
 
         """
-        all_verts = self.moab.get_entities_by_dimension(self.root_set, 0)
+        all_verts = self.get_entities_by_meshset('ROOT', 0)
         self.mesh_topo_util.construct_aentities(all_verts)
 
     def _create_matrix_maps(self):
         for dim in range(4):
-            all_ents = self.moab.get_entities_by_dimension(self.root_set, dim)
+            all_ents = self.get_entities_by_meshset('ROOT', dim)
             self.matrix_manager.create_map(dim, len(all_ents))
 
     def _create_id_maps(self):
         for dim in range(4):
-            all_ents = self.moab.get_entities_by_dimension(self.root_set, dim)
+            all_ents = self.get_entities_by_meshset('ROOT', dim)
             idx = 0
             for ent in all_ents:
                 self.id_map[ent] = idx
                 idx += 1
+
+    def get_entities_by_meshset(self, set_name, dim):
+        """Gets all the entities form a meshset.
+
+        Parameters
+        ----------
+        set_name: string
+            Name of the set.
+        dim: unsigned int
+            Dimension of the entities.
+
+        """
+        # TODO: Test me
+        ents = self.moab.get_entities_by_dimension(
+            self.meshsets[set_name], dim)
+
+        return ents
 
     def create_double_solution_tag(self, tag_name):
         """Creates a solution tag of type double with the name `tag_name`.
@@ -97,7 +113,7 @@ class Mesh(object):
             Array containing the solution.
 
         """
-        ents = self.moab.get_entities_by_dimension(self.root_set, dimension)
+        ents = self.self.get_entities_by_meshset('ROOT', dimension)
         self.moab.tag_set_data(self.tags[tag_name], ents, np.asarray(vector))
 
     def run_kernel(self, kernel):
@@ -110,10 +126,10 @@ class Mesh(object):
             Kernel to be run.
 
         """
-        check_kernel(kernel)
 
-        elems = self.moab.get_entities_by_dimension(
-            self.root_set, kernel.elem_dim)
+        kernel.kernel.check_kernel()
+
+        elems = self.get_entities_by_meshset('ROOT', kernel.elem_dim)
 
         # TODO: Check for dependencies already run, and circular dependencies
         for dep in kernel.depends:

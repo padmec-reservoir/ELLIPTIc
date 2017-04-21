@@ -29,28 +29,26 @@ class KernelBase(object):
 
     Attributes
     ----------
-    elem_dim: unsigned int
-        Dimension of the elements which the kernel operates at.
-    bridge_dim: unsigned int
-        Intermediary dimension to obtain the adjacencies.
-    target_dim: unsigned int
-        Dimension of the adjacent elements.
-    depth: unsigned int
-        Adjacency depth.
-    solution_dim: unsigned int
-        Dimension of the elements that will hold the solution
-        calculated in this kernel.
     depends: list of kernels
         List of other kernels that are supposed to run before this kernel.
 
     """
-    elem_dim = -1
-    bridge_dim = -1
-    target_dim = -1
-    depth = -1
-    solution_dim = -1
 
     depends = []
+
+    @classmethod
+    def check_kernel(cls):
+        """Checks if the kernel have all attributes set to a sane value.
+
+        """
+        pass
+
+    @classmethod
+    def get_elements(cls):
+        """Gets the elements that this Kernel iterates on.
+
+        """
+        raise NotImplementedError
 
     @classmethod
     def get_physical(cls, m, elem):

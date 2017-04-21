@@ -1,6 +1,6 @@
 import numpy as np
 
-from Kernel import KernelBase
+from KernelBase import KernelBase
 from kernel_decorators import fill_matrix, fill_vector
 from elliptic.Physical import PhysicalBase, Dirichlet
 from elliptic.Problem import RunnerBase

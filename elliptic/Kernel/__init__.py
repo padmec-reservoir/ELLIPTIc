@@ -1,6 +1,7 @@
-__all__ = ['KernelBase', 'TPFA', 'check_kernel', 'fill_vector', 'fill_matrix',
-           'KernelDecorator']
+__all__ = ['KernelBase', 'TPFA', 'fill_vector', 'fill_matrix',
+           'KernelDecorator', 'DimensionEntityKernel']
 
-from Kernel import KernelBase, check_kernel
+from KernelBase import KernelBase
+from EntityKernel import DimensionEntityKernel
 from . import TPFA
 from kernel_decorators import fill_vector, fill_matrix, KernelDecorator
