@@ -1,0 +1,18 @@
+sudo: required
+language: python
+
+python:
+  - "2.7"
+
+services:
+  - docker
+
+before_install:
+- docker pull gpkc/elliptic .
+- docker run elliptic /bin/bash -c "python setup.py test"
+
+script:
+- python setup.py test
+
+after_success:
+- coveralls
