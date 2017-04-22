@@ -1,7 +1,7 @@
 import numpy as np
 
-from EntityKernel import DimensionEntityKernel
-from kernel_decorators import fill_matrix, fill_vector
+from EntityKernelMixins import DimensionEntityKernelMixin
+from ArrayKernelMixins import FillVectorKernelMixin, FillMatrixKernelMixin
 from elliptic.Physical import PhysicalBase, Dirichlet
 from elliptic.Problem import RunnerBase
 
@@ -37,8 +37,7 @@ class TPFARunner(RunnerBase):
         self.problem.solve()
 
 
-@fill_vector()
-class EquivPerm(DimensionEntityKernel):
+class EquivPerm(DimensionEntityKernelMixin, FillVectorKernelMixin):
     """Kernel which calculates the equivalent permeability in the faces.
 
     """
@@ -63,20 +62,19 @@ class EquivPerm(DimensionEntityKernel):
 
             K_equiv = (2*K1*K2) / (K1*dx2 + K2*dx1)
 
-            return [(elem, K_equiv)]
+            cls.fill_array(m, [(elem, K_equiv)])
         else:
-            return [(elem, 0)]
+            cls.fill_array(m, [(elem, 0)])
 
 
-@fill_matrix(name="T", share=True)
-class FillDiag(DimensionEntityKernel):
+class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin):
     """Fills the matrix diagonals.
 
     """
+    array_name = "T"
+    share = True
+
     entity_dim = 3
-    bridge_dim = 3
-    target_dim = 3
-    depth = 1
     solution_dim = 3
 
     @classmethod
@@ -98,14 +96,14 @@ class FillDiag(DimensionEntityKernel):
             'sum': []
         }
 
-        return results
+        cls.fill_array(m, results)
 
 
-@fill_vector(name="b")
-class FillBoundary(DimensionEntityKernel):
+class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin):
     """Fills the vector 'b' with boundary conditions.
 
     """
+    name = "b"
     entity_dim = 3
     bridge_dim = 3
     target_dim = 3
@@ -125,15 +123,17 @@ class FillBoundary(DimensionEntityKernel):
                     value = adj_faces_physical.value
                     break
 
-        return [(elem, value)]
+        cls.fill_array(m, [(elem, value)])
 
 
-@fill_matrix(name="T", share=True)
-class TPFAKernel(DimensionEntityKernel):
+class TPFAKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin):
     """Example kernel for the TPFA method. This kernel iterates on the mesh
     faces and fills the transmissibility matrix accordingly.
 
     """
+    array_name = "T"
+    share = True
+
     entity_dim = 2
     bridge_dim = 2
     target_dim = 3
@@ -181,4 +181,4 @@ class TPFAKernel(DimensionEntityKernel):
                 results['set'].append((adj[1], [adj[0]], [-K_equiv]))
                 results['sum'].append((adj[1], [adj[1]], [K_equiv]))
 
-        return results
+        cls.fill_array(m, results)

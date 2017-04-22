@@ -15,6 +15,13 @@ class KernelBase(object):
     depends = []
 
     @classmethod
+    def init_kernel(cls, m):
+        """Initializes a kernel with a mesh.
+
+        """
+        pass
+
+    @classmethod
     def check_kernel(cls):
         """Checks if the kernel have all attributes set to a sane value.
 

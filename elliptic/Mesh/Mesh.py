@@ -127,7 +127,8 @@ class Mesh(object):
 
         """
 
-        kernel.kernel.check_kernel()
+        kernel.check_kernel()
+        kernel.init_kernel(self)
 
         elems = kernel.get_elements(self)
 
@@ -138,7 +139,7 @@ class Mesh(object):
         kernel.create_array(self.matrix_manager)
         kernel.set_dependency_vectors(self)
 
-        print "Running kernel", kernel.kernel.__name__
+        print "Running kernel", kernel.__name__
         t0 = time.time()
         count = 0
         percent = 0

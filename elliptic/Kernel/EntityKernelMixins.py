@@ -1,7 +1,7 @@
 from KernelBase import KernelBase
 
 
-class DimensionEntityKernel(KernelBase):
+class DimensionEntityKernelMixin(KernelBase):
     """Kernel that iterates over all entities of a given dimension.
 
     """
@@ -14,7 +14,7 @@ class DimensionEntityKernel(KernelBase):
                 'Value of entity_dim not initialized in {0}'.format(
                     cls.__name__))
 
-        super(DimensionEntityKernel, cls).check_kernel()
+        super(DimensionEntityKernelMixin, cls).check_kernel()
 
     @classmethod
     def get_elements(cls, m):
@@ -22,7 +22,7 @@ class DimensionEntityKernel(KernelBase):
         return ents
 
 
-class MeshSetEntityKernel(KernelBase):
+class MeshSetEntityKernelMixin(KernelBase):
     """Kernel that iterates over all entities of a meshset.
 
     """
