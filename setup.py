@@ -15,7 +15,7 @@ if USE_CYTHON:
 
 setup(
     name="ELLIPTIc",
-    version='0.1.0',
+    version='0.2.0',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov'],
     packages=find_packages(),
