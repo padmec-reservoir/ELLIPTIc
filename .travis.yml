@@ -10,10 +10,10 @@ services:
 before_install:
 - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker build -t elliptic .
-- docker run elliptic /bin/bash -c "python setup.py test"
 
 script:
-- python setup.py test
+- docker run elliptic /bin/bash -c "python setup.py test"
+- docker cp `docker ps -l -q`:/home/scientific/ELLIPTIc/.coverage .
 
 after_success:
 - coveralls
