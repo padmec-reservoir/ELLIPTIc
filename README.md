@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/padpy/badge/?version=latest)](http://padpy.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/elliptic/badge/?version=latest)](http://elliptic.readthedocs.io/en/latest/?badge=latest)
 [![Code Health](https://landscape.io/github/gpkc/padpy/master/landscape.svg?style=flat)](https://landscape.io/github/gpkc/padpy/master)
 ![Coverage](https://cdn.rawgit.com/gpkc/elliptic/master/cov.svg)
 
