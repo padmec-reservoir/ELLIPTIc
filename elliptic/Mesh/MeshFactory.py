@@ -10,7 +10,7 @@ class MeshFactory(object):
     """
 
     def load_mesh(self, filename, physical):
-        """Loads a mesh file using MOAB.
+        """Loads a mesh from a file and initializes it using MOAB.
 
         Parameters
         ----------
@@ -19,6 +19,10 @@ class MeshFactory(object):
         physical: elliptic.Physical.PhysicalMap.PhysicalMap
             PhysicalMap to be associated with the mesh.
 
+        Returns
+        -------
+         elliptic.Mesh.Mesh.Mesh
+            The initialized mesh.
         """
         print "Loading mesh file..."
         mb = core.Core()
