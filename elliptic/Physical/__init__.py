@@ -1,6 +1,4 @@
-__all__ = ['PhysicalBase', 'Dirichlet', 'Neumann', 'Robin', 'Wall', 'Symmetric',
-           'Permeability', 'InitialCondition', 'PhysicalMap']
+__all__ = ['PhysicalBase', 'PhysicalMap']
 
-from Physical import (PhysicalBase, Dirichlet, Neumann, Robin, Wall, Symmetric,
-                      Permeability, InitialCondition)
+from PhysicalBase import PhysicalBase
 from PhysicalMap import PhysicalMap

@@ -1,5 +1,5 @@
 # coding=utf-8
-from Physical import PhysicalBase
+from PhysicalBase import PhysicalBase
 
 
 class PhysicalMap(object):

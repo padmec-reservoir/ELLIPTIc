@@ -1,18 +1,16 @@
 import pytest
-import numpy
 
 from elliptic.Mesh import MeshFactory
-from elliptic.Physical import PhysicalMap
-from elliptic import Physical
+from elliptic.Physical import PhysicalMap, PhysicalBase
 
 
 class TestMesh:
     def setup(self):
         self.physical = PhysicalMap()
-        self.physical[101] = Physical.Dirichlet(1.0)
-        self.physical[102] = Physical.Dirichlet(-1.0)
-        self.physical[103] = Physical.Symmetric()
-        self.physical[50] = Physical.Permeability(numpy.eye(3))
+        self.physical[101] = PhysicalBase()
+        self.physical[102] = PhysicalBase()
+        self.physical[103] = PhysicalBase()
+        self.physical[50] = PhysicalBase()
 
         self.meshfile = 'tests/cube_small.h5m'
 
