@@ -41,7 +41,7 @@ class Diffusivity(PhysicalBase):
 
     """
     def __init__(self, v):
-        super(PhysicalBase, self).__init__()
+        super(Diffusivity, self).__init__()
 
         self._value = None
         self.value = v

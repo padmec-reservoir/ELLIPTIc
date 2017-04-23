@@ -65,7 +65,7 @@ class FillArrayKernelBase(KernelBase):
         raise NotImplementedError
 
     @classmethod
-    def get_array(cls):
+    def get_array(cls, matrix_manager):
         """Defines how the associated array can be obtained.
 
         """
