@@ -30,6 +30,12 @@ class Mesh(object):
 
         self.matrix_manager = MatrixManager()
 
+        self._save_tags()
+        self._save_physical_tags()
+        self._generate_dense_elements()
+        self._create_matrix_maps()
+        self._create_id_maps()
+
     def _save_tags(self):
         self.physical_tag = self.moab.tag_get_handle("MATERIAL_SET")
 
