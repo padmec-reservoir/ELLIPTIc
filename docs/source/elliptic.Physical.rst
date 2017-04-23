@@ -4,7 +4,7 @@ elliptic.Physical package
 elliptic.Physical.Physical module
 ---------------------------------
 
-.. automodule:: elliptic.Physical.Physical
+.. automodule:: elliptic.Physical.PhysicalBase
     :members:
     :show-inheritance:
 

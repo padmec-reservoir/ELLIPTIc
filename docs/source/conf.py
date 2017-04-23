@@ -31,7 +31,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 # ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
-              'sphinx.ext.viewcode']
+              'sphinx.ext.viewcode',
+              'sphinx.ext.mathjax']
 
 napoleon_include_init_with_doc = False
 napoleon_include_special_with_doc = True

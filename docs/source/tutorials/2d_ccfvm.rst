@@ -242,4 +242,4 @@ Putting it All Together
 
 The final script is summarized below, including the necessary imports.
 
-.. literalinclude:: ../../../examples/tpfa_2d.py
+.. literalinclude:: ../../../examples/CCFVM_example_2d.py

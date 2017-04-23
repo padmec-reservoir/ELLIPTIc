@@ -65,11 +65,11 @@ class FillArrayKernelBase(KernelBase):
         raise NotImplementedError
 
     @classmethod
-    def get_array(cls, mesh):
+    def get_array(cls):
         """Defines how the associated array can be obtained.
 
         """
-        return mesh.matrix_manager.get_vector(cls.array_name)
+        raise NotImplementedError
 
     @classmethod
     def set_dependency_vectors(cls, mesh):
