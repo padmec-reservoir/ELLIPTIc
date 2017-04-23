@@ -60,6 +60,7 @@ class Mesh(object):
         """Generates all aentities
 
         """
+        print "Generating dense elements..."
         all_verts = self.get_entities_by_meshset('ROOT', 0)
         self.mesh_topo_util.construct_aentities(all_verts)
 
@@ -119,7 +120,7 @@ class Mesh(object):
             Array containing the solution.
 
         """
-        ents = self.self.get_entities_by_meshset('ROOT', dimension)
+        ents = self.get_entities_by_meshset('ROOT', dimension)
         self.moab.tag_set_data(self.tags[tag_name], ents, np.asarray(vector))
 
     def run_kernel(self, kernel):
