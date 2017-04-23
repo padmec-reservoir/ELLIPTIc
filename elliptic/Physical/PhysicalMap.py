@@ -29,7 +29,7 @@ class PhysicalMap(object):
 
         """
         if isinstance(value, PhysicalBase):
-            self.physical_values[id] = value
+            self.physical_values[physical_id] = value
         else:
             raise ValueError("The physical value must inherit from Physical.")
 
