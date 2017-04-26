@@ -24,7 +24,7 @@ Currently, ELLIPTIc only runs on Python 2.7, since PyTrilinos only supports this
 * [PyTrilinos](https://github.com/trilinos/Trilinos)
 
 # Documentation
-Please refer to the [documentation page](http://padpy.readthedocs.io/en/latest/).
+Please refer to the [documentation page](http://elliptic.readthedocs.io/en/latest/).
 
 # Testing
 Run `python setup.py test`.
