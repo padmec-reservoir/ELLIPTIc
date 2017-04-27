@@ -1,6 +1,9 @@
 sudo: required
 language: python
 
+notifications:
+  slack: padmec:yzpcGXUkrIf1A11wvdBgn2d4
+
 python:
   - "2.7"
 
