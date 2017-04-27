@@ -11,7 +11,6 @@ services:
   - docker
 
 before_install:
-- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker build -t elliptic .
 
 install:
@@ -23,6 +22,7 @@ script:
 after_success:
 # Fixing coverage paths:
 # https://github.com/pytest-dev/pytest-cov/issues/146
+- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker cp `docker ps -l -q`:/home/scientific/ELLIPTIc/.coverage .coverage.docker
 - coverage combine
 - coveralls
