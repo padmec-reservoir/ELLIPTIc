@@ -28,6 +28,8 @@ class Mesh(object):
         self.meshsets = {'ROOT': mb.get_root_set()}
         self.tags = {}
 
+        self.ran_kernels = set()
+
         self.matrix_manager = MatrixManager()
 
         self._save_tags()
@@ -133,13 +135,23 @@ class Mesh(object):
             Kernel to be run.
 
         """
+        self.ran_kernels = set()
+
+        self._run_kernel(kernel)
+
+    def _run_kernel(self, kernel):
+        # Check if the kernel has already been executed
+        if kernel in self.ran_kernels:
+            return
+        else:
+            self.ran_kernels.add(kernel)
 
         kernel.check_kernel()
         kernel.init_kernel(self)
 
         elems = kernel.get_elements(self)
 
-        # TODO: Check for dependencies already run, and circular dependencies
+        # TODO: Check for circular dependencies
         for dep in kernel.depends:
             self.run_kernel(dep)
 
