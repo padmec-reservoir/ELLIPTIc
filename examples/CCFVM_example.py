@@ -1,7 +1,7 @@
 from CCFVM_Diffusion import Kernel, Physical, Runner
 from elliptic.Mesh.MeshFactory import MeshFactory
 from elliptic.Physical.PhysicalMap import PhysicalMap
-from elliptic.Problem import Pipeline, LinearProblem
+from elliptic.Solver.Problem import Pipeline, LinearProblem
 
 
 # Associating physical groups with Physical instances
@@ -12,7 +12,7 @@ physical[103] = Physical.Symmetric()
 physical[50] = Physical.Diffusivity(1.0)
 
 # Reading the mesh
-meshfile = 'cube_med.msh'
+meshfile = 'cube_coarse.msh'
 mf = MeshFactory()
 m = mf.load_mesh(meshfile, physical)
 

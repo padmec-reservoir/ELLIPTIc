@@ -1,7 +1,7 @@
 from CCFVM_Diffusion import Kernel, Physical, Runner
 from elliptic.Mesh.MeshFactory import MeshFactory
 from elliptic.Physical.PhysicalMap import PhysicalMap
-from elliptic.Problem import Pipeline, LinearProblem
+from elliptic.Solver.Problem import Pipeline, LinearProblem
 
 
 class EquivDiff(Kernel.EquivDiff):

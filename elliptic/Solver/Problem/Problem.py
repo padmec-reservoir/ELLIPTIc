@@ -29,6 +29,7 @@ class ProblemBase(object):
         """Runs this problem's pipeline.
 
         """
+        self.mesh.ran_kernels = set()
         for kernel in self.pipeline:
             self.mesh.run_kernel(kernel)
 
