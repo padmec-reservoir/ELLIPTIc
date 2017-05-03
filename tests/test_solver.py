@@ -112,3 +112,79 @@ class TestMatrixManager:
         A = self.matrix_manager.get_vector('A')
         assert A[1] == 200
         assert A[2] == 300
+
+
+class TestRunner:
+
+    def test_RunnerBase_run_raises_NotImplementedError(self):
+        runner = Runner.RunnerBase('problem')
+
+        assert runner.problem == 'problem'
+
+        with pytest.raises(NotImplementedError):
+            runner.run()
+
+    def test_RunnerBase_run(self):
+        class TestRunner(Runner.RunnerBase):
+
+            def _run(self):
+                pass
+
+        runner = TestRunner('problem')
+
+        runner.run()
+
+
+class TestProblem:
+
+    def test_run_pipeline(self):
+        class DummyMesh:
+
+            def run_kernel(self, kernel):
+                kernel.ran = True
+
+        class DummyKernel:
+
+            def __init__(self):
+                self.ran = False
+
+        pipeline = [DummyKernel(), DummyKernel(), DummyKernel()]
+
+        problem = Problem.ProblemBase(DummyMesh(), pipeline, None)
+
+        problem.run_pipeline()
+
+        assert all(kernel.ran for kernel in pipeline)
+
+    def test_fill_matrices(self):
+        class DummyMatrix:
+
+            def __init__(self):
+                self.filled = False
+
+            def FillComplete(self):
+                self.filled = True
+
+        class DummyMatrixManager:
+
+            def __init__(self):
+                self.matrices = [DummyMatrix(), DummyMatrix(), DummyMatrix()]
+
+            def get_matrices(self):
+                return self.matrices
+
+        class DummyMesh:
+
+            def __init__(self):
+                self.matrix_manager = DummyMatrixManager()
+
+        mesh = DummyMesh()
+
+        print [matrix.filled for matrix in mesh.matrix_manager.get_matrices()]
+
+        problem = Problem.ProblemBase(mesh, None, None)
+
+        problem.fill_matrices()
+
+        assert all(
+            matrix.filled for matrix in mesh.matrix_manager.get_matrices())
