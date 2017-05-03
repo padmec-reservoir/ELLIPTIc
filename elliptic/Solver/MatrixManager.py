@@ -37,25 +37,36 @@ class MatrixManager(object):
         self.matrix = {}
         self.vector = {}
 
+        self.not_shared_matrices = set()
+        self.not_shared_vectors = set()
+
     def create_map(self, dim, len_elems):
+        # TODO: Use mesh.id_map
         self.std_map[dim] = Epetra.Map(len_elems, 0, self.comm)
 
     def create_matrix(self, dim, name, share=False):
-        if name not in self.matrix:
+        if name not in self.matrix and name not in self.not_shared_matrices:
             # The last argument suppose that our meshes will be
             # mostly tetrahedral
             self.matrix[name] = Epetra.CrsMatrix(
                 Epetra.Copy, self.std_map[dim], 5)
-        elif not share:
-            raise KeyError("Matrix name already defined and share "
-                           "is set to False")
+
+            if not share:
+                self.not_shared_matrices.add(name)
+
+        elif not share or name in self.not_shared_matrices:
+            raise KeyError("Matrix name ({0}) already defined and share "
+                           "is set to False".format(name))
 
     def create_vector(self, dim, name, share=False):
-        if name not in self.vector:
+        if name not in self.vector and name not in self.not_shared_vectors:
             self.vector[name] = Epetra.Vector(self.std_map[dim])
-        elif not share:
-            raise KeyError("Vector name already defined and share "
-                           "is set to False")
+
+            if not share:
+                self.not_shared_vectors.add(name)
+        elif not share or name in self.not_shared_vectors:
+            raise KeyError("Vector name ({0}) already defined and share "
+                           "is set to False".format(name))
 
     def get_matrix(self, name):
         return self.matrix[name]
@@ -66,11 +77,14 @@ class MatrixManager(object):
     def get_vector(self, name):
         return self.vector[name]
 
-    def fill_vector(self, name, row, value):
-        self.vector[name][row] = value
+    def get_vectors(self):
+        return self.vector.values()
 
     def fill_matrix(self, name, row, cols, values):
         self.matrix[name].InsertGlobalValues(row, values, cols)
 
     def sum_into_matrix(self, name, row, cols, values):
         self.matrix[name].SumIntoGlobalValues(row, values, cols)
+
+    def fill_vector(self, name, row, value):
+        self.vector[name][row] = value
