@@ -10,6 +10,8 @@ class FillArrayKernelBase(KernelBase):
     array_name: string, optional
         Name of the array associated with this kernel. If not set,
         defaults to the kernel's class name.
+    solution_dim: unsigned int
+        The dimension of the solution that will be calculated in this Kernel.
     share: bool, optional
         If the array associated with this kernel could be used as the
         array_name attribute of other kernel classes. If not set, defaults to
