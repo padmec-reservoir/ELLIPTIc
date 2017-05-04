@@ -1,5 +1,6 @@
 import pytest
 
+from elliptic.Kernel import KernelBase
 from elliptic.Solver import MatrixManager, ReadOnlyMatrix
 from elliptic.Solver.Problem import LinearProblem, Pipeline, Problem, Runner
 
@@ -180,11 +181,60 @@ class TestProblem:
 
         mesh = DummyMesh()
 
-        print [matrix.filled for matrix in mesh.matrix_manager.get_matrices()]
-
         problem = Problem.ProblemBase(mesh, None, None)
 
         problem.fill_matrices()
 
         assert all(
             matrix.filled for matrix in mesh.matrix_manager.get_matrices())
+
+
+class TestPipeline:
+
+    def test_pipeline_or_pipeline(self):
+        kernels1 = []
+        for idx in range(5):
+
+            class DummyKernel(KernelBase):
+                c_id = idx
+
+            kernels1.append(DummyKernel)
+
+        kernels2 = []
+        for idx in range(5, 10):
+
+            class DummyKernel(KernelBase):
+                c_id = idx
+
+            kernels2.append(DummyKernel)
+
+        pipeline1 = Pipeline(kernels1)
+        pipeline2 = Pipeline(kernels2)
+        pipeline = pipeline1 | pipeline2
+
+        for idx, kernel in enumerate(pipeline):
+            assert kernel.c_id == idx
+
+    def test_pipeline_or_kernel(self):
+        kernels = []
+        for idx in range(5):
+
+            class DummyKernel(KernelBase):
+                c_id = idx
+
+            kernels.append(DummyKernel)
+
+        pipeline1 = Pipeline(kernels[0:4])
+        pipeline = pipeline1 | kernels[4]
+
+        for idx, kernel in enumerate(pipeline):
+            assert kernel.c_id == idx
+
+    def test_pipeline_raises_TypeError(self):
+        class DummyClass:
+            pass
+
+        kernels = [DummyClass, DummyClass]
+
+        with pytest.raises(TypeError):
+            Pipeline(kernels)

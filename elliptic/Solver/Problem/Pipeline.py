@@ -19,18 +19,25 @@ class Pipeline(object):
 
     """
     def __init__(self, kernels):
+        self._check_kernels(kernels)
         self.kernels = kernels
+
+    def _check_kernels(self, kernels):
+        for kernel in kernels:
+            self._check_kernel(kernel)
+
+    def _check_kernel(self, kernel):
+        if not issubclass(kernel, KernelBase):
+            raise TypeError("Must use Pipeline or Kernel objects to extend a "
+                            "Pipeline")
 
     def __or__(self, other):
         if isinstance(other, Pipeline):
             new_p = Pipeline(self.kernels + other.kernels)
-            return new_p
-        elif isinstance(other, KernelBase):
-            new_p = Pipeline(self.kernels + [other])
-            return new_p
         else:
-            raise TypeError("Must use Pipeline or Kernel objects to extend a "
-                            "Pipeline")
+            self._check_kernel(other)
+            new_p = Pipeline(self.kernels + [other])
+        return new_p
 
     def __iter__(self):
         return iter(self.kernels)
