@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gpkc/ELLIPTIc.svg?branch=master)](https://travis-ci.org/gpkc/ELLIPTIc)
+[![Build Status](https://travis-ci.org/padmec-reservoir/ELLIPTIc.svg?branch=master)](https://travis-ci.org/padmec-reservoir/ELLIPTIc)
 [![Documentation Status](https://readthedocs.org/projects/elliptic/badge/?version=latest)](http://elliptic.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/padmec-reservoir/ELLIPTIc/badge.svg?branch=master)](https://coveralls.io/github/padmec-reservoir/ELLIPTIc?branch=master)
 [![Code Health](https://landscape.io/github/gpkc/padpy/master/landscape.svg?style=flat)](https://landscape.io/github/gpkc/padpy/master)
