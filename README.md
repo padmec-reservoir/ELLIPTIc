@@ -12,6 +12,7 @@
   <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="600"/>
 </p>
 
+
 # ELLIPTIc
 ELLIPTIc, the ExtensibLe LIbrary for Physical simulaTIons, is a library / framework for prototyping, testing and running large scale physical simulations.
 
