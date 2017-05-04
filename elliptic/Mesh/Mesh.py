@@ -96,7 +96,7 @@ class Mesh(object):
 
         return ents
 
-    def create_double_solution_tag(self, tag_name):
+    def create_double_solution_tag(self, tag_name, dim=1):
         """Creates a solution tag of type double with the name `tag_name`.
 
         Parameters
@@ -106,7 +106,38 @@ class Mesh(object):
 
         """
         self.tags[tag_name] = self.moab.tag_get_handle(
-            tag_name, 1, types.MB_TYPE_DOUBLE, True)
+            tag_name, dim, types.MB_TYPE_DOUBLE, True)
+
+    def set_double_solution_tag(self, tag_name, elem, values):
+        """Sets the values `values` on the tag of name `tag_name`, on the
+        element `elem`.
+
+        Parameters
+        ----------
+        tag_name: string
+            Name of the tag.
+        elem: unsigned int
+            The element.
+        values: iterable
+            Iterable containing the values associated with the element `elem`.
+
+        """
+        self.moab.tag_set_data(self.tags[tag_name], elem, values)
+
+    def create_handle_tag(self, tag_name, dim=1):
+        """Creates a solution tag of type double with the name `tag_name`.
+
+        Parameters
+        ----------
+        tag_name: string
+            Name of the tag.
+
+        """
+        self.tags[tag_name] = self.moab.tag_get_handle(
+            tag_name, dim, types.MB_TYPE_HANDLE, True)
+
+    def set_handle_tag(self, tag_name, elem, handles):
+        self.moab.tag_set_data(self.tags[tag_name], elem, handles)
 
     def set_solution(self, tag_name, dimension, vector):
         """Sets the solution of name `tag_name`, on elements of the given
@@ -135,11 +166,6 @@ class Mesh(object):
             Kernel to be run.
 
         """
-        self.ran_kernels = set()
-
-        self._run_kernel(kernel)
-
-    def _run_kernel(self, kernel):
         # Check if the kernel has already been executed
         if kernel in self.ran_kernels:
             return

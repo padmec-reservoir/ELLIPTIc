@@ -12,7 +12,7 @@ physical[103] = Physical.Symmetric()
 physical[50] = Physical.Diffusivity(1.0)
 
 # Reading the mesh
-meshfile = 'cube_coarse.msh'
+meshfile = 'cube_med.msh'
 mf = MeshFactory()
 m = mf.load_mesh(meshfile, physical)
 

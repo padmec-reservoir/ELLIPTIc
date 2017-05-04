@@ -15,14 +15,19 @@ import numpy as np
 from elliptic.Kernel.EntityKernelMixins import DimensionEntityKernelMixin
 from elliptic.Kernel.ArrayKernelMixins import (FillVectorKernelMixin,
                                                FillMatrixKernelMixin)
-
+from elliptic.Kernel import AdjKernelMixin
 from .Physical import Dirichlet
 
+CACHE_ADJ = True
 
-class EquivDiff(DimensionEntityKernelMixin, FillVectorKernelMixin):
+
+class EquivDiff(DimensionEntityKernelMixin, FillVectorKernelMixin,
+                AdjKernelMixin):
     """Kernel which calculates the equivalent diffusivity in the faces.
 
     """
+    cache_adj = CACHE_ADJ
+
     entity_dim = 2
     bridge_dim = 2
     target_dim = 3
@@ -49,10 +54,13 @@ class EquivDiff(DimensionEntityKernelMixin, FillVectorKernelMixin):
             cls.fill_array(m, [(elem, 0)])
 
 
-class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin):
+class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin,
+               AdjKernelMixin):
     """Fills the matrix diagonals.
 
     """
+    cache_adj = CACHE_ADJ
+
     array_name = "A"
     share = True
 
@@ -81,10 +89,13 @@ class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin):
         cls.fill_array(m, results)
 
 
-class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin):
+class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin,
+                   AdjKernelMixin):
     """Fills the vector 'b' with boundary conditions.
 
     """
+    cache_adj = CACHE_ADJ
+
     array_name = "b"
     entity_dim = 3
     solution_dim = 3
@@ -105,11 +116,14 @@ class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin):
         cls.fill_array(m, [(elem, value)])
 
 
-class CCFVMKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin):
+class CCFVMKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
+                  AdjKernelMixin):
     """Example kernel for the CC-FVM method. This kernel iterates on the mesh
     faces and fills the transmissibility matrix accordingly.
 
     """
+    cache_adj = CACHE_ADJ
+
     array_name = "A"
     share = True
 

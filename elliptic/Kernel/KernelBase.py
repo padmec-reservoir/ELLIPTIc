@@ -1,5 +1,4 @@
 import numpy as np
-from elliptic.Physical import PhysicalBase
 
 
 class KernelBase(object):
@@ -55,85 +54,6 @@ class KernelBase(object):
         for tag, elemset in m.tag2entset.iteritems():
             if elem in elemset:
                 return m.physical_manager[tag]
-
-    @classmethod
-    def get_adj(cls, m, elem, bridge_dim,
-                target_dim, depth=1):
-        """Returns the elements adjacent to the element `elem`, through
-        `bridge_dim`, with dimension `target_dim`, and with the given `depth`.
-
-        Parameters
-        ----------
-        m: elliptic.Mesh.Mesh.Mesh
-            Mesh object that is running the kernel.
-        elem:
-            Target element to get the adjacencies.
-        bridge_dim: unsigned int
-            Bridge dimention through which the adjacent elements are obtained.
-        target_dim: unsigned int
-            Target dimesion. The adjacent elements will have this dimension.
-        depth: unsigned int, optional
-            Depth of the adjacency query. Defaults to 1.
-
-        Returns
-        -------
-        list
-            List of the adjacent elements.
-        """
-        adj = m.mesh_topo_util.get_bridge_adjacencies(
-            np.asarray([elem]),
-            bridge_dim,
-            target_dim,
-            depth)
-
-        return adj
-
-    @classmethod
-    def get_adj_physical(cls, m, elem, bridge_dim,
-                         target_dim, depth=1, phys_type=PhysicalBase):
-        """Gets the Physical instances of the adjacent elements.
-
-        Parameters
-        ----------
-        m: elliptic.Mesh.Mesh.Mesh
-            Mesh object that is running the kernel.
-        elem:
-            Target element to get the adjacent physicals.
-        bridge_dim: unsigned int
-            Bridge dimention through which the adjacent elements are obtained.
-        target_dim: unsigned int
-            Target dimesion. The adjacent elements will have this dimension.
-        depth: unsigned int, optional
-            Depth of the adjacency query. Defaults to 1.
-        phys_type: elliptic.Physical.Physical type, optional
-            The target Physical type (class). If not set, defaults to None.
-            If set, will returnthe first Physical of the given type that is
-            found.
-
-        Returns
-        -------
-        list of elliptic.Physical.Physical or elliptic.Physical.Physical
-            If `phys_type` is set to none, will return the first Physical
-            found. Returns a list containing all Physicals found otherwise.
-        """
-        # TODO: phys_type ser um array
-        adj = m.mesh_topo_util.get_bridge_adjacencies(
-            np.asarray([elem]),
-            bridge_dim,
-            target_dim,
-            depth)
-        adj = set(adj)
-        physicals = []
-        for tag, elemset in m.tag2entset.iteritems():
-            if adj.intersection(elemset):
-                phys = m.physical_manager[tag]
-                if isinstance(phys, phys_type):
-                    return phys
-
-                physicals.append(m.physical_manager[tag])
-
-        if not phys_type:
-            return physicals
 
     @classmethod
     def get_center(cls, m, elem):
