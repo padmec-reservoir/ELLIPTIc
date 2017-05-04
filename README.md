@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/gpkc/ELLIPTIc.svg?branch=master)](https://travis-ci.org/gpkc/ELLIPTIc)
 [![Documentation Status](https://readthedocs.org/projects/elliptic/badge/?version=latest)](http://elliptic.readthedocs.io/en/latest/?badge=latest)
-[![Coverage Status](https://coveralls.io/repos/github/gpkc/ELLIPTIc/badge.svg?branch=master)](https://coveralls.io/github/gpkc/ELLIPTIc?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/padmec-reservoir/ELLIPTIc/badge.svg?branch=master)](https://coveralls.io/github/padmec-reservoir/ELLIPTIc?branch=master)
 [![Code Health](https://landscape.io/github/gpkc/padpy/master/landscape.svg?style=flat)](https://landscape.io/github/gpkc/padpy/master)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gpkc/ELLIPTIc/master/LICENSE)
 
