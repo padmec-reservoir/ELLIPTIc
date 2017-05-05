@@ -1,4 +1,4 @@
-from elliptic.Problem import RunnerBase
+from elliptic.Solver.Problem import RunnerBase
 
 
 class CCFVMRunner(RunnerBase):
