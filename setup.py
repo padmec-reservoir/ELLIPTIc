@@ -18,6 +18,7 @@ setup(
     version='0.2.0',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov'],
+    install_requires=['numpy'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions

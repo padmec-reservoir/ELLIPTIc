@@ -11,7 +11,7 @@ services:
   - docker
 
 before_install:
-- docker build -t elliptic .
+- docker build -t elliptic docker/elliptic/
 
 install:
 - pip install python-coveralls
@@ -22,7 +22,6 @@ script:
 after_success:
 # Fixing coverage paths:
 # https://github.com/pytest-dev/pytest-cov/issues/146
-- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker cp `docker ps -l -q`:/home/scientific/ELLIPTIc/.coverage .coverage.docker
 - coverage combine
 - coveralls
