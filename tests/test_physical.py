@@ -21,9 +21,11 @@ class TestPhysicalMap:
         self.map = PhysicalMap()
 
     def test_add_physical(self):
-        self.map[101] = Physical.PhysicalBase()
+        pb = Physical.PhysicalBase()
+        self.map[101] = pb
 
         assert 101 in self.map
+        assert self.map[101] is pb
 
     def test_add_non_physical_raises_ValueError(self):
         with pytest.raises(ValueError):
