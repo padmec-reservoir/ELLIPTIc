@@ -78,8 +78,8 @@ class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin,
             # If the current element has a boundary condition,
             # sets value to 1
             if adj_faces_physical:
-                    value = 1
-                    break
+                value = 1
+                break
 
         results = {
             'set': [(elem, [elem], [value])],
@@ -110,8 +110,8 @@ class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin,
             # If the current element has a boundary condition,
             # sets value to 1
             if adj_faces_physical:
-                    value = adj_faces_physical.value
-                    break
+                value = adj_faces_physical.value
+                break
 
         cls.fill_array(m, [(elem, value)])
 
