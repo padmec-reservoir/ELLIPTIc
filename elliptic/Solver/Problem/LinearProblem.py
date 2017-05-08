@@ -18,8 +18,6 @@ class LinearProblem(ProblemBase):
         self.A = self.mesh.matrix_manager.get_matrix(A_name)
         self.b = self.mesh.matrix_manager.get_vector(b_name)
 
-        self.A.FillComplete()
-
         self.x = Epetra.Vector(
             self.mesh.matrix_manager.std_map[self.solution_dim])
 

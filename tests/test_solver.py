@@ -4,6 +4,8 @@ from elliptic.Kernel import KernelBase
 from elliptic.Solver import MatrixManager, ReadOnlyMatrix
 from elliptic.Solver.Problem import LinearProblem, Pipeline, Problem, Runner
 
+from PyTrilinos import Epetra
+
 
 class TestMatrixManager:
 
@@ -136,6 +138,57 @@ class TestRunner:
         runner.run()
 
 
+class TestPipeline:
+
+    def test_pipeline_or_pipeline(self):
+        kernels1 = []
+        for idx in range(5):
+
+            class DummyKernel(KernelBase):
+                c_id = idx
+
+            kernels1.append(DummyKernel)
+
+        kernels2 = []
+        for idx in range(5, 10):
+
+            class DummyKernel(KernelBase):
+                c_id = idx
+
+            kernels2.append(DummyKernel)
+
+        pipeline1 = Pipeline(kernels1)
+        pipeline2 = Pipeline(kernels2)
+        pipeline = pipeline1 | pipeline2
+
+        for idx, kernel in enumerate(pipeline):
+            assert kernel.c_id == idx
+
+    def test_pipeline_or_kernel(self):
+        kernels = []
+        for idx in range(5):
+
+            class DummyKernel(KernelBase):
+                c_id = idx
+
+            kernels.append(DummyKernel)
+
+        pipeline1 = Pipeline(kernels[0:4])
+        pipeline = pipeline1 | kernels[4]
+
+        for idx, kernel in enumerate(pipeline):
+            assert kernel.c_id == idx
+
+    def test_pipeline_raises_TypeError(self):
+        class DummyClass:
+            pass
+
+        kernels = [DummyClass, DummyClass]
+
+        with pytest.raises(TypeError):
+            Pipeline(kernels)
+
+
 class TestProblem:
 
     def test_run_pipeline(self):
@@ -189,52 +242,41 @@ class TestProblem:
             matrix.filled for matrix in mesh.matrix_manager.get_matrices())
 
 
-class TestPipeline:
+class TestLinearProblem:
 
-    def test_pipeline_or_pipeline(self):
-        kernels1 = []
-        for idx in range(5):
+    def setup(self):
+        comm = Epetra.PyComm()
+        std_map = Epetra.Map(10, 0, comm)
 
-            class DummyKernel(KernelBase):
-                c_id = idx
+        class DummyMatrixManager:
 
-            kernels1.append(DummyKernel)
+            def __init__(self):
+                self.matrices = {
+                    'A': Epetra.CrsMatrix(Epetra.Copy, std_map, 5),
+                    'b': Epetra.Vector(std_map)
+                }
 
-        kernels2 = []
-        for idx in range(5, 10):
+                self.std_map = {
+                    1: std_map
+                }
 
-            class DummyKernel(KernelBase):
-                c_id = idx
+            def get_matrix(self, name):
+                return self.matrices[name]
 
-            kernels2.append(DummyKernel)
+            get_vector = get_matrix
 
-        pipeline1 = Pipeline(kernels1)
-        pipeline2 = Pipeline(kernels2)
-        pipeline = pipeline1 | pipeline2
+        class DummyMesh:
 
-        for idx, kernel in enumerate(pipeline):
-            assert kernel.c_id == idx
+            def __init__(self):
+                self.matrix_manager = DummyMatrixManager()
 
-    def test_pipeline_or_kernel(self):
-        kernels = []
-        for idx in range(5):
+        mesh = DummyMesh()
 
-            class DummyKernel(KernelBase):
-                c_id = idx
+        self.problem = LinearProblem(mesh, None, 1)
 
-            kernels.append(DummyKernel)
+    def test_setup_linear_problem(self):
+        self.problem.setup_linear_problem('A', 'b')
 
-        pipeline1 = Pipeline(kernels[0:4])
-        pipeline = pipeline1 | kernels[4]
-
-        for idx, kernel in enumerate(pipeline):
-            assert kernel.c_id == idx
-
-    def test_pipeline_raises_TypeError(self):
-        class DummyClass:
-            pass
-
-        kernels = [DummyClass, DummyClass]
-
-        with pytest.raises(TypeError):
-            Pipeline(kernels)
+    def test_solve(self):
+        self.problem.setup_linear_problem('A', 'b')
+        self.problem.solve()
