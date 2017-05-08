@@ -1,5 +1,4 @@
 import pytest
-import numpy
 
 from elliptic.Physical import PhysicalMap
 from elliptic import Physical
