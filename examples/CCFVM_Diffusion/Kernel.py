@@ -157,14 +157,14 @@ class CCFVMKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
                     m, adj[0], dim, dim, phys_type=Dirichlet)
                 # Uses the first Dirichlet condition found
                 if adj0_faces_physical:
-                        break
+                    break
 
             for dim in range(0, cls.entity_dim):
                 adj1_faces_physical = cls.get_adj_physical(
                     m, adj[1], dim, dim, phys_type=Dirichlet)
                 # Uses the first Dirichlet condition found
                 if adj1_faces_physical:
-                        break
+                    break
 
             if not adj0_faces_physical:
                 results['set'].append((adj[0], [adj[1]], [-K_equiv]))
