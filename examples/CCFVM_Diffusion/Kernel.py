@@ -16,7 +16,7 @@ from elliptic.Kernel.EntityKernelMixins import DimensionEntityKernelMixin
 from elliptic.Kernel.ArrayKernelMixins import (FillVectorKernelMixin,
                                                FillMatrixKernelMixin)
 from elliptic.Kernel import AdjKernelMixin
-from .Physical import Dirichlet
+from .Physical import Dirichlet, Neumann
 
 CACHE_ADJ = True
 
@@ -74,7 +74,7 @@ class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin,
 
         for dim in range(0, cls.entity_dim):
             adj_faces_physical = cls.get_adj_physical(
-                m, elem, dim, dim, phys_type=Dirichlet)
+                m, elem, dim, dim, phys_type=[Dirichlet])
             # If the current element has a boundary condition,
             # sets value to 1
             if adj_faces_physical:
@@ -106,9 +106,9 @@ class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin,
 
         for dim in range(0, cls.entity_dim):
             adj_faces_physical = cls.get_adj_physical(
-                m, elem, dim, dim, phys_type=Dirichlet)
+                m, elem, dim, dim, phys_type=[Dirichlet, Neumann])
             # If the current element has a boundary condition,
-            # sets value to 1
+            # sets value to the constrained value
             if adj_faces_physical:
                 value = adj_faces_physical.value
                 break
@@ -152,16 +152,16 @@ class CCFVMKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
         if len(adj) == 2:
             # Check if those volumes do not have any faces with boundary
             # conditions of type Dirichlet
-            for dim in range(0, cls.entity_dim):
+            for dim in range(0, cls.entity_dim+1):
                 adj0_faces_physical = cls.get_adj_physical(
-                    m, adj[0], dim, dim, phys_type=Dirichlet)
+                    m, adj[0], dim, dim, phys_type=[Dirichlet])
                 # Uses the first Dirichlet condition found
                 if adj0_faces_physical:
                     break
 
-            for dim in range(0, cls.entity_dim):
+            for dim in range(0, cls.entity_dim+1):
                 adj1_faces_physical = cls.get_adj_physical(
-                    m, adj[1], dim, dim, phys_type=Dirichlet)
+                    m, adj[1], dim, dim, phys_type=[Dirichlet])
                 # Uses the first Dirichlet condition found
                 if adj1_faces_physical:
                     break

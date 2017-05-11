@@ -59,7 +59,7 @@ class AdjKernelMixin(KernelBase):
 
     @classmethod
     def get_adj_physical(cls, m, elem, bridge_dim,
-                         target_dim, depth=1, phys_type=PhysicalBase):
+                         target_dim, depth=1, phys_type=[PhysicalBase]):
         """Gets the Physical instances of the adjacent elements.
 
         Parameters
@@ -74,9 +74,10 @@ class AdjKernelMixin(KernelBase):
             Target dimesion. The adjacent elements will have this dimension.
         depth: unsigned int, optional
             Depth of the adjacency query. Defaults to 1.
-        phys_type: elliptic.Physical.Physical type, optional
-            The target Physical type (class). If not set, defaults to None.
-            If set, will returnthe first Physical of the given type that is
+        phys_type: Iterable of elliptic.Physical.Physical, optional
+            The target Physical types (class). If not set, defaults to
+            [None].
+            If set, will return the first Physical of the given types that is
             found.
 
         Returns
@@ -85,15 +86,15 @@ class AdjKernelMixin(KernelBase):
             If `phys_type` is set to none, will return the first Physical
             found. Returns a list containing all Physicals found otherwise.
         """
-        # TODO: phys_type ser um array
         adj = cls.get_adj(m, elem, bridge_dim, target_dim, depth)
         adj = set(adj)
         physicals = []
         for tag, elemset in m.tag2entset.iteritems():
             if adj.intersection(elemset):
                 phys = m.physical_manager[tag]
-                if isinstance(phys, phys_type):
-                    return phys
+                for phys_check in phys_type:
+                    if isinstance(phys, phys_check):
+                        return phys
 
                 physicals.append(m.physical_manager[tag])
 

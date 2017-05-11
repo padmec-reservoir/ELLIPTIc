@@ -1,12 +1,9 @@
 from elliptic.Physical import PhysicalBase
 
 
-class Dirichlet(PhysicalBase):
-    """Defines a boundary condition of Dirichlet type.
-
-    """
+class PhysicalValue(PhysicalBase):
     def __init__(self, v):
-        super(Dirichlet, self).__init__()
+        super(PhysicalValue, self).__init__()
 
         self._value = None
         self.value = v
@@ -22,6 +19,20 @@ class Dirichlet(PhysicalBase):
         else:
             raise ValueError("Boundary conditions of Dirichlet type must use "
                              "float type.")
+
+
+class Dirichlet(PhysicalValue):
+    """Defines a boundary condition of Dirichlet type.
+
+    """
+    pass
+
+
+class Neumann(PhysicalValue):
+    """Defines a boundary condition of Dirichlet type.
+
+    """
+    pass
 
 
 class Symmetric(PhysicalBase):

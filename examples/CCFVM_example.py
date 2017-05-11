@@ -6,13 +6,13 @@ from elliptic.Solver.Problem import Pipeline, LinearProblem
 
 # Associating physical groups with Physical instances
 physical = PhysicalMap()
-physical[101] = Physical.Dirichlet(1.0)
+physical[101] = Physical.Neumann(1.0)
 physical[102] = Physical.Dirichlet(-1.0)
 physical[103] = Physical.Symmetric()
 physical[50] = Physical.Diffusivity(1.0)
 
 # Reading the mesh
-meshfile = 'cube_med.msh'
+meshfile = 'cube_point.msh'
 mf = MeshFactory()
 m = mf.load_mesh(meshfile, physical)
 

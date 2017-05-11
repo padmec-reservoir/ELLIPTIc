@@ -40,7 +40,7 @@ class CCFVMKernel2D(Kernel.CCFVMKernel):
 
 # Associating physical groups with Physical instances
 physical = PhysicalMap()
-physical[101] = Physical.Dirichlet(1.0)
+physical[101] = Physical.Neumann(1.0)
 physical[102] = Physical.Dirichlet(-1.0)
 physical[103] = Physical.Symmetric()
 physical[50] = Physical.Diffusivity(1.0)
