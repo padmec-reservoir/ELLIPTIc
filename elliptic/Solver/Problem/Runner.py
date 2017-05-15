@@ -1,5 +1,7 @@
 import time
 
+import colorlog
+
 
 class RunnerBase(object):
     """Class to abstract problem runners. A problem runnner should expose
@@ -11,6 +13,9 @@ class RunnerBase(object):
         The Problem instance that this runner will use.
 
     """
+
+    LOG = colorlog.getLogger('elliptic.Mesh.Mesh')
+
     def __init__(self, problem):
         self.problem = problem
 
@@ -18,10 +23,12 @@ class RunnerBase(object):
         """Calls the _run method and measures its running time.
 
         """
-        print "Running problem", self.problem.__class__.__name__
+        self.LOG.info("Running problem {0}".format(
+            self.problem.__class__.__name__))
         t0 = time.time()
         self._run()
-        print "Running the problem took", time.time() - t0, "seconds..."
+        self.LOG.info("Running the problem took {0} seconds...".format(
+            time.time() - t0))
 
     def _run(self):
         """Runs the steps required to set-up the problem, and finally solve it.

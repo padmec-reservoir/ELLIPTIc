@@ -1,4 +1,4 @@
-# coding=utf-8
+import colorlog
 import time
 
 from pymoab import types
@@ -19,6 +19,9 @@ class Mesh(object):
     library.
 
     """
+
+    LOG = colorlog.getLogger('elliptic.Mesh.Mesh')
+
     def __init__(self, mb, physical):
         self.physical_manager = physical
         self.moab = mb
@@ -46,7 +49,7 @@ class Mesh(object):
             0, types.MBENTITYSET,
             np.array((self.physical_tag,)), np.array((None,)))
 
-        print "Loading physical tags..."
+        self.LOG.debug("Loading physical tags...")
         for tag in physical_sets:
             tag_id = self.moab.tag_get_data(
                 self.physical_tag, np.array([tag]), flat=True)
@@ -62,7 +65,7 @@ class Mesh(object):
         """Generates all aentities
 
         """
-        print "Generating dense elements..."
+        self.LOG.debug("Generating dense elements...")
         all_verts = self.get_entities_by_meshset('ROOT', 0)
         self.mesh_topo_util.construct_aentities(all_verts)
 
@@ -184,7 +187,7 @@ class Mesh(object):
         kernel.create_array(self.matrix_manager)
         kernel.set_dependency_vectors(self)
 
-        print "Running kernel", kernel.__name__
+        self.LOG.info("Running kernel {0}".format(kernel.__name__))
         t0 = time.time()
         count = 0
         percent = 0
@@ -192,10 +195,10 @@ class Mesh(object):
             count += 1
             if count == (len(elems) // 100):
                 percent += 1
-                print '\r', percent, "%",
+                self.LOG.debug('{0}%'.format(percent))
                 count = 0
 
             kernel.run(self, elem)
 
-        print "\ntook", time.time() - t0, "seconds... Ran over",\
-            len(elems), "elems\n"
+        self.LOG.info("\ntook {0} seconds... Ran over {1} elems\n".format(
+            time.time() - t0, len(elems)))

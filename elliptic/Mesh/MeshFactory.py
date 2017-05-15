@@ -1,4 +1,5 @@
 # coding=utf-8
+import colorlog
 from pymoab import core
 
 from Mesh import Mesh
@@ -8,6 +9,8 @@ class MeshFactory(object):
     """Mesh factory for meshes that use MOAB as backend.
 
     """
+
+    LOG = colorlog.getLogger('elliptic.Mesh.MeshFactory')
 
     def load_mesh(self, filename, physical):
         """Loads a mesh from a file and initializes it using MOAB.
@@ -24,7 +27,7 @@ class MeshFactory(object):
          elliptic.Mesh.Mesh.Mesh
             The initialized mesh.
         """
-        print "Loading mesh file..."
+        self.LOG.info("Loading mesh file...")
         mb = core.Core()
         mb.load_file(filename)
 
