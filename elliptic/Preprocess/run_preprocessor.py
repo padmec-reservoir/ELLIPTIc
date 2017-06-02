@@ -28,8 +28,9 @@ def parse_config(config_file):
 
 def read_args():
     parser = argparse.ArgumentParser(
-        description="Runs the provied preprocessor on a given input file.")
-
+        description="Runs the provied preprocessor on a given input file.",
+        usage="Preprocess [-h] [--info] preprocessor [config-file]",
+        prog="Preprocess")
     parser.add_argument(
         'preprocessor',
         type=str,
@@ -37,21 +38,8 @@ def read_args():
         default=None)
 
     parser.add_argument(
-        '--input-file',
+        'config_file',
         type=str,
-        help='Input file to be preprocessed',
-        default=None)
-
-    parser.add_argument(
-        '--output-file',
-        type=str,
-        help='Output preprocessed file in h5m format',
-        default=None)
-
-    parser.add_argument(
-        '--config-file',
-        type=str,
-        nargs='?',
         help='Config file to feed the preprocessor',
         default=None)
 
@@ -67,15 +55,22 @@ def read_args():
 
 def run_preprocessor():
     args = read_args()
-    preprocessor = importlib.import_module(args.preprocessor)
+
+    try:
+        preprocessor_module = importlib.import_module(args.preprocessor)
+    except ImportError:
+        print "Error: Preprocessor module not found."
+        exit()
 
     if args.info:
-        print preprocessor.Preprocessor.INFO
+        print preprocessor_module.Preprocessor.INFO
         exit()
 
     configs = parse_config(args.config_file)
 
-    preprocessor.Preprocessor(args.input_file, args.output_file, configs)
+    preprocessor = preprocessor_module.Preprocessor(configs)
+
+    preprocessor.run()
 
 
 if __name__ == "__main__":

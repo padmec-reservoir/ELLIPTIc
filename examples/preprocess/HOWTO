@@ -1,0 +1,4 @@
+Under any subfolder, the following command will do the preprocessing and
+generate a .h5m file:
+
+$ python -m elliptic.Preprocess elliptic.Preprocess.Gmsh preprocess.cfg
