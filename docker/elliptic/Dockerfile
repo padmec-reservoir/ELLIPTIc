@@ -4,7 +4,7 @@
 FROM gpkc/pymoab-pytrilinos
 MAINTAINER Guilherme Caminha <gpkc@cin.ufpe.br>
 
-RUN easy_install pytest
+RUN easy_install pytest configobj
 RUN git clone https://github.com/gpkc/ELLIPTIc.git
 WORKDIR $HOME/ELLIPTIc
 
