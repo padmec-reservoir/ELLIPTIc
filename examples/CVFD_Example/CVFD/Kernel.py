@@ -1,4 +1,4 @@
-"""Implementation example of a cell-centered Finite Volume Method for the
+"""Implementation example of a Control Volume Finite Differences for the
 steadystate diffusion equation. The equation is of the form:
 
 .. math::
@@ -116,8 +116,8 @@ class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin,
         cls.fill_array(m, [(elem, value)])
 
 
-class CCFVMKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
-                  AdjKernelMixin):
+class CVFDKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
+                 AdjKernelMixin):
     """Example kernel for the CC-FVM method. This kernel iterates on the mesh
     faces and fills the transmissibility matrix accordingly.
 

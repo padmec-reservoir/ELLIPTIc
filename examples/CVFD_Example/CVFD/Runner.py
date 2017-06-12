@@ -1,7 +1,7 @@
 from elliptic.Solver.Problem import RunnerBase
 
 
-class CCFVMRunner(RunnerBase):
+class CVFDRunner(RunnerBase):
     """Runner class for the CC-FVM method.
 
     """

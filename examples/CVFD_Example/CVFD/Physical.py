@@ -17,8 +17,7 @@ class PhysicalValue(PhysicalBase):
         if isinstance(v, float):
             self._value = v
         else:
-            raise ValueError("Boundary conditions of Dirichlet type must use "
-                             "float type.")
+            raise ValueError("Value voundary conditions must use float type.")
 
 
 class Dirichlet(PhysicalValue):
@@ -33,18 +32,6 @@ class Neumann(PhysicalValue):
 
     """
     pass
-
-
-class Symmetric(PhysicalBase):
-    """Defines the boundary condition of symmetrical nature.
-
-    """
-    def __init__(self):
-        super(Symmetric, self).__init__()
-
-    @PhysicalBase.value.getter
-    def value(self):
-        return Symmetric
 
 
 class Diffusivity(PhysicalBase):

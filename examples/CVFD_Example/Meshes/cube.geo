@@ -1,8 +1,8 @@
 
-Point(1) = {0,0,0,1};
-Point(2) = {1,0,0,1};
-Point(3) = {1,1,0,1};
-Point(4) = {0,1,0,1};
+Point(1) = {0,0,0,0.1};
+Point(2) = {1,0,0,0.1};
+Point(3) = {1,1,0,0.1};
+Point(4) = {0,1,0,0.1};
 Line(1) = {2,3};
 Line(2) = {3,4};
 Line(3) = {4,1};
@@ -24,7 +24,10 @@ Transfinite Volume{30} = {10,14,5,6,1,2,3,4};*/
 //Recombine Surface {15,28,19,6,27,23};
 
 //Physical Volume(50) = {30};
-Physical Surface(101) = {19};
-Physical Surface(102) = {27};
-Physical Surface(103) = {28, 15, 6, 23};
+//Physical Surface(101) = {19};
+//Physical Surface(102) = {27};
+//Physical Surface(103) = {28, 15, 6, 23};
+Physical Point(101) = {1};
+Physical Point(102) = {5};
+Physical Surface(103) = {15,6,19,23,27,28};
 Physical Volume(50) = {1};
