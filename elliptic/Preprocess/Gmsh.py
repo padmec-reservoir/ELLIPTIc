@@ -32,6 +32,8 @@ class Preprocessor(ConfigFilePreprocessorMixin):
         self.physical_tag = self.moab.tag_get_handle("MATERIAL_SET")
 
     def _read_input_data(self):
+        # TODO: Raise an error if a tag is not defined in the mesh, or if
+        # a tag is missing in the config file
         input_data = self.configs['GmshConfig']['InputData']
 
         if not input_data:
