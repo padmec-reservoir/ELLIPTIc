@@ -15,9 +15,8 @@ class ConfigFilePreprocessorMixin(object):
         except KeyError:
             raise ValueError("Config file must have a [General] section")
         try:
-            self.input_file = configs['General']['input-file']
             self.output_file = configs['General']['output-file']
         except KeyError:
-            raise ValueError("Config file must have valid input-file and "
-                             "output-file options under the [Config] section")
+            raise ValueError("Config file must have a valid output-file "
+                             "option under the [Config] section")
         self._configs = configs

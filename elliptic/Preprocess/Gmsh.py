@@ -28,7 +28,12 @@ class Preprocessor(ConfigFilePreprocessorMixin):
 
     def _init_mesh(self):
         self.moab = core.Core()
-        self.moab.load_file(self.input_file)
+        try:
+            self.moab.load_file(self.input_file)
+        except Exception as e:
+            print "Error reading Gmsh input file"
+            print e
+            exit()
         self.physical_tag = self.moab.tag_get_handle("MATERIAL_SET")
 
     def _read_input_data(self):
