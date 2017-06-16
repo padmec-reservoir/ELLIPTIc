@@ -1,3 +1,5 @@
+*.h5m
+
 cov_html/
 cov_annotate/
 build/

@@ -1,17 +1,11 @@
 import json
 
 import numpy as np
-from pymoab import core
 from pymoab import types
-from pymoab import topo_util
-
-from PreprocessorMixins import ConfigFilePreprocessorMixin
 
 
-class Preprocessor(ConfigFilePreprocessorMixin):
-
-    INFO = """
-    Reads a gmsh file and converts its physical entities to a format that
+class Preprocessor(object):
+    """ Reads a gmsh file and converts its physical entities to a format that
     is understandable by ELLIPTIc.
     """
 
@@ -20,20 +14,14 @@ class Preprocessor(ConfigFilePreprocessorMixin):
 
         self.tag_data = {}
 
-    def run(self):
+    def run(self, moab):
+        self.moab = moab
+
         self._init_mesh()
         self._read_input_data()
         self._read_physical_tags()
-        self._write_mesh()
 
     def _init_mesh(self):
-        self.moab = core.Core()
-        try:
-            self.moab.load_file(self.input_file)
-        except Exception as e:
-            print "Error reading Gmsh input file"
-            print e
-            exit()
         self.physical_tag = self.moab.tag_get_handle("MATERIAL_SET")
 
     def _read_input_data(self):
@@ -92,9 +80,4 @@ class Preprocessor(ConfigFilePreprocessorMixin):
                 print "Error: ", e
                 exit()
 
-            self.moab.clear_meshset(tag_ms)
-
         self.moab.tag_delete(self.physical_tag)
-
-    def _write_mesh(self):
-        self.moab.write_file(self.output_file)
