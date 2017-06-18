@@ -7,7 +7,7 @@
 [![Build Status](https://travis-ci.org/padmec-reservoir/ELLIPTIc.svg?branch=master)](https://travis-ci.org/padmec-reservoir/ELLIPTIc)
 [![Documentation Status](https://readthedocs.org/projects/elliptic/badge/?version=latest)](http://elliptic.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/padmec-reservoir/ELLIPTIc/badge.svg?branch=master)](https://coveralls.io/github/padmec-reservoir/ELLIPTIc?branch=master)
-[![Code Health](https://landscape.io/github/padmec-reservoir/ELLIPTIc/master/landscape.svg?style=flat)](https://landscape.io/github/padmec-reservoir/ELLIPTIc/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/025660097e6a41fa9fa6fa590ef28148)](https://www.codacy.com/app/gpkc/ELLIPTIc?utm_source=github.com&utm_medium=referral&utm_content=padmec-reservoir/ELLIPTIc&utm_campaign=badger)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gpkc/ELLIPTIc/master/LICENSE)
 
 <p align="center">
