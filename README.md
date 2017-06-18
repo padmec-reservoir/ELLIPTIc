@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/logo.png"/>
+</p>
+
+---
+
 [![Build Status](https://travis-ci.org/padmec-reservoir/ELLIPTIc.svg?branch=master)](https://travis-ci.org/padmec-reservoir/ELLIPTIc)
 [![Documentation Status](https://readthedocs.org/projects/elliptic/badge/?version=latest)](http://elliptic.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/padmec-reservoir/ELLIPTIc/badge.svg?branch=master)](https://coveralls.io/github/padmec-reservoir/ELLIPTIc?branch=master)
@@ -5,16 +11,12 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gpkc/ELLIPTIc/master/LICENSE)
 
 <p align="center">
-  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/logo.png"/>
-</p>
-
-<p align="center">
   <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="600"/>
 </p>
 
 
-# ELLIPTIc
-ELLIPTIc, the ExtensibLe LIbrary for Physical simulaTIons, is a library / framework for prototyping, testing and running large scale physical simulations.
+# Description
+**ELLIPTIc**, The ExtensibLe LIbrary for Physical simulaTIons, is a library / framework for prototyping, testing and running large scale physical simulations.
 
 It is built on top of Python, and uses the [PyMoab](https://bitbucket.org/fathomteam/moab/overview) and [PyTrilinos](https://github.com/trilinos/Trilinos) libraries to handle the internal mesh data structure, and matrix solving, respectively.
 
