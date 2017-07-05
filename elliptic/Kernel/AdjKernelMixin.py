@@ -59,7 +59,7 @@ class AdjKernelMixin(KernelBase):
 
     @classmethod
     def get_adj_physical(cls, m, elem, bridge_dim,
-                         target_dim, depth=1, phys_type=[PhysicalBase]):
+                         target_dim, depth=1, phys_type=(PhysicalBase,)):
         """Gets the Physical instances of the adjacent elements.
 
         Parameters
