@@ -11,7 +11,7 @@ class TestPhysical:
         with pytest.raises(NotImplementedError):
             phys.value = 1
         with pytest.raises(NotImplementedError):
-            phys.value
+            phys.value  # pylint: disable=W0104
 
 
 class TestPhysicalMap:
