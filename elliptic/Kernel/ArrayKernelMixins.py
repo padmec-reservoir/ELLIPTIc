@@ -30,7 +30,8 @@ class FillArrayKernelBase(KernelBase):
 
         """
         super(FillArrayKernelBase, cls).check_kernel()
-        assert cls.solution_dim >= 0
+        if cls.solution_dim < 0:
+            raise ValueError("Kernel not properly initialized.")
 
     @classmethod
     def init_kernel(cls, m):
