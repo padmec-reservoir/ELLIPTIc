@@ -35,7 +35,7 @@ class KernelBase(object):
         raise NotImplementedError
 
     @classmethod
-    def get_physical(cls, m, elem):
+    def get_physical(cls, m, phys_type, elems):
         """Gets the first Physical instance found for a given element.
 
         Parameters
@@ -51,9 +51,21 @@ class KernelBase(object):
             Returns the Physical instance associated with `elem`.
 
         """
-        for tag, elemset in m.tag2entset.iteritems():
-            if elem in elemset:
-                return m.physical_manager[tag]
+        phys_type_inst = m.physical.query(phys_type)
+        elems = set(elems)
+
+        for phys_elems, phys_tag in phys_type_inst:
+            adj_phys_elems = elems.intersection(phys_elems)
+
+            if adj_phys_elems:
+                adj_phys_val = m.moab.tag_get_data(
+                    phys_tag,
+                    adj_phys_elems,
+                    flat=True)
+
+                return zip(adj_phys_elems, adj_phys_val)
+
+        return []
 
     @classmethod
     def get_center(cls, m, elem):

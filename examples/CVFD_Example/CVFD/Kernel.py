@@ -16,7 +16,7 @@ from elliptic.Kernel.EntityKernelMixins import DimensionEntityKernelMixin
 from elliptic.Kernel.ArrayKernelMixins import (FillVectorKernelMixin,
                                                FillMatrixKernelMixin)
 from elliptic.Kernel import AdjKernelMixin
-from .Physical import Dirichlet, Neumann
+from .Physical import Dirichlet, Neumann, Diffusivity
 
 CACHE_ADJ = True
 
@@ -26,8 +26,6 @@ class EquivDiff(DimensionEntityKernelMixin, FillVectorKernelMixin,
     """Kernel which calculates the equivalent diffusivity in the faces.
 
     """
-    cache_adj = CACHE_ADJ
-
     entity_dim = 2
     bridge_dim = 2
     target_dim = 3
@@ -44,8 +42,8 @@ class EquivDiff(DimensionEntityKernelMixin, FillVectorKernelMixin,
             el2_center = cls.get_center(m, adj[1])
             dx1 = np.linalg.norm(el1_center - edge_center)
             dx2 = np.linalg.norm(el2_center - edge_center)
-            D1 = cls.get_physical(m, adj[0]).value
-            D2 = cls.get_physical(m, adj[1]).value
+            D1 = cls.get_physical(m, Diffusivity, [adj[0]])
+            D2 = cls.get_physical(m, Diffusivity, [adj[1]])
 
             D_equiv = (2*D1*D2) / (D1*dx2 + D2*dx1)
 
@@ -59,8 +57,6 @@ class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin,
     """Fills the matrix diagonals.
 
     """
-    cache_adj = CACHE_ADJ
-
     array_name = "A"
     share = True
 
@@ -73,8 +69,9 @@ class FillDiag(DimensionEntityKernelMixin, FillMatrixKernelMixin,
         value = 0
 
         for dim in range(0, cls.entity_dim):
-            adj_faces_physical = cls.get_adj_physical(
-                m, elem, dim, dim, phys_type=[Dirichlet])
+            adj_faces = cls.get_adj(m, elem, dim, dim)
+            adj_faces_physical = cls.get_physical(m, Dirichlet, adj_faces)
+
             # If the current element has a boundary condition,
             # sets value to 1
             if adj_faces_physical:
@@ -94,8 +91,6 @@ class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin,
     """Fills the vector 'b' with boundary conditions.
 
     """
-    cache_adj = CACHE_ADJ
-
     array_name = "b"
     entity_dim = 3
     solution_dim = 3
@@ -105,12 +100,19 @@ class FillBoundary(DimensionEntityKernelMixin, FillVectorKernelMixin,
         value = 0
 
         for dim in range(0, cls.entity_dim):
-            adj_faces_physical = cls.get_adj_physical(
-                m, elem, dim, dim, phys_type=[Dirichlet, Neumann])
             # If the current element has a boundary condition,
             # sets value to the constrained value
-            if adj_faces_physical:
-                value = adj_faces_physical.value
+
+            adj_elems = cls.get_adj(m, elem, dim, dim)
+
+            dirichlet_physical = cls.get_physical(m, Dirichlet, adj_elems)
+            if dirichlet_physical:
+                value = dirichlet_physical[0][1]
+                break
+
+            neumann_physical = cls.get_physical(m, Neumann, adj_elems)
+            if neumann_physical:
+                value = neumann_physical[0][1]
                 break
 
         cls.fill_array(m, [(elem, value)])
@@ -122,8 +124,6 @@ class CVFDKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
     faces and fills the transmissibility matrix accordingly.
 
     """
-    cache_adj = CACHE_ADJ
-
     array_name = "A"
     share = True
 
@@ -154,14 +154,15 @@ class CVFDKernel(DimensionEntityKernelMixin, FillMatrixKernelMixin,
             # conditions of type Dirichlet
             for dim in range(0, cls.entity_dim+1):
                 adj0_faces_physical = cls.get_adj_physical(
-                    m, adj[0], dim, dim, phys_type=[Dirichlet])
+                    m, Dirichlet, adj[0], dim, dim)
+
                 # Uses the first Dirichlet condition found
                 if adj0_faces_physical:
                     break
 
             for dim in range(0, cls.entity_dim+1):
                 adj1_faces_physical = cls.get_adj_physical(
-                    m, adj[1], dim, dim, phys_type=[Dirichlet])
+                    m, Dirichlet, adj[1], dim, dim)
                 # Uses the first Dirichlet condition found
                 if adj1_faces_physical:
                     break

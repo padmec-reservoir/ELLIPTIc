@@ -7,23 +7,33 @@ DefaultLogger.init()
 
 # Associating physical groups with Physical instances
 physical = PhysicalMap()
-physical[101] = Physical.Dirichlet(1.0)
-physical[102] = Physical.Dirichlet(-1.0)
-physical[103] = Physical.Neumann(0.0)
-physical[50] = Physical.Diffusivity(1.0)
+
+# Register the physical types that will be used
+physical.register(Physical.Dirichlet)
+physical.register(Physical.Neumann)
+physical.register(Physical.Diffusivity)
+
+# Associate each group with a physical type
+physical["INLET"] = Physical.Dirichlet
+physical["OUTLET"] = Physical.Dirichlet
+physical["WALL"] = Physical.Neumann
+physical["DIFFUSIVITY"] = Physical.Diffusivity
 
 # Reading the mesh
-meshfile = 'Meshes/cube_med.msh'
+meshfile = 'Meshes/cube_med.h5m'
 mf = MeshFactory()
-m = mf.load_mesh(meshfile, physical)
+mesh = mf.load_mesh(meshfile)
+
+# Resolve the physical properties
+mesh.resolve(physical)
 
 # Creating the Kernel pipeline
 pipeline = Pipeline([
-    Kernel.CVFDKernel
+    Kernel.FillBoundary
 ])
 
 # Creating a problem
-problem = LinearProblem(mesh=m, pipeline=pipeline, solution_dim=3)
+problem = LinearProblem(mesh=mesh, pipeline=pipeline, solution_dim=3)
 
 # Solving the problem
 runner = Runner.CVFDRunner(problem)

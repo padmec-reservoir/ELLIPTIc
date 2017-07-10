@@ -22,10 +22,8 @@ class Mesh(object):
 
     LOG = colorlog.getLogger('elliptic.Mesh.Mesh')
 
-    def __init__(self, mb, physical):
-        self.physical_manager = physical
+    def __init__(self, mb):
         self.moab = mb
-        self.tag2entset = {}
         self.id_map = {}
         self.mesh_topo_util = topo_util.MeshTopoUtil(mb)
         self.meshsets = {'ROOT': mb.get_root_set()}
@@ -35,39 +33,8 @@ class Mesh(object):
 
         self.matrix_manager = MatrixManager()
 
-        self._save_tags()
-        self._save_physical_tags()
-        self._generate_dense_elements()
         self._create_matrix_maps()
         self._create_id_maps()
-
-    def _save_tags(self):
-        self.physical_tag = self.moab.tag_get_handle("MATERIAL_SET")
-
-    def _save_physical_tags(self):
-        physical_sets = self.moab.get_entities_by_type_and_tag(
-            0, types.MBENTITYSET,
-            np.array((self.physical_tag,)), np.array((None,)))
-
-        self.LOG.debug("Loading physical tags...")
-        for tag in physical_sets:
-            tag_id = self.moab.tag_get_data(
-                self.physical_tag, np.array([tag]), flat=True)
-
-            if tag_id[0] not in self.physical_manager:
-                raise ValueError("Tag {0} not defined in the physical "
-                                 "properties structure".format(tag_id))
-
-            elems = self.moab.get_entities_by_handle(tag, True)
-            self.tag2entset[tag_id[0]] = {e for e in elems}
-
-    def _generate_dense_elements(self):
-        """Generates all aentities
-
-        """
-        self.LOG.debug("Generating dense elements...")
-        all_verts = self.get_entities_by_meshset('ROOT', 0)
-        self.mesh_topo_util.construct_aentities(all_verts)
 
     def _create_matrix_maps(self):
         for dim in range(4):
@@ -82,8 +49,21 @@ class Mesh(object):
                 self.id_map[ent] = idx
                 idx += 1
 
+    def resolve(self, physical):
+        physical.resolve()
+
+        root_set = self.moab.get_root_set()
+        for physical_name, physical_type in physical:
+            phys_tag = self.moab.tag_get_handle(physical_name)
+            phys_tag_elems = self.moab.tag_get_handle(physical_name + "_elems")
+            phys_elems_set = self.moab.tag_get_data(phys_tag_elems, root_set)
+            phys_elems = self.moab.get_entities_by_handle(phys_elems_set)
+            physical_type.add_tag((set(phys_elems), phys_tag))
+
+        self.physical = physical
+
     def get_entities_by_meshset(self, set_name, dim):
-        """Gets all the entities form a meshset.
+        """Gets all the entities from a meshset.
 
         Parameters
         ----------
