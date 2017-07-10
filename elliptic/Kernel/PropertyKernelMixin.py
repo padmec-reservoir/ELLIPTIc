@@ -25,7 +25,8 @@ class PropertyKernelMixin(KernelBase):
 
         """
         super(PropertyKernelMixin, cls).check_kernel()
-        assert cls.num_values >= 0
+        if cls.num_values < 0:
+                raise ValueError("Kernel not properly initialized.")
 
     @classmethod
     def init_kernel(cls, m):
