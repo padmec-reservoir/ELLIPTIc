@@ -10,3 +10,5 @@ WORKDIR $HOME/ELLIPTIc
 
 RUN python setup.py build
 RUN python setup.py install
+
+WORKDIR $HOME
