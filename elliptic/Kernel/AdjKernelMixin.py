@@ -1,20 +1,24 @@
+import itertools
+
 from KernelBase import KernelBase
 
 
 class AdjKernelMixin(KernelBase):
 
     adj_str = {}
+    for (bridge_dim, target_dim, depth) in itertools.product(
+                                           *itertools.repeat([0, 1, 2, 3], 3)):
+        tag_name = "_adj_tag_{0}{1}{2}".format(
+            bridge_dim, target_dim, depth)
+        adj_str[(bridge_dim, target_dim, depth)] = tag_name
 
-    @classmethod
-    def get_adj(cls, m, elem, bridge_dim,
+    def get_adj(self, elem, bridge_dim,
                 target_dim, depth=1):
         """Returns the elements adjacent to the element `elem`, through
         `bridge_dim`, with dimension `target_dim`, and with the given `depth`.
 
         Parameters
         ----------
-        m: elliptic.Mesh.Mesh.Mesh
-            Mesh object that is running the kernel.
         elem:
             Target element to get the adjacencies.
         bridge_dim: unsigned int
@@ -26,17 +30,12 @@ class AdjKernelMixin(KernelBase):
 
         Returns
         -------
-        list
-            List of the adjacent elements.
+        iterable
+            Iterable of the adjacent elements.
         """
-        try:
-            tag_name = cls.adj_str[(bridge_dim, target_dim, depth)]
-        except KeyError:
-            tag_name = "_adj_tag_{0}{1}{2}".format(
-                bridge_dim, target_dim, depth)
-            cls.adj_str[(bridge_dim, target_dim, depth)] = tag_name
+        tag_name = self.adj_str[(bridge_dim, target_dim, depth)]
 
-        adj_tag = m.moab.tag_get_handle(tag_name)
-        adj_set = m.moab.tag_get_data(adj_tag, elem, flat=True)
-        adj = m.moab.get_entities_by_handle(adj_set)
+        adj_tag = self.mesh.moab.tag_get_handle(tag_name)
+        adj_set = self.mesh.moab.tag_get_data(adj_tag, elem, flat=True)
+        adj = self.mesh.moab.get_entities_by_handle(adj_set)
         return adj

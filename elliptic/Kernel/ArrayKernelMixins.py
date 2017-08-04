@@ -24,27 +24,17 @@ class FillArrayKernelBase(KernelBase):
     solution_dim = -1
     share = False
 
-    @classmethod
-    def check_kernel(cls):
-        """Checks if the kernel has defined the `solution_dim` attribute.
-
-        """
-        super(FillArrayKernelBase, cls).check_kernel()
-        if cls.solution_dim < 0:
-            raise ValueError("Kernel not properly initialized.")
-
-    @classmethod
-    def init_kernel(cls, m):
+    def __init__(self, mesh):
         """Initializes the `array_name` attribute, defaulting it to the Kernel's
         class name if it was not defined.
 
         """
-        super(FillArrayKernelBase, cls).init_kernel(m)
-        if not cls.array_name:
-            cls.array_name = cls.__name__
+        super(FillArrayKernelBase, self).__init__(mesh)
 
-    @classmethod
-    def create_array(cls, matrix_manager):
+        if not self.array_name:
+            self.array_name = self.__class__.__name__
+
+    def create_array(self):
         """Abstract method. Defines how the array associated with the Kernel
         and the Mesh will be created.
 
@@ -55,8 +45,7 @@ class FillArrayKernelBase(KernelBase):
         """
         raise NotImplementedError
 
-    @classmethod
-    def fill_array(cls, mesh, vals):
+    def fill_array(self, vals):
         """Abstract method. Defines how to fill the associated array with
         calculated values during the run method.
 
@@ -67,15 +56,13 @@ class FillArrayKernelBase(KernelBase):
         """
         raise NotImplementedError
 
-    @classmethod
-    def get_array(cls, matrix_manager):
+    def get_array(self):
         """Defines how the associated array can be obtained.
 
         """
         raise NotImplementedError
 
-    @classmethod
-    def set_dependency_vectors(cls, mesh):
+    def set_dependency_vectors(self):
         """Iterates over the `depends` attribute, and adds the associated array
         of each Kernel, if applicable, with an attribute on this Kernel.
 
@@ -96,11 +83,12 @@ class FillArrayKernelBase(KernelBase):
         ...         Test1_val = cls.Test1_array[elem]
 
         """
-        for dep in cls.depends:
-            if issubclass(dep, FillArrayKernelBase):
-                ar = dep.get_array(mesh.matrix_manager)
-                readonly_ar = ReadOnlyMatrix(ar, mesh.id_map)
-                setattr(cls, dep.array_name + '_array', readonly_ar)
+        if self.depends_instances:
+            for dep in self.depends_instances:
+                if isinstance(dep, FillArrayKernelBase):
+                    ar = dep.get_array(self.mesh.matrix_manager)
+                    readonly_ar = ReadOnlyMatrix(ar, self.mesh.id_map)
+                    setattr(self, dep.array_name + '_array', readonly_ar)
 
 
 class FillVectorKernelMixin(FillArrayKernelBase):
@@ -108,40 +96,68 @@ class FillVectorKernelMixin(FillArrayKernelBase):
 
     """
 
-    @classmethod
-    def create_array(cls, matrix_manager):
+    def __init__(self, mesh, solution_access=None):
+        super(FillVectorKernelMixin, self).__init__(mesh)
+        self.solution_access = solution_access
+
+    def create_array(self):
         """Defines how the associated vector will be created.
 
         """
-        matrix_manager.create_vector(
-            cls.solution_dim, cls.array_name, cls.share)
+        self.mesh.matrix_manager.create_vector(
+            self.solution_dim, self.array_name, self.share)
 
-    @classmethod
-    def fill_array(cls, mesh, vals):
+    def fill_array(self, vals):
         """Defines how the associated vector will be filled within the run()
         method.
 
         Parameters
         ----------
-        mesh: elliptic.Mesh.Mesh.Mesh
-            Mesh object that is running the kernel.
         vals: list
             List of (line, value) values.
 
         """
-        id_map = mesh.id_map
-        matrix_manager = mesh.matrix_manager
+        id_map = self.mesh.id_map
+        matrix_manager = self.mesh.matrix_manager
 
         for elem, value in vals:
             row = id_map[elem]
-            matrix_manager.fill_vector(cls.array_name, row, value)
+            matrix_manager.fill_vector(self.array_name, row, value)
 
-    @classmethod
-    def get_array(cls, matrix_manager):
+    def get_array(self):
         """Defines how the associated vector can be obtained.
 
         """
-        return matrix_manager.get_vector(cls.array_name)
+        return self.mesh.matrix_manager.get_vector(self.array_name)
+
+    def set_dependency_vectors(self):
+        super(FillVectorKernelMixin, self).set_dependency_vectors()
+        if self.solution_access:
+            for dep in self.solution_access:
+                ar = dep.get_array(self.mesh.matrix_manager)
+                readonly_ar = ReadOnlyMatrix(ar, self.mesh.id_map)
+                setattr(self, dep.array_name + '_array', readonly_ar)
+
+
+class TransientExplicitKernelMixin(FillVectorKernelMixin):
+
+    @classmethod
+    def init_kernel(cls, m):
+        super(TransientExplicitKernelMixin, cls).init_kernel(m)
+        setattr(cls, 'array_name_old', cls.array_name + '_old')
+
+    @classmethod
+    def create_array(cls, matrix_manager):
+        super(TransientExplicitKernelMixin, cls).create_array(matrix_manager)
+        matrix_manager.create_vector(
+            cls.solution_dim, cls.array_name_old, True)
+
+    @classmethod
+    def set_dependency_vectors(cls, mesh):
+        super(TransientExplicitKernelMixin, cls).set_dependency_vectors(mesh)
+        ar = mesh.matrix_manager.get_vector(cls.array_name_old)
+        readonly_ar = ReadOnlyMatrix(ar, mesh.id_map)
+        setattr(cls, cls.array_name + '_old_array', readonly_ar)
 
 
 class FillMatrixKernelMixin(FillArrayKernelBase):

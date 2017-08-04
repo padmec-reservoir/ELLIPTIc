@@ -19,42 +19,26 @@ class PropertyKernelMixin(KernelBase):
     num_values = -1
     property_name = ""
 
-    @classmethod
-    def check_kernel(cls):
-        """Checks if the kernel has defined the `solution_dim` attribute.
-
-        """
-        super(PropertyKernelMixin, cls).check_kernel()
-        if cls.num_values < 0:
-                raise ValueError("Kernel not properly initialized.")
-
-    @classmethod
-    def init_kernel(cls, m):
+    def __init__(self, mesh):
         """Initializes the property memory storage.
 
         """
-        super(PropertyKernelMixin, cls).init_kernel(m)
+        super(PropertyKernelMixin, self).__init__(mesh)
 
-        if not cls.property_name:
-            cls.property_name = cls.__name__
+        if not self.property_name:
+            self.property_name = self.__class__.__name__
 
-        m.create_double_solution_tag(cls.property_name, cls.num_values)
+        self.mesh.create_double_tag(
+            self.property_name, self.num_values)
 
-    @classmethod
-    def set_property_value(cls, mesh, vals):
-        """Defines how the associated property will be set.
+    def set_property_value(self, vals):
+        """Sets the associated property.
 
         Parameters
         ----------
-        mesh: elliptic.Mesh.Mesh.Mesh
-            Mesh object that is running the kernel.
-        vals: list
-            List of (line, value) values.
+        vals: iterable
+            Iterable of (elem, value) values.
 
         """
-        id_map = mesh.id_map
-        matrix_manager = mesh.matrix_manager
-
         for elem, value in vals:
-            row = id_map[elem]
-            matrix_manager.fill_vector(cls.array_name, row, value)
+            self.mesh.set_tag_value(self.property_name, [elem], [value])

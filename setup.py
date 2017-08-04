@@ -17,7 +17,7 @@ setup(
     name="ELLIPTIc",
     version='0.2.0',
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-cov', 'pytest-mock'],
+    tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
     install_requires=['numpy', 'colorlog'],
     packages=find_packages(),
     license='LICENSE',
