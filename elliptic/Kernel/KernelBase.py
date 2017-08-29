@@ -31,6 +31,13 @@ class KernelBase(object):
 
                 self.depends_instances.append(dep_instance)
 
+    def set_dependencies(self):
+        """This is ran after build_dependencies is ran for every kernel on the
+        dependency vector.
+        No need to raise an exception here.
+        """
+        pass
+
     def get_elements(self):
         """Gets the elements that this Kernel iterates on.
 
@@ -45,7 +52,7 @@ class KernelBase(object):
             adj_phys_elems = elems.intersection(phys_elems)
 
             if adj_phys_elems:
-                adj_phys_val = self.mesh.moab.tag_get_data(
+                adj_phys_val = self.mesh.get_field_value(
                     phys_tag,
                     adj_phys_elems,
                     flat=True)
@@ -70,7 +77,24 @@ class KernelBase(object):
             Array representing the coordinates of the averaged position.
 
         """
-        return self.mesh.mesh_topo_util.get_average_position(np.array([elem]))
+        return self.mesh.mesh_topo_util.get_average_position(
+            np.array([elem], dtype='uint64'))
+
+    def get_coords(self, elem):
+        return self.mesh.moab.get_coords(np.array([elem], dtype='uint64'))
+
+    def face_normal(self, face_nodes, reference_point):
+        n0 = self.get_coords(face_nodes[0])
+        n1 = self.get_coords(face_nodes[1])
+        n2 = self.get_coords(face_nodes[2])
+        edg1 = n1 - n0
+        edg2 = n2 - n0
+        direction = reference_point - n0
+        N = np.cross(edg1, edg2)
+        N = N * np.sign(np.dot(N, direction))
+        N = N / np.linalg.norm(N)
+
+        return N
 
     def run(cls, elem):
         """Runs the kernel over the mesh entity elem.

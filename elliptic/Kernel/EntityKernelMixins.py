@@ -8,7 +8,7 @@ class DimensionEntityKernelMixin(KernelBase):
     entity_dim = -1
 
     def get_elements(self):
-        ents = self.mesh.get_entities_by_meshset('ROOT', self.entity_dim)
+        ents = self.mesh.dimension_entities(self.entity_dim)
         return ents
 
 

@@ -12,8 +12,7 @@ class AdjKernelMixin(KernelBase):
             bridge_dim, target_dim, depth)
         adj_str[(bridge_dim, target_dim, depth)] = tag_name
 
-    def get_adj(self, elem, bridge_dim,
-                target_dim, depth=1):
+    def get_adj(self, elem, bridge_dim, target_dim, depth=1):
         """Returns the elements adjacent to the element `elem`, through
         `bridge_dim`, with dimension `target_dim`, and with the given `depth`.
 
@@ -34,8 +33,6 @@ class AdjKernelMixin(KernelBase):
             Iterable of the adjacent elements.
         """
         tag_name = self.adj_str[(bridge_dim, target_dim, depth)]
+        adj = self.mesh.get_adj(elem, tag_name)
 
-        adj_tag = self.mesh.moab.tag_get_handle(tag_name)
-        adj_set = self.mesh.moab.tag_get_data(adj_tag, elem, flat=True)
-        adj = self.mesh.moab.get_entities_by_handle(adj_set)
         return adj
