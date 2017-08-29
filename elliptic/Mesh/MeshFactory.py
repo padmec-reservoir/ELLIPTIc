@@ -2,10 +2,10 @@
 import colorlog
 from pymoab import core
 
-from Mesh import Mesh
+from Mesh import MOABMesh
 
 
-class MeshFactory(object):
+class MOABMeshFactory(object):
     """Mesh factory for meshes that use MOAB as backend.
 
     """
@@ -29,6 +29,6 @@ class MeshFactory(object):
         mb = core.Core()
         mb.load_file(filename)
 
-        the_mesh = Mesh(mb)
+        the_mesh = MOABMesh(mb)
 
         return the_mesh

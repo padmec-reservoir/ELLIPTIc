@@ -2,44 +2,56 @@ from Problem import ProblemBase
 from PyTrilinos import Epetra, AztecOO
 
 
-class LinearProblem(ProblemBase):
+class LinearProblem(object):
     """Defines a linear problem abstraction for use with the AztecOO linear
     solver, to solve problems of the format Ax = b. This class needs the names
     for the A matrix and b vector, to be colected from the MatrixManager
     class.
 
     """
-    def setup_linear_problem(self, A_name, b_name):
-        """Sets a linear problem. The `A_name` and `b_name` parameters are
-        related to the matrix and vectors names to be used in a linear problem
-        Ax = b.
+    def __init__(self, mesh, lhs_kernel, rhs_kernel, solution_name):
+        self.mesh = mesh
+        self.solution_name = solution_name
 
-        """
-        self.A = self.mesh.matrix_manager.get_matrix(A_name)
-        self.b = self.mesh.matrix_manager.get_vector(b_name)
+        self.lhs_kernel = lhs_kernel
+        self.rhs_kernel = rhs_kernel
+
+    def run_problem(self):
+        self.mesh.run_kernel_recur(self.rhs_kernel)
+        self.mesh.run_kernel_recur(self.lhs_kernel)
+
+        self.solve_linear_problem()
+
+        self.set_solution()
+
+    def set_solution(self):
+        solution_handle = self.mesh.create_field(self.solution_name)
+        self.mesh.set_field_value(
+            solution_handle, self.rhs_kernel.get_elements(), self.x)
+
+    def solve_linear_problem(self):
+        LHS = self.mesh.matrix_manager.get_matrix(self.lhs_kernel.array_name)
+        LHS.FillComplete()
+
+        rhs_field_handle = self.mesh.get_field(self.rhs_kernel.field_name)
+        rhs_field = self.mesh.get_field_value(
+            rhs_field_handle, self.rhs_kernel.get_elements())
 
         self.x = Epetra.Vector(
-            self.mesh.matrix_manager.std_map[self.solution_dim])
+            self.mesh.matrix_manager.std_map[self.lhs_kernel.solution_dim])
 
-        self.linearProblem = Epetra.LinearProblem(self.A, self.x, self.b)
-        self.solver = AztecOO.AztecOO(self.linearProblem)
-        self.solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_last)
+        linearProblem = Epetra.LinearProblem(LHS, self.x, rhs_field)
+        solver = AztecOO.AztecOO(linearProblem)
+        solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_last)
+
+        solver.Iterate(10000, 1e-9)
 
     def solve(self):
         self.solver.Iterate(10000, 1e-9)
 
-    def export_solution(self, solution_name, file_name):
-        """Exports the problem solution using the MOAB exporter.
+        field = self.mesh.get_field(self.solution_name)
+        ents = self.mesh.dimension_entities(self.solution_dim)
+        self.mesh.set_field_value(field, ents, self.x)
 
-        Parameters
-        ----------
-        solution_name: string
-            Name of the solution found when solving the linear problem.
-        file_name: string
-            Path to the output file to be created, which will hold the mesh
-            and the solution.
-
-        """
-        self.mesh.create_double_solution_tag(solution_name)
-        self.mesh.set_solution(solution_name, self.solution_dim, self.x)
+    def export_solution(self, file_name):
         self.mesh.moab.write_file(file_name)

@@ -17,7 +17,7 @@ install:
 - pip install python-coveralls colorlog
 
 script:
-- docker run elliptic /bin/bash -c "python setup.py test"
+- docker run elliptic /bin/bash -c "cd ELLIPTIc; python setup.py test"
 
 after_success:
 # Fixing coverage paths:
@@ -25,8 +25,8 @@ after_success:
 - docker cp `docker ps -l -q`:/home/scientific/ELLIPTIc/.coverage .coverage.docker
 - coverage combine
 - coveralls
-- docker tag elliptic gpkc/elliptic
+- docker tag elliptic padmec/elliptic:1.0
 - if [ "$TRAVIS_BRANCH" == "master" ]; then
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-  docker push gpkc/elliptic;
+  docker push padmec/elliptic:1.0;
   fi

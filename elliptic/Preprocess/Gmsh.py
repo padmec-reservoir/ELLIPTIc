@@ -1,4 +1,5 @@
 import json
+import collections
 
 import numpy as np
 from pymoab import types
@@ -12,7 +13,7 @@ class Preprocessor(object):
     def __init__(self, configs):
         self.configs = configs
 
-        self.tag_data = {}
+        self.tag_data = collections.defaultdict(list)
 
     def run(self, moab):
         self.moab = moab
@@ -54,11 +55,11 @@ class Preprocessor(object):
                                gmsh_tag_info['data-file'], tag_name))
                     exit()
 
-                self.tag_data[int(phys_id)] = {
+                self.tag_data[int(phys_id)].append({
                     'elems_tag': elems_tag,
                     'tag': tag_handle,
                     'type': gmsh_tag_info['type'],
-                    'data': data}
+                    'data': data})
 
     def _read_physical_tags(self):
         physical_sets = self.moab.get_entities_by_type_and_tag(
@@ -74,32 +75,33 @@ class Preprocessor(object):
 
             elems = self.moab.get_entities_by_handle(tag_ms, True)
 
-            elems_tag = self.tag_data[tag_id]['elems_tag']
-            data_tag_handle = self.tag_data[tag_id]['tag']
-            data = self.tag_data[tag_id]['data']
-            data_type = self.tag_data[tag_id]['type']
-            gids = self.moab.tag_get_data(gid_tag, elems, flat=True)
+            for tag_data in self.tag_data[tag_id]:
+                elems_tag = tag_data['elems_tag']
+                data_tag_handle = tag_data['tag']
+                data = tag_data['data']
+                data_type = tag_data['type']
+                gids = self.moab.tag_get_data(gid_tag, elems, flat=True)
 
-            root_set = self.moab.get_root_set()
-            elems_set = self.moab.create_meshset()
-            self.moab.add_entities(elems_set, elems)
-            self.moab.tag_set_data(elems_tag, root_set, elems_set)
+                root_set = self.moab.get_root_set()
+                elems_set = self.moab.create_meshset()
+                self.moab.add_entities(elems_set, elems)
+                self.moab.tag_set_data(elems_tag, root_set, elems_set)
 
-            try:
-                if data_type == 'homogeneous':
-                    data_val = data['hom_val']
-                    for gid, elem in zip(gids, elems):
-                        self.moab.tag_set_data(
-                            data_tag_handle, elem, data_val)
-                elif data_type == 'by_elem':
-                    for gid, elem in zip(gids, elems):
-                        self.moab.tag_set_data(
-                            data_tag_handle, elem, data[str(gid)])
-            except Exception as e:
-                print ("Error while storing input data. Please verify your "
-                       "config and data files.")
-                print "Error: ", e
-                exit()
+                try:
+                    if data_type == 'homogeneous':
+                        data_val = data['hom_val']
+                        for gid, elem in zip(gids, elems):
+                            self.moab.tag_set_data(
+                                data_tag_handle, elem, data_val)
+                    elif data_type == 'by_elem':
+                        for gid, elem in zip(gids, elems):
+                            self.moab.tag_set_data(
+                                data_tag_handle, elem, data[str(gid)])
+                except Exception as e:
+                    print ("Error while storing input data. Please verify "
+                           "your config and data files.")
+                    print "Error: ", e
+                    exit()
 
             # self.moab.clear_meshset(tag_ms)
 
