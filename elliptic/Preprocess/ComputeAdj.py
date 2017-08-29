@@ -23,6 +23,7 @@ class Preprocessor(object):
             method from the topo_util module is used to compute the
             adjacencies.
         """
+        print "Computing adjacencies..."
         mesh_topo_util = topo_util.MeshTopoUtil(moab)
         root_set = moab.get_root_set()
 
@@ -32,8 +33,8 @@ class Preprocessor(object):
         for (from_dim, bridge_dim, to_dim, layers) in self.adjacencies:
             ents = moab.get_entities_by_dimension(root_set, from_dim)
 
-            adj_tag_name = "__adj_tag_{0}{1}{2}{3}".format(
-                from_dim, bridge_dim, to_dim, layers)
+            adj_tag_name = "_adj_tag_{0}{1}{2}".format(
+                bridge_dim, to_dim, layers)
 
             adj_tag = moab.tag_get_handle(
                 adj_tag_name, 1, types.MB_TYPE_HANDLE,

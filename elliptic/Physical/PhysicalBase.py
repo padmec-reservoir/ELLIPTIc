@@ -1,15 +1,12 @@
 
-
 class PhysicalBase(object):
     """Defines the interface for physical properties.
-
-    A subclass should override the `value` property getter and setter
-    accordingly.
     """
-    @property
-    def value(self):
-        raise NotImplementedError
+    def __init__(self):
+        self.phys_tags = []
 
-    @value.setter
-    def value(self, v):
-        raise NotImplementedError
+    def add_tag(self, phys_tag):
+        self.phys_tags.append(phys_tag)
+
+    def __iter__(self):
+        return self.phys_tags.__iter__()

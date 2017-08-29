@@ -6,7 +6,6 @@ class ReadOnlyMatrix(object):
     of the id_map for accessing the matrix.
 
     """
-    # TODO: Test me
 
     def __init__(self, matobj, id_map):
         self.mat = matobj
@@ -88,3 +87,9 @@ class MatrixManager(object):
 
     def fill_vector(self, name, row, value):
         self.vector[name][row] = value
+
+    def swap_vector(self, vector1_name, vector2_name):
+        vec1 = self.get_vector(vector1_name)
+        vec2 = self.get_vector(vector2_name)
+        self.vector[vector1_name] = vec2
+        self.vector[vector2_name] = vec1

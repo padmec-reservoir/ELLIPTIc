@@ -1,4 +1,4 @@
-__all__ = ['Mesh', 'MeshFactory']
+__all__ = ['MOABMesh', 'MOABMeshFactory']
 
-from Mesh import Mesh
-from MeshFactory import MeshFactory
+from Mesh import MOABMesh
+from MeshFactory import MOABMeshFactory
