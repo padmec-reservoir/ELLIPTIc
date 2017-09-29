@@ -1,21 +1,20 @@
 from setuptools import setup, find_packages, Extension
 
 
-USE_CYTHON = False
+USE_CYTHON = True
 
 extensions = []
 
 if USE_CYTHON:
     extensions = [
-        Extension("*", ["elliptic/Kernel/*.py"]),
-        Extension("*", ["elliptic/Mesh/*.py"])
+        Extension("*", ["elliptic/Kernel/MeshComputeInterface/*.pyx"])
     ]
     from Cython.Build import cythonize
     extensions = cythonize(extensions)
 
 setup(
     name="ELLIPTIc",
-    version='0.2.0',
+    version='1.0.0',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
     install_requires=['numpy', 'colorlog'],
