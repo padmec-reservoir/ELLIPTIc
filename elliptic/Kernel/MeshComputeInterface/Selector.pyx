@@ -1,7 +1,7 @@
 
 class SelectorBase(object):
-    """Selectors always act either on a mesh or on entities, and always return new
-    entities.
+    """Selectors always act either on a mesh or on entities, and always return
+    new selectors.
     """
     pass
 
