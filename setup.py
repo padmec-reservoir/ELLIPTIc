@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages, Extension
 
 
-USE_CYTHON = True
+USE_CYTHON = False
 
 extensions = []
 
@@ -17,7 +17,7 @@ setup(
     version='1.0.0',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
-    install_requires=['numpy', 'colorlog'],
+    install_requires=['numpy', 'colorlog', 'configobj'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions
