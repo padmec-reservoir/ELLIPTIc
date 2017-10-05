@@ -68,7 +68,7 @@ class Preprocessor(object):
 
         gid_tag = self.moab.tag_get_handle('GLOBAL_ID')
 
-        print "Loading physical tags..."
+        print ("Loading physical tags...")
         for tag_ms in physical_sets:
             tag_id = self.moab.tag_get_data(
                 self.physical_tag, np.array([tag_ms]), flat=True)[0]
@@ -100,7 +100,7 @@ class Preprocessor(object):
                 except Exception as e:
                     print ("Error while storing input data. Please verify "
                            "your config and data files.")
-                    print "Error: ", e
+                    print ("Error: ", e)
                     exit()
 
             # self.moab.clear_meshset(tag_ms)

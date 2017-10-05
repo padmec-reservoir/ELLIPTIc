@@ -8,11 +8,11 @@ from pymoab import core
 
 def validate_config(configs):
     if not configs:
-        print "Error: Please provide a valid config file."
+        print("Error: Please provide a valid config file.")
         exit()
 
     if not configs['General']:
-        print "Error: Config file must have a [General] section"
+        print("Error: Config file must have a [General] section")
         exit()
 
     if not configs['General']['output-file']:
@@ -29,12 +29,12 @@ def parse_config(config_file):
         configs = configobj.ConfigObj(
             config_file, file_error=True, raise_errors=True)
     except configobj.ConfigObjError as e:
-        print "Error reading config file:"
-        print e
+        print("Error reading config file:")
+        print(e)
         exit()
     except IOError as e:
-        print "Error reading config file:"
-        print e
+        print("Error reading config file:")
+        print(e)
         exit()
 
     validate_config(configs)
@@ -69,8 +69,8 @@ def build_preprocessor_pipeline(module_names, configs):
         try:
             preprocessor_module = importlib.import_module(module_name)
         except ImportError:
-            print "Error importing the preprocessor module {0}.".format(
-                module_name)
+            print("Error importing the preprocessor module {0}.".format(
+                module_name))
             exit()
 
         preprocessor_pipeline.append(

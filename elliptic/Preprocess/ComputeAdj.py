@@ -23,7 +23,7 @@ class Preprocessor(object):
             method from the topo_util module is used to compute the
             adjacencies.
         """
-        print "Computing adjacencies..."
+        print("Computing adjacencies...")
         mesh_topo_util = topo_util.MeshTopoUtil(moab)
         root_set = moab.get_root_set()
 

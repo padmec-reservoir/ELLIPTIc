@@ -1,5 +1,5 @@
 # coding=utf-8
-from PhysicalBase import PhysicalBase
+from .PhysicalBase import PhysicalBase
 
 
 class PhysicalMap(object):
@@ -57,7 +57,8 @@ class PhysicalMap(object):
         return physical_name in self.physical_names
 
     def __iter__(self):
-        return self.physical_names.iteritems()
+        for key, value in self.physical_names.items():
+            yield key, value
 
     def register(self, physical_type):
         """Registers an instance of the given `physical_type`.
