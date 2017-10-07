@@ -15,6 +15,9 @@ if USE_CYTHON:
 setup(
     name="ELLIPTIc",
     version='1.0.0',
+    url='https://github.com/padmec-reservoir/ELLIPTIc',
+    maintainer='Guilherme Caminha',
+    maintainer_email='gpkc@cin.ufpe.br',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
     install_requires=['numpy', 'colorlog', 'configobj'],

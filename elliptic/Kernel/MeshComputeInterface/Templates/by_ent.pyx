@@ -1,16 +1,13 @@
-cimport elliptic
+{% extends 'base.pyx' %}
 
-cdef class MOABCore:
-    cdef elliptic.Core* inst
-
-
+{% block content %}
 def callme(pymb):
-    cdef elliptic.Core* mb = (<MOABCore>pymb).inst
+    cdef Core* mb = (<MOABCore>pymb).inst
 
-    #cdef elliptic.EntityHandle ent
-    cdef elliptic.Range ents
-    cdef elliptic.Tag data_tag = NULL
-    cdef elliptic.EntityHandle ent_array[1]
+    #cdef EntityHandle ent
+    cdef Range ents
+    cdef Tag data_tag = NULL
+    cdef EntityHandle ent_array[1]
     cdef double vals_array[1]
 
     mb.tag_get_handle("cydata", data_tag)
@@ -24,9 +21,10 @@ def callme(pymb):
 
     #mb.write_file("arquivo.vtk")
 
-cdef elliptic.EntityHandle ent = 100
-print ent
-
+cdef EntityHandle ent = 100
+print(ent)
+x = 500
+{%- endblock %}
 #cdef EntityHandle ent
 #
 #for ent in {{ ents }}:

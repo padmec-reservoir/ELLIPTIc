@@ -1,8 +1,8 @@
-from MeshComputeInterface import ComputeInterface
 
 
-class SelectorBase(ComputeInterface):
-    pass
+class EntitySelector:
+    def by_dim(self, dim):
+        self.context.add_compute_node()
 
-class EntitySelector(SelectorBase):
-    pass
+    def by_set(self):
+        pass
