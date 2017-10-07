@@ -1,4 +1,4 @@
-from KernelBase import KernelBase
+from .KernelBase import KernelBase
 from elliptic.Solver import ReadOnlyMatrix
 
 

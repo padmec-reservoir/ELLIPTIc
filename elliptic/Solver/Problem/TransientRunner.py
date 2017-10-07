@@ -1,6 +1,6 @@
 import time
 
-from Runner import RunnerBase
+from .Runner import RunnerBase
 
 
 class TransientRunner(RunnerBase):
@@ -23,7 +23,7 @@ class TransientRunner(RunnerBase):
                 step, time.time() - t0))
 
             if step % export_frequency == 0:
-                print export_name.format(export_step)
+                print(export_name.format(export_step))
                 self.problem.export_solution(export_name.format(export_step))
                 export_step = export_step + 1
 

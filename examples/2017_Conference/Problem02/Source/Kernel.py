@@ -28,7 +28,7 @@ class InitialSatField(DimensionEntityKernelMixin, FieldKernelMixin,
         sat_cond = self.get_physical(Saturation, adj_faces)
 
         if sat_cond:
-            self.set_field_value([(elem, sat_cond[0][1])])
+            self.set_field_value([(elem, next(sat_cond)[1])])
         else:
             self.set_field_value([(elem, 0.0)])
 
@@ -64,7 +64,7 @@ class SatField(DimensionEntityKernelMixin, FieldKernelMixin,
         adj_faces = self.get_adj(elem, 2, 2, 1)
         sat_cond = self.get_physical(Saturation, adj_faces)
         if sat_cond:
-            self.set_field_value([(elem, sat_cond[0][1])])
+            self.set_field_value([(elem, next(sat_cond)[1])])
         else:
             adj_vols = self.get_adj(elem, 2, 3, 1)
             adj_faces = set(self.get_adj(elem, 2, 2, 1))

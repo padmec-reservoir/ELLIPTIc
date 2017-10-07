@@ -12,8 +12,8 @@ class Preprocessor(object):
         try:
             self.moab.load_file(self.input_file)
         except Exception as e:
-            print "Error reading input file"
-            print e
+            print("Error reading input file")
+            print(e)
             exit()
 
     @property

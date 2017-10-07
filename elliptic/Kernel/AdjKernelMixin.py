@@ -1,6 +1,6 @@
 import itertools
 
-from KernelBase import KernelBase
+from .KernelBase import KernelBase
 
 
 class AdjKernelMixin(KernelBase):

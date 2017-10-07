@@ -52,7 +52,7 @@ mesh.moab.add_entities(ms, elems)
 mesh.moab.write_file('Output/out{0}.vtk'.format(0), [ms])
 
 for i in range(1, NUMBER_STEPS):
-    print i
+    print(i)
 
     fw_problem = ProblemBase(
         mesh=mesh, kernel=fw_kernel,

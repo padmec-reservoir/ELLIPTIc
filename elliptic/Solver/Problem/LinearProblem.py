@@ -1,4 +1,4 @@
-from Problem import ProblemBase
+from .Problem import ProblemBase
 from PyTrilinos import Epetra, AztecOO
 
 

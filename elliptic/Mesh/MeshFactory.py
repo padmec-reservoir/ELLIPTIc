@@ -2,7 +2,7 @@
 import colorlog
 from pymoab import core
 
-from Mesh import MOABMesh
+from .Mesh import MOABMesh
 
 
 class MOABMeshFactory(object):

@@ -56,9 +56,10 @@ class MOABMesh(object):
             phys_elems_set = self.moab.tag_get_data(phys_tag_elems, root_set)
         except RuntimeError as e:
             if e.args[0] == types.MB_TAG_NOT_FOUND:
-                print "Tag not found: {0}".format(phys_tag_name + "_elems")
+                self.LOG.error(
+                    "Tag not found: {0}".format(phys_tag_name + "_elems"))
             else:
-                print "Unknown error."
+                self.LOG.error("Unknown error.")
             exit()
         phys_elems = self.moab.get_entities_by_handle(phys_elems_set)
 
