@@ -1,0 +1,3 @@
+
+class TestElliptic(object):
+    pass

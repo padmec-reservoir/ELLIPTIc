@@ -1,4 +1,4 @@
-{% include 'elliptic.pxd' %}
+{% include 'elliptic.pxd.etp' %}
 
 cdef class MOABCore:
     cdef Core* inst

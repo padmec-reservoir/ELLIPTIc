@@ -1,6 +1,3 @@
-{% extends 'base.pyx' %}
-
-{% block content %}
 def callme(pymb):
     cdef Core* mb = (<MOABCore>pymb).inst
 
@@ -24,7 +21,7 @@ def callme(pymb):
 cdef EntityHandle ent = 100
 print(ent)
 x = 500
-{%- endblock %}
+
 #cdef EntityHandle ent
 #
 #for ent in {{ ents }}:
