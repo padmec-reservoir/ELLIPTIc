@@ -3,4 +3,9 @@
 cdef class MOABCore:
     cdef Core* inst
 
-{{ child }}
+def execute(pymb):
+    # TODO: Add declarations dynamically, and as necessary, from the options
+    # given.
+    cdef Core* mb = (<MOABCore>pymb).inst
+
+    {{ child|indent }}
