@@ -13,7 +13,7 @@ class TestSelector:
 
     @pytest.fixture()
     def mci_inst(self):
-        return mci(context_class=None)
+        return mci()
 
     def test_EntitySelector(self, mci_inst):
         mci_inst.selector(EntitySelector).by_dim(3)

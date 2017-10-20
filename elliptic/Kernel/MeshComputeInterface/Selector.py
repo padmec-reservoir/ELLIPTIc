@@ -1,31 +1,46 @@
-from .MeshComputeInterface import ContextNode
+from .MeshComputeInterface import ComputeBase
 
 
-class EntitySelector:
+class Entity(ComputeBase):
 
-    def __init__(self, parent):
-        self.parent = parent
-        self.context_node = ContextNode(parent)
+    def where(self, **kwargs):
+        template_file = 'where.pyx.etp'
+        options = {
+            "conditions": []
+        }
+        for condition, value in kwargs.items():
+            options['conditions'].append((condition, value))
 
-        self.__called = False
+        context_node = self.context_node_class()
 
-    def _get_context_node(self):
-        return self.context_node
+        self.set_template(context_node, template_file, options)
+        self.current_node_group.add_node(context_node)
+
+        child_node_group = self.node_group_class()
+        context_node.set_child_node_group(child_node_group)
+
+        next_compute = Entity(child_node_group)
+        return next_compute
+
+
+class EntitySelector(ComputeBase):
 
     def by_dim(self, dim):
         template_file = 'by_ent.pyx.etp'
         options = {
-
+            "dim": dim
         }
 
-        if self.__called:
-            # TODO
-            raise NotImplementedError
-        else:
-            self.__called = True
+        context_node = self.context_node_class()
 
-            self.context_node.set_template_file(template_file)
-            self.context_node.set_options(**options)
+        self.set_template(context_node, template_file, options)
+        self.current_node_group.add_node(context_node)
+
+        child_node_group = self.node_group_class()
+        context_node.set_child_node_group(child_node_group)
+
+        next_compute = Entity(child_node_group)
+        return next_compute
 
     def by_set(self):
         # TODO

@@ -8,4 +8,6 @@ def execute(pymb):
     # given.
     cdef Core* mb = (<MOABCore>pymb).inst
 
+    {% if child %}
     {{ child|indent }}
+    {% endif %}

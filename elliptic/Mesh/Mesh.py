@@ -1,12 +1,6 @@
 import colorlog
 import time
 
-from pymoab import types
-from pymoab import topo_util
-import numpy as np
-
-from elliptic.Solver import MatrixManager
-
 
 class MOABMesh(object):
 

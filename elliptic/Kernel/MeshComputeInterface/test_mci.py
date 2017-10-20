@@ -5,7 +5,7 @@ default_selector = None
 DIM = 2
 
 def compute_equiv_diff(mci):
-    faces = mci.selector(default_selector)  # .by_ent(DIM-1).where(with_boundary=False)
+    faces = mci.selector(default_selector).by_ent(DIM-1)  # .where(with_boundary=False)
 
 
 def compute_2(mci):
