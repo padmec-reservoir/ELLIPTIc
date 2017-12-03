@@ -30,3 +30,11 @@ after_success:
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
   docker push padmec/elliptic:1.0;
   fi
+- wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+- chmod +x send.sh
+- ./send.sh success
+
+after_failure:
+- wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+- chmod +x send.sh
+- ./send.sh failure
