@@ -20,7 +20,7 @@ setup(
     maintainer_email='gpkc@cin.ufpe.br',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
-    install_requires=['numpy', 'colorlog', 'configobj'],
+    install_requires=['numpy', 'colorlog', 'configobj', 'anytree'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions
