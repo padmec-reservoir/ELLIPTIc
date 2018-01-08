@@ -1,26 +1,30 @@
-from anytree import NodeMixin, AnyNode, RenderTree
+from anytree import NodeMixin
+from typing import Dict
+
+
+def add(x: int, y: int) -> float:
+    return x + y
 
 
 class EllipticNodeMixin(NodeMixin):
 
-    last_id = 0
+    last_id = 0  # type: int
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(EllipticNodeMixin, self).__init__()
 
-        print(self.last_id)
-        print("\n\n\n\n\n\n\n\n")
+        self.name = ""  # type: str
 
-        self.unique_id = self.__class__.last_id
-        self.__class__.last_id += 1
+        self.unique_id = EllipticNodeMixin.last_id
+        EllipticNodeMixin.last_id += 1
 
-    def _name_func(self):
+    def _name_func(self) -> str:
         return self.name + '_' + str(self.unique_id)
 
-    def _shape(self):
+    def _shape(self) -> str:
         return "shape=box"
 
-    def export_tree(self, filename):
+    def export_tree(self, filename: str) -> None:
         from anytree.exporter import DotExporter
 
         exporter = DotExporter(self.root,
@@ -32,25 +36,17 @@ class EllipticNodeMixin(NodeMixin):
 
 class ExpressionBase(EllipticNodeMixin):
 
-    def __init__(self, args, expr_bldr):
+    def __init__(self,
+                 args: Dict[str, int],
+                 expr_bldr: 'ExpressionBuilder') -> None:
         super(ExpressionBase, self).__init__()
 
         self.children = (args, expr_bldr)
 
 
-class StatementRoot(EllipticNodeMixin):
-
-    def _shape(self):
-        return "shape=doubleoctagon"
-
-    def __init__(self):
-        super(StatementRoot, self).__init__()
-        self.name = "stmt_root"
-
-
 class Argument(EllipticNodeMixin):
 
-    def __init__(self, name, val):
+    def __init__(self, name: str, val) -> None:
         super(Argument, self).__init__()
 
         self.name = name
@@ -71,6 +67,16 @@ class Arguments(EllipticNodeMixin):
         for k, v in kwargs.items():
             children.append(Argument(name=k, val=v))
         self.children = children
+
+
+class StatementRoot(EllipticNodeMixin):
+
+    def _shape(self) -> str:
+        return "shape=doubleoctagon"
+
+    def __init__(self) -> None:
+        super(StatementRoot, self).__init__()
+        self.name = "stmt_root"
 
 
 class ExpressionBuilder(StatementRoot):

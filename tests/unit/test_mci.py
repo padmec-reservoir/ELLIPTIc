@@ -45,8 +45,6 @@ class TestExpression:
         res1.export_tree("res1.png")
         res2.export_tree("res2.png")
 
-        assert res1.root.descendants == res2.root.descendants
-
         with mci.computation() as c:
             res3 = c(self.DummyMap,
                      grouping=res1,
@@ -57,7 +55,6 @@ class TestExpression:
             res4 = c(self.DummyMap, grouping=res2, val2=2)
             res4 = res4(self.DummyReduce, val3=3, val4=4)
 
-            assert res3 == res4
 
         with mci.management() as m:
             pass
