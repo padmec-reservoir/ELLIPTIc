@@ -1,0 +1,2 @@
+if {% for condition, value in conditions %} ({{ condition }}(current_entity, mb) == {{ value }}) {% if not loop.last %} and {% endif %}{% endfor %}:
+    {{ child }}
