@@ -1,19 +1,15 @@
 from anytree import NodeMixin
-from typing import Dict
-
-
-def add(x: int, y: int) -> float:
-    return x + y
+from typing import Dict, Any, Type
 
 
 class EllipticNodeMixin(NodeMixin):
 
-    last_id = 0  # type: int
+    last_id: int = 0
 
     def __init__(self) -> None:
         super(EllipticNodeMixin, self).__init__()
 
-        self.name = ""  # type: str
+        self.name: str
 
         self.unique_id = EllipticNodeMixin.last_id
         EllipticNodeMixin.last_id += 1
@@ -46,7 +42,7 @@ class ExpressionBase(EllipticNodeMixin):
 
 class Argument(EllipticNodeMixin):
 
-    def __init__(self, name: str, val) -> None:
+    def __init__(self, name: str, val: Any) -> None:
         super(Argument, self).__init__()
 
         self.name = name
@@ -55,10 +51,10 @@ class Argument(EllipticNodeMixin):
 
 class Arguments(EllipticNodeMixin):
 
-    def _shape(self):
+    def _shape(self) -> str:
         return "shape=ellipse"
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super(Arguments, self).__init__()
 
         self.name = "Args"
@@ -81,7 +77,9 @@ class StatementRoot(EllipticNodeMixin):
 
 class ExpressionBuilder(StatementRoot):
 
-    def __call__(self, expr_type, **kwargs):
+    def __call__(self,
+                 expr_type: Type[ExpressionBase],
+                 **kwargs) -> 'ExpressionBuilder':
         new_expr_bldr = ExpressionBuilder()
         args = Arguments(**kwargs)
         expr = expr_type(args, new_expr_bldr)
