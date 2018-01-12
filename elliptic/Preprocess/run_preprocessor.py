@@ -66,6 +66,7 @@ def build_preprocessor_pipeline(module_names, configs):
 
     preprocessor_pipeline = []
     for module_name in module_names:
+        print(module_name)
         try:
             preprocessor_module = importlib.import_module(module_name)
         except ImportError:
