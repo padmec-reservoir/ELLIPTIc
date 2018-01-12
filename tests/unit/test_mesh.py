@@ -2,7 +2,7 @@
 class TestGrid:
 
     def test_grid(self, elliptic_):
-        mf = elliptic_.mesh_factory()
+        mf = elliptic_.mesh_builder()
 
         my_grid = mf.grid(nx=1, ny=2, nz=3,
                           dx=3, dy=2, dz=1)

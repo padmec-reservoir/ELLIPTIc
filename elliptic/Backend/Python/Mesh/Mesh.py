@@ -13,16 +13,16 @@ class Grid:
         return [i * self.dx, j * self.dy, k * self.dz]
 
 
-class MeshFactory:
+class MeshBuilder:
 
     def grid(self, nx, ny, nz, dx, dy, dz):
         return Grid(nx, ny, nz, dx, dy, dz)
 
 
-class Mesh:
+class MeshBackend:
 
     def __init__(self, output_formats, report_format, fields):
         pass
 
-    def mesh_factory(self):
-        return MeshFactory()
+    def mesh_builder(self):
+        return MeshBuilder()

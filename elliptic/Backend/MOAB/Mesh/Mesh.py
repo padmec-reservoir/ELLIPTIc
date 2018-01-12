@@ -1,3 +1,0 @@
-
-class Mesh:
-    pass

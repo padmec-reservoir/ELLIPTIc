@@ -31,30 +31,19 @@ class TestExpression:
         pass
 
     def test_IR_build(self, mci):
-        with mci.selection() as s:
-            res1 = s(self.DummyDilute,
-                     val1=1,
-                     val2=2)(self.DummyFilter,
-                             val3=3,
-                             val4=4)
-
-        with mci.selection() as s:
-            res2 = s(self.DummyDilute, val1=1, val2=2)
-            res2 = res2(self.DummyFilter, val3=3, val4=4)
+        with mci.root() as root:
+            res1 = root(self.DummyDilute,
+                        val1=1,
+                        val2=2)(self.DummyFilter,
+                                val3=3,
+                                val4=4)
+            res2 = res1(self.DummyMap,
+                        val1=2)(self.DummyReduce,
+                                val3=3,
+                                val4=4)
+            res3 = res1(self.DummyMap,
+                        val1=2)(self.DummyReduce,
+                                val3=3,
+                                val4=4)
 
         res1.export_tree("res1.png")
-        res2.export_tree("res2.png")
-
-        with mci.computation() as c:
-            res3 = c(self.DummyMap,
-                     grouping=res1,
-                     val1=2)(self.DummyReduce,
-                             val3=3,
-                             val4=4)
-
-            res4 = c(self.DummyMap, grouping=res2, val2=2)
-            res4 = res4(self.DummyReduce, val3=3, val4=4)
-
-
-        with mci.management() as m:
-            pass

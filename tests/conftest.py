@@ -4,7 +4,7 @@ from elliptic import Backend, Elliptic
 
 
 MESH_BACKENDS = [
-    Backend.Python
+    Backend.Moab
 ]
 
 SOLVER_BACKENDS = [
@@ -40,7 +40,7 @@ def solver_backend_mod(request):
 
 @pytest.fixture(params=MESH_BACKEND_PARAMS)
 def mesh_backend(request, mesh_backend_mod):
-    meshb = mesh_backend_mod.Mesh(**(request.param))
+    meshb = mesh_backend_mod.MeshBackend(**(request.param))
     return meshb
 
 
