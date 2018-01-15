@@ -6,8 +6,8 @@ from elliptic.Kernel.MeshComputeInterface.Expression import (Selector,
 
 
 @pytest.fixture()
-def mci(request):
-    mci_ = MCI()
+def mci(request, elliptic_) -> MCI:
+    mci_ = MCI(elliptic_)
 
     return mci_
 

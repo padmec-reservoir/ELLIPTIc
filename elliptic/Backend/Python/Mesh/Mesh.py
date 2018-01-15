@@ -1,3 +1,5 @@
+from .PythonTemplateManager import PythonTemplateManager
+
 
 class Grid:
 
@@ -22,7 +24,10 @@ class MeshBuilder:
 class MeshBackend:
 
     def __init__(self, output_formats, report_format, fields):
-        pass
+        self.template_manager = PythonTemplateManager()
 
     def mesh_builder(self):
         return MeshBuilder()
+
+    def get_template_manager(self) -> PythonTemplateManager:
+        return self.template_manager

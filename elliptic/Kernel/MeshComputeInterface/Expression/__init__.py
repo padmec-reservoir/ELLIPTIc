@@ -1,7 +1,6 @@
-__all__ = ['EllipticNodeMixin', 'ExpressionBase',
-           'StatementRoot', 'ExpressionBuilder',
+__all__ = ['EllipticNode', 'ExpressionBase', 'StatementRoot',
            'Computer', 'Manager', 'Selector']
 
-from .Expression import (EllipticNodeMixin, ExpressionBase,
-                         StatementRoot, ExpressionBuilder)
+from .Expression import (EllipticNode, ExpressionBase,
+                         StatementRoot)
 from . import Computer, Manager, Selector

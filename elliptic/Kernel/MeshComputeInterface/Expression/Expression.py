@@ -2,7 +2,7 @@ from anytree import NodeMixin
 from typing import Dict, Any, Type
 
 
-class EllipticNodeMixin(NodeMixin):
+class EllipticNode(NodeMixin):
 
     last_id: int = 0
 
@@ -11,8 +11,8 @@ class EllipticNodeMixin(NodeMixin):
 
         self.name: str
 
-        self.unique_id = EllipticNodeMixin.last_id
-        EllipticNodeMixin.last_id += 1
+        self.unique_id = EllipticNode.last_id
+        EllipticNode.last_id += 1
 
     def _name_func(self) -> str:
         return self.name + '_' + str(self.unique_id)
@@ -29,8 +29,10 @@ class EllipticNodeMixin(NodeMixin):
 
         exporter.to_picture(filename)
 
+    def render(self, template_manager, child) -> str:
+        return ""
 
-class ExpressionBase(EllipticNodeMixin):
+class ExpressionBase(EllipticNode):
 
     def __init__(self) -> None:
         super().__init__()
@@ -44,8 +46,7 @@ class ExpressionBase(EllipticNodeMixin):
 
         return expr
 
-
-class StatementRoot(EllipticNodeMixin):
+class StatementRoot(EllipticNode):
 
     def _shape(self) -> str:
         return "shape=doubleoctagon"
@@ -54,12 +55,9 @@ class StatementRoot(EllipticNodeMixin):
         super(StatementRoot, self).__init__()
         self.name = "stmt_root"
 
-
-class ExpressionBuilder(StatementRoot):
-
     def __call__(self,
                  expr_type: Type[ExpressionBase],
-                 **kwargs) -> 'ExpressionBuilder':
+                 **kwargs) -> 'ExpressionBase':
         expr = expr_type(**kwargs)
 
         self.children += (expr,)

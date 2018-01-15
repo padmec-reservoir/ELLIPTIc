@@ -1,5 +1,7 @@
-from .Expression import Computer, Manager, Selector, Expression
-from .Expression.Expression import ExpressionBuilder
+from typing import Union
+
+from elliptic import Elliptic
+from .Expression import StatementRoot
 
 
 class ExprContext:
@@ -7,15 +9,37 @@ class ExprContext:
     def __init__(self,
                  mci: 'MCI') -> None:
         self._mci = mci
+        self.root: StatementRoot = None
 
-    def __enter__(self) -> ExpressionBuilder:
-        return ExpressionBuilder()
+    def __enter__(self) -> StatementRoot:
+        self.root = StatementRoot()
+        return self.root
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        pass
+        self._mci.build(self.root)
 
 
 class MCI:
 
+    def __init__(self, elliptic: Elliptic.Elliptic) -> None:
+        self.elliptic = elliptic
+        self.built = False
+        self.building = False
+
     def root(self) -> ExprContext:
-        return ExprContext(self)
+        if not self.built:
+            self.building = True
+            return ExprContext(self)
+        else:
+            raise
+
+    def build(self, root: StatementRoot):
+        from elliptic.Backend.DynamicCompiler.TreeBuild import TreeBuild
+
+        template_manager = self.elliptic.mesh_backend.get_template_manager()
+        tree_builder = TreeBuild(template_manager)
+
+        built_module = tree_builder.build(root)
+
+        self.building = False
+        self.built = True

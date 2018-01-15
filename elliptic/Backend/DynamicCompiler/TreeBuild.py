@@ -1,15 +1,18 @@
 import os
 import tempfile
+from types import ModuleType
 from typing import List
 
 from jinja2 import Environment, PackageLoader, Template
 
 from .utils import (build_extension, elliptic_cythonize,
                     import_extension)
-from elliptic.Kernel.MeshComputeInterface.Expression import StatementRoot
+from elliptic.Kernel.MeshComputeInterface.Expression import (StatementRoot,
+                                                             ExpressionBase,
+                                                             EllipticNode)
 
 
-class TemplateManager:
+class TemplateManagerBase:
 
     def __init__(self, package: str, templates_folder: str) -> None:
         self.jinja2_env = Environment(
@@ -23,14 +26,13 @@ class TemplateManager:
         return template.render(**kwargs)
 
 
-class TreeBuildBase:
+class TreeBuild:
     build_dir_prefix = 'elliptic__'
-    base_template = 'base.pyx.etp'
 
-    def __init__(self, template_manager: TemplateManager) -> None:
+    def __init__(self, template_manager: TemplateManagerBase) -> None:
         self.template_manager = template_manager
 
-    def build(self, root: StatementRoot) -> None:
+    def build(self, root: StatementRoot) -> ModuleType:
         cython_dir = tempfile.mkdtemp(prefix=self.build_dir_prefix)
         module_fd, module_path = tempfile.mkstemp(
             suffix='.pyx', dir=cython_dir)
@@ -51,12 +53,12 @@ class TreeBuildBase:
 
         return self.built_module
 
-    def _render_tree(self, root: StatementRoot):
-        pass
-
-    def _render_tree_rec(self, child: str, root: StatementRoot):
+    def _render_tree(self, node: EllipticNode) -> str:
+        child: ExpressionBase
         node_templates: List[str] = []
 
-        for child in root.children:
-            built_node: str = child.build(self.template_manager)
+        for child in node.children:
+            built_node: str = self._render_tree(child)
             node_templates.append(built_node)
+
+        return node.render(self.template_manager, node_templates)
