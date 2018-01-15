@@ -4,7 +4,7 @@ from elliptic import Backend, Elliptic
 
 
 MESH_BACKENDS = [
-    Backend.Moab
+    Backend.Python
 ]
 
 SOLVER_BACKENDS = [

@@ -7,8 +7,8 @@ class Elliptic:
 
         self._mesh = None
 
-    def mesh_factory(self):
-        return self.mesh_backend.mesh_factory()
+    def mesh_builder(self):
+        return self.mesh_backend.mesh_builder()
 
     def set_mesh(self, mesh):
         self._mesh = mesh

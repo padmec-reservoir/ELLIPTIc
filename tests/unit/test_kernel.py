@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.fixture()
+#@pytest.fixture()
 def mesh(request, elliptic_):
     mb = elliptic_.mesh_builder()
 
@@ -12,5 +12,5 @@ def mesh(request, elliptic_):
 
 class TestKernel:
 
-    def test_kernel(mesh, kernel):
+    def _test_kernel(mesh, kernel):
         mesh.run_kernel(kernel)

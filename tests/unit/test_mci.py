@@ -16,19 +16,27 @@ class TestExpression:
 
     class DummyDilute(Selector.Dilute):
         name = "Dilute"
-        pass
+
+        def __init__(self, val1, val2):
+            super().__init__()
 
     class DummyFilter(Selector.Filter):
         name = "Filter"
-        pass
+
+        def __init__(self, val3, val4):
+            super().__init__()
 
     class DummyMap(Computer.Map):
         name = "Map"
-        pass
+
+        def __init__(self, val1):
+            super().__init__()
 
     class DummyReduce(Computer.Reduce):
         name = "Reduce"
-        pass
+
+        def __init__(self, val3, val4):
+            super().__init__()
 
     def test_IR_build(self, mci):
         with mci.root() as root:
@@ -41,9 +49,9 @@ class TestExpression:
                         val1=2)(self.DummyReduce,
                                 val3=3,
                                 val4=4)
-            res3 = res1(self.DummyMap,
-                        val1=2)(self.DummyReduce,
-                                val3=3,
-                                val4=4)
+            res3 = res1(self.DummyReduce,
+                        val3=3,
+                        val4=4)(self.DummyMap,
+                                val1=2)
 
         res1.export_tree("res1.png")

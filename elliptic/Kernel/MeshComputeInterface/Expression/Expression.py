@@ -7,7 +7,7 @@ class EllipticNodeMixin(NodeMixin):
     last_id: int = 0
 
     def __init__(self) -> None:
-        super(EllipticNodeMixin, self).__init__()
+        super().__init__()
 
         self.name: str
 
@@ -32,37 +32,17 @@ class EllipticNodeMixin(NodeMixin):
 
 class ExpressionBase(EllipticNodeMixin):
 
-    def __init__(self,
-                 args: Dict[str, int],
-                 expr_bldr: 'ExpressionBuilder') -> None:
-        super(ExpressionBase, self).__init__()
+    def __init__(self) -> None:
+        super().__init__()
 
-        self.children = (args, expr_bldr)
+    def __call__(self,
+                 expr_type: Type['ExpressionBase'],
+                 **kwargs) -> 'ExpressionBase':
+        expr = expr_type(**kwargs)
 
+        self.children += (expr,)
 
-class Argument(EllipticNodeMixin):
-
-    def __init__(self, name: str, val: Any) -> None:
-        super(Argument, self).__init__()
-
-        self.name = name
-        self.val = val
-
-
-class Arguments(EllipticNodeMixin):
-
-    def _shape(self) -> str:
-        return "shape=ellipse"
-
-    def __init__(self, **kwargs) -> None:
-        super(Arguments, self).__init__()
-
-        self.name = "Args"
-
-        children = []
-        for k, v in kwargs.items():
-            children.append(Argument(name=k, val=v))
-        self.children = children
+        return expr
 
 
 class StatementRoot(EllipticNodeMixin):
@@ -80,10 +60,8 @@ class ExpressionBuilder(StatementRoot):
     def __call__(self,
                  expr_type: Type[ExpressionBase],
                  **kwargs) -> 'ExpressionBuilder':
-        new_expr_bldr = ExpressionBuilder()
-        args = Arguments(**kwargs)
-        expr = expr_type(args, new_expr_bldr)
+        expr = expr_type(**kwargs)
 
         self.children += (expr,)
 
-        return new_expr_bldr
+        return expr

@@ -1,8 +1,8 @@
 
 class MeshBuilder:
-
-    def load_file(self, filename: str) -> Mesh:
-        pass
+    pass
+    #def load_file(self, filename: str) -> Mesh:
+    #    pass
 
 
 class MeshBackend:

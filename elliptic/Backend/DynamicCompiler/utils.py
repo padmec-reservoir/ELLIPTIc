@@ -36,13 +36,19 @@ def build_extension(extension, lib_dir):
     return build_extension
 
 
-def elliptic_cythonize(modname, pyxfilename):
+def elliptic_cythonize(modname, pyxfilename,
+                       libraries=None, include_dirs=None):
+    if not libraries:
+        libraries = []
+    if not include_dirs:
+        include_dirs = []
+
     import numpy as np
     ext = Extension(name=modname,
                     sources=[pyxfilename],
-                    include_dirs=[np.get_include()],
+                    include_dirs=[np.get_include()]+include_dirs,
                     language="c++",
-                    libraries=["MOAB"])
+                    libraries=libraries)
 
     opts = dict(
         force=True
