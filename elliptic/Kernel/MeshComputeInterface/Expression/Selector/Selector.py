@@ -2,4 +2,6 @@ from ..Expression import ExpressionBase
 
 
 class Selector(ExpressionBase):
-    pass
+    
+    def __init__(self):
+        super().__init__()

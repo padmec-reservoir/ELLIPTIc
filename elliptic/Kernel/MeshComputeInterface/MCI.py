@@ -37,7 +37,8 @@ class MCI:
         from elliptic.Backend.DynamicCompiler.TreeBuild import TreeBuild
 
         template_manager = self.elliptic.mesh_backend.get_template_manager()
-        tree_builder = TreeBuild(template_manager)
+        backend_builder = self.elliptic.mesh_backend.get_backend_builder()
+        tree_builder = TreeBuild(template_manager, backend_builder)
 
         built_module = tree_builder.build(root)
 

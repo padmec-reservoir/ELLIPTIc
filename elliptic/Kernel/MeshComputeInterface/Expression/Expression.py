@@ -29,8 +29,10 @@ class EllipticNode(NodeMixin):
 
         exporter.to_picture(filename)
 
-    def render(self, template_manager, child) -> str:
-        return ""
+    def render(self, template_manager, child: str, backend_builder) -> str:
+        return child
+        #raise NotImplementedError
+
 
 class ExpressionBase(EllipticNode):
 
@@ -45,6 +47,7 @@ class ExpressionBase(EllipticNode):
         self.children += (expr,)
 
         return expr
+
 
 class StatementRoot(EllipticNode):
 
@@ -63,3 +66,11 @@ class StatementRoot(EllipticNode):
         self.children += (expr,)
 
         return expr
+
+    def render(self, template_manager, child, backend_builder) -> str:
+        template_file = backend_builder.base()
+        template = template_manager.get_template(template_file)
+
+        rendered_template = template.render(child=child)
+
+        return rendered_template

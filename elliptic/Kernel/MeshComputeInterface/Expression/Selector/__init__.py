@@ -1,5 +1,3 @@
-__all__ = ['Selector', 'Dilute', 'Filter']
+__all__ = ['Dilute', 'Filter', 'Selector']
 
-from .Selector import Selector
-from .Dilute import Dilute
-from .Filter import Filter
+from . import Dilute, Filter, Selector

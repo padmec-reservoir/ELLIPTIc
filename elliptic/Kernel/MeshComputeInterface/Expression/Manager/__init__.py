@@ -1,3 +1,3 @@
 __all__ = ['Manager']
 
-from .Manager import Manager
+from . import Manager

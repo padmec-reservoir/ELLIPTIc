@@ -1,3 +1,5 @@
+from types import ModuleType
+
 from .MoabTemplateManager import MoabTemplateManager
 
 
@@ -17,3 +19,7 @@ class MeshBackend:
 
     def get_template_manager(self) -> MoabTemplateManager:
         return self.template_manager
+
+    def get_build_functions(self) -> ModuleType:
+        from . import build_functions
+        return build_functions

@@ -1,3 +1,5 @@
+from types import ModuleType
+
 from .PythonTemplateManager import PythonTemplateManager
 
 
@@ -31,3 +33,7 @@ class MeshBackend:
 
     def get_template_manager(self) -> PythonTemplateManager:
         return self.template_manager
+
+    def get_backend_builder(self) -> ModuleType:
+        from . import build_functions
+        return build_functions

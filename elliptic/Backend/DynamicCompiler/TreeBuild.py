@@ -26,11 +26,28 @@ class TemplateManagerBase:
         return template.render(**kwargs)
 
 
+class EllipticTemplateManager:
+
+    jinja2_env = Environment(loader=PackageLoader(__package__, 'Templates'))
+
+    @classmethod
+    def get_template(cls, template_file):
+        return cls.jinja2_env.get_template(template_file)
+
+    @classmethod
+    def render(cls, template_file, **kwargs):
+        template = self.get_template(template_file)
+        return template.render(**kwargs)
+
+
 class TreeBuild:
     build_dir_prefix = 'elliptic__'
 
-    def __init__(self, template_manager: TemplateManagerBase) -> None:
+    def __init__(self,
+                 template_manager: TemplateManagerBase,
+                 backend_builder) -> None:
         self.template_manager = template_manager
+        self.backend_builder = backend_builder
 
     def build(self, root: StatementRoot) -> ModuleType:
         cython_dir = tempfile.mkdtemp(prefix=self.build_dir_prefix)
@@ -55,10 +72,18 @@ class TreeBuild:
 
     def _render_tree(self, node: EllipticNode) -> str:
         child: ExpressionBase
-        node_templates: List[str] = []
+        children_rendered_templates: List[str] = []
 
         for child in node.children:
             built_node: str = self._render_tree(child)
-            node_templates.append(built_node)
+            children_rendered_templates.append(built_node)
 
-        return node.render(self.template_manager, node_templates)
+        group_template = EllipticTemplateManager.get_template("nodegroup.etp")
+        rendered_group = group_template.render(
+            node_templates=children_rendered_templates)
+
+        print(rendered_group)
+
+        return node.render(self.template_manager,
+                           rendered_group,
+                           self.backend_builder)
