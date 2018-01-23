@@ -36,9 +36,12 @@ class MCI:
     def build(self, root: StatementRoot):
         from elliptic.Backend.DynamicCompiler.TreeBuild import TreeBuild
 
-        template_manager = self.elliptic.mesh_backend.get_template_manager()
-        backend_builder = self.elliptic.mesh_backend.get_backend_builder()
-        tree_builder = TreeBuild(template_manager, backend_builder)
+        template_manager = self.elliptic.get_mesh_template_manager()
+        backend_builder = self.elliptic.get_mesh_backend_builder()
+        backend_libs = self.elliptic.get_mesh_template_libs()
+        include_dirs = self.elliptic.get_mesh_backend_include_dirs()
+        tree_builder = TreeBuild(template_manager, backend_builder,
+                                 backend_libs, include_dirs)
 
         built_module = tree_builder.build(root)
 

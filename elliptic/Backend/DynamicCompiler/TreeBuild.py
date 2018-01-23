@@ -45,9 +45,13 @@ class TreeBuild:
 
     def __init__(self,
                  template_manager: TemplateManagerBase,
-                 backend_builder) -> None:
+                 backend_builder,
+                 libraries=None,
+                 include_dirs=None) -> None:
         self.template_manager = template_manager
         self.backend_builder = backend_builder
+        self.libraries = libraries
+        self.include_dirs = include_dirs
 
     def build(self, root: StatementRoot) -> ModuleType:
         cython_dir = tempfile.mkdtemp(prefix=self.build_dir_prefix)
@@ -61,7 +65,9 @@ class TreeBuild:
         with os.fdopen(module_fd, 'w') as f:
             f.write(full_rendered_template)
 
-        extensions = elliptic_cythonize(module_name, module_path)
+        extensions = elliptic_cythonize(module_name, module_path,
+                                        include_dirs=self.include_dirs,
+                                        libraries=self.libraries)
 
         built_ext = build_extension(extensions[0], cython_dir)
         ext_path = built_ext.get_ext_fullpath(module_name)

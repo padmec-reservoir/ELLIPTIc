@@ -7,6 +7,18 @@ class Elliptic:
 
         self._mesh = None
 
+    def get_mesh_template_manager(self):
+        return self.mesh_backend.get_template_manager()
+
+    def get_mesh_backend_builder(self):
+        return self.mesh_backend.get_backend_builder()
+
+    def get_mesh_template_libs(self):
+        return self.mesh_backend.get_libraries()
+
+    def get_mesh_backend_include_dirs(self):
+        return self.mesh_backend.get_include_dirs()
+
     def mesh_builder(self):
         return self.mesh_backend.mesh_builder()
 

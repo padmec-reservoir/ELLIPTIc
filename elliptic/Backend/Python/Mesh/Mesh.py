@@ -37,3 +37,9 @@ class MeshBackend:
     def get_backend_builder(self) -> ModuleType:
         from . import build_functions
         return build_functions
+
+    def get_libraries(self):
+        return []
+
+    def get_include_dirs(self):
+        return []
