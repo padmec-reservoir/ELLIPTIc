@@ -43,9 +43,8 @@ class TestExpression:
 
         with mci.root() as root:
             res1 = root(Selector.Dilute.ByEnt,
-                        dim=3)(self.DummyFilter,
-                                val3=3,
-                                val4=4)
+                        dim=3)(Selector.Filter.Where,
+                               is_boundary=False)
             res2 = res1(self.DummyMap,
                         val1=2)(self.DummyReduce,
                                 val3=3,
@@ -54,5 +53,7 @@ class TestExpression:
                         val3=3,
                         val4=4)(self.DummyMap,
                                 val1=2)
+
+        res1.export_tree('res1.png')
 
         elliptic_.run_kernel(mci, mesh)

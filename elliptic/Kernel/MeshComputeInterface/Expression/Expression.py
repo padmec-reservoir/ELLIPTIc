@@ -15,7 +15,7 @@ class EllipticNode(NodeMixin):
         EllipticNode.last_id += 1
 
     def _name_func(self) -> str:
-        return self.name + '_' + str(self.unique_id)
+        return str(self.unique_id) + '\n' + self.name
 
     def _shape(self) -> str:
         return "shape=box"
