@@ -1,4 +1,4 @@
-from typing import Union
+from types import ModuleType
 
 from elliptic import Elliptic
 from .Expression import StatementRoot
@@ -33,6 +33,11 @@ class MCI:
         else:
             raise
 
+    def get_built_module(self) -> ModuleType:
+        if not self.built:
+            raise
+        return self.built_module
+
     def build(self, root: StatementRoot):
         from elliptic.Backend.DynamicCompiler.TreeBuild import TreeBuild
 
@@ -43,7 +48,7 @@ class MCI:
         tree_builder = TreeBuild(template_manager, backend_builder,
                                  backend_libs, include_dirs)
 
-        built_module = tree_builder.build(root)
+        self.built_module = tree_builder.build(root)
 
         self.building = False
         self.built = True

@@ -7,6 +7,10 @@ class Elliptic:
 
         self._mesh = None
 
+    def run_kernel(self, mci, mesh):
+        kernel_module = mci.get_built_module()
+        self.mesh_backend.run_kernel(kernel_module, mesh)
+
     def get_mesh_template_manager(self):
         return self.mesh_backend.get_template_manager()
 

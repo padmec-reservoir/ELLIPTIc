@@ -1,6 +1,14 @@
 from types import ModuleType
 
+from pymoab import core
+
 from .MoabTemplateManager import MoabTemplateManager
+
+
+class Mesh:
+
+    def __init__(self, mb) -> None:
+        self.mb = mb
 
 
 class Grid:
@@ -19,6 +27,14 @@ class Grid:
 
 class MeshBuilder:
 
+    def read_file(self, filename):
+        mb = core.Core()
+        mb.load_file(filename)
+
+        the_mesh = Mesh(mb)
+
+        return the_mesh
+
     def grid(self, nx, ny, nz, dx, dy, dz):
         return Grid(nx, ny, nz, dx, dy, dz)
 
@@ -28,8 +44,8 @@ class MeshBackend:
     def __init__(self, output_formats, report_format, fields):
         self.template_manager = MoabTemplateManager()
 
-    def run_kernel(self, tree) -> None:
-        pass
+    def run_kernel(self, kernel_module, mesh) -> None:
+        kernel_module.execute(mesh.mb)
 
     def mesh_builder(self):
         return MeshBuilder()

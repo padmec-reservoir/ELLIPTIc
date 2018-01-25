@@ -12,6 +12,13 @@ def mci(request, elliptic_) -> MCI:
     return mci_
 
 
+@pytest.fixture()
+def mesh(request, elliptic_):
+    mesh_ = elliptic_.mesh_builder().read_file('tests/cube_small.h5m')
+
+    return mesh_
+
+
 class TestExpression:
 
     class DummyFilter(Selector.Filter.Filter):
@@ -32,11 +39,11 @@ class TestExpression:
         def __init__(self, val3, val4):
             super().__init__()
 
-    def test_IR_build(self, mci):
+    def test_IR_build(self, mci, mesh, elliptic_):
 
         with mci.root() as root:
             res1 = root(Selector.Dilute.ByEnt,
-                        dim=1)(self.DummyFilter,
+                        dim=3)(self.DummyFilter,
                                 val3=3,
                                 val4=4)
             res2 = res1(self.DummyMap,
@@ -48,4 +55,4 @@ class TestExpression:
                         val4=4)(self.DummyMap,
                                 val1=2)
 
-        res1.export_tree("res1.png")
+        elliptic_.run_kernel(mci, mesh)

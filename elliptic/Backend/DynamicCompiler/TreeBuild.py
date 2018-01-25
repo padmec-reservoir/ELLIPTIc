@@ -88,8 +88,6 @@ class TreeBuild:
         rendered_group = group_template.render(
             node_templates=children_rendered_templates)
 
-        print(rendered_group)
-
         return node.render(self.template_manager,
                            rendered_group,
                            self.backend_builder)
