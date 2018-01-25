@@ -2,4 +2,6 @@ from .Computer import Computer
 
 
 class Reduce(Computer):
-    pass
+    
+    def __init__(self):
+        super().__init__()

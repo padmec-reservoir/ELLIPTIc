@@ -21,39 +21,17 @@ def mesh(request, elliptic_):
 
 class TestExpression:
 
-    class DummyFilter(Selector.Filter.Filter):
-        name = "Filter"
-
-        def __init__(self, val3, val4):
-            super().__init__()
-
-    class DummyMap(Computer.Map.Map):
-        name = "Map"
-
-        def __init__(self, val1):
-            super().__init__()
-
-    class DummyReduce(Computer.Reduce.Reduce):
-        name = "Reduce"
-
-        def __init__(self, val3, val4):
-            super().__init__()
-
     def test_IR_build(self, mci, mesh, elliptic_):
 
         with mci.root() as root:
             res1 = root(Selector.Dilute.ByEnt,
                         dim=3)(Selector.Filter.Where,
                                is_boundary=False)
-            res2 = res1(self.DummyMap,
-                        val1=2)(self.DummyReduce,
-                                val3=3,
-                                val4=4)
-            res3 = res1(self.DummyReduce,
-                        val3=3,
-                        val4=4)(self.DummyMap,
-                                val1=2)
+            res2 = res1(Computer.Map,
+                        function="get_centroid",
+                        arg1="arg1",
+                        arg2="arg2")
 
-        res1.export_tree('res1.png')
+            res1.export_tree('res1.png')
 
         elliptic_.run_kernel(mci, mesh)

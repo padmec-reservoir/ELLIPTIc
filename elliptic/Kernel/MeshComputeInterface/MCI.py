@@ -16,7 +16,10 @@ class ExprContext:
         return self.root
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        self._mci.build(self.root)
+        if exc_type:
+            raise exc_type
+        else:
+            self._mci.build(self.root)
 
 
 class MCI:

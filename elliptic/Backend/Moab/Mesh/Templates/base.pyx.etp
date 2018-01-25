@@ -1,8 +1,5 @@
 {% include 'elliptic.pxd.etp' %}
 
-cdef class MOABCore:
-    cdef Core* inst
-
 def execute(pymb):
     # TODO: Add declarations dynamically, and as necessary, from the options
     # given.

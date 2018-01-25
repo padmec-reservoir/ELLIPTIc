@@ -4,8 +4,12 @@ def base():
 
 
 def by_ent():
-    return "by_ent.pyx.etp"
+    return "Selector/by_ent.pyx.etp"
 
 
 def where():
-    return "where.pyx.etp"
+    return "Selector/where.pyx.etp"
+
+
+def map():
+    return "Computer/map.pyx.etp"
