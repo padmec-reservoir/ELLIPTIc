@@ -13,3 +13,7 @@ def where():
 
 def map():
     return "Computer/map.pyx.etp"
+
+
+def put_field():
+    return "Manager/put_field.pyx.etp"

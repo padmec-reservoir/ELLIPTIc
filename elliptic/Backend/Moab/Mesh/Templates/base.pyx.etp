@@ -1,9 +1,16 @@
 {% include 'elliptic.pxd.etp' %}
 
+cdef class MOABCore:
+    cdef Core* inst
+
+{% include 'Selector/functions.pyx.etp' %}
+{% include 'Computer/functions.pyx.etp' %}
+
 def execute(pymb):
     # TODO: Add declarations dynamically, and as necessary, from the options
     # given.
     cdef Core* mb = (<MOABCore>pymb).inst
+    cdef Tag tag_handle
 
     {% if child %}
     {{ child|indent }}

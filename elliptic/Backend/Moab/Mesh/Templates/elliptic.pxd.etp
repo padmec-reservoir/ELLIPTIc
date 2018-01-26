@@ -156,6 +156,11 @@ cdef extern from "moab/Core.hpp" namespace "moab":
                                 int num_entities,
                                 const void * data)
 
+        ErrorCode tag_get_data(const Tag tag_handle,
+                               const EntityHandle * entity_handles,
+                               const int num_entities,
+                               void* tag_data)
+
         ErrorCode write_file(const char *file_name)
         ErrorCode write_file(const char *file_name, const char *file_type)
         ErrorCode write_file(const char *file_name, const char *file_type,

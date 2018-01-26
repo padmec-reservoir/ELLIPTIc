@@ -1,0 +1,6 @@
+mb.tag_get_handle({{ field_name.__repr__() }}, tag_handle)
+
+mb.tag_set_data(tag_handle, &current_entity, 1, &current_val)
+
+print("ASDFAF")
+{{ child }}

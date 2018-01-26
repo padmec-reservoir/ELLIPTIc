@@ -1,5 +1,4 @@
 __all__ = ['Computer', 'Map', 'Reduce']
 
-from . import Computer
-from .Map import Map
+from . import Computer, Map
 from .Reduce import Reduce

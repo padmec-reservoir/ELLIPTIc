@@ -1,3 +1,3 @@
-__all__ = ['Manager']
+__all__ = ['Manager', 'PutField']
 
-from . import Manager
+from .Manager import Manager, PutField

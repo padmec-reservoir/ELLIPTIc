@@ -1,0 +1,3 @@
+
+cdef bool is_boundary(Core* mb, EntityHandle ent):
+    return False

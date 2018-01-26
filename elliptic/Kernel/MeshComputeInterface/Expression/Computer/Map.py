@@ -23,3 +23,15 @@ class Map(Computer):
                                             child=child)
 
         return rendered_template
+
+
+class GetField(Map):
+
+    def __init__(self, field_name):
+        super().__init__("get_field", field_name=field_name)
+
+
+class PutScalar(Map):
+
+    def __init__(self, value):
+        super().__init__("put_scalar", value=value)
