@@ -7,9 +7,10 @@ class Elliptic:
 
         self._mesh = None
 
-    def run_kernel(self, mci, mesh):
+    def run_kernel(self, mci):
         kernel_module = mci.get_built_module()
-        self.mesh_backend.run_kernel(kernel_module, mesh)
+        import pdb; pdb.set_trace()
+        self.mesh_backend.run_kernel(kernel_module, self._mesh)
 
     def get_mesh_template_manager(self):
         return self.mesh_backend.get_template_manager()
@@ -28,3 +29,9 @@ class Elliptic:
 
     def set_mesh(self, mesh):
         self._mesh = mesh
+
+    def tree_preprocess(self, root):
+        self.mesh_backend.tree_preprocess(root)
+
+    def export(self, filename):
+        self.mesh_backend.export(self._mesh, filename)

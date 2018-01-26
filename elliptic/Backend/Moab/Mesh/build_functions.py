@@ -17,3 +17,15 @@ def map():
 
 def put_field():
     return "Manager/put_field.pyx.etp"
+
+
+def create_field():
+    return "Declare/create_field.pyx.etp"
+
+
+def get_field():
+    return "Declare/get_field.pyx.etp"
+
+
+def declare_variable():
+    return "Declare/declare_variable.pyx.etp"

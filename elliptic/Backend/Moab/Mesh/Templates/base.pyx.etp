@@ -7,8 +7,6 @@ cdef class MOABCore:
 {% include 'Computer/functions.pyx.etp' %}
 
 def execute(pymb):
-    # TODO: Add declarations dynamically, and as necessary, from the options
-    # given.
     cdef Core* mb = (<MOABCore>pymb).inst
     cdef Tag tag_handle
 

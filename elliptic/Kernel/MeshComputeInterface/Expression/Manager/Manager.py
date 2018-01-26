@@ -23,7 +23,4 @@ class PutField(Manager):
         rendered_template = template.render(field_name=self.field_name,
                                             child=child)
 
-        print(rendered_template)
-        import pdb; pdb.set_trace()
-
         return rendered_template

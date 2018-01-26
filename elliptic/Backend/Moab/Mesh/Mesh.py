@@ -3,6 +3,7 @@ from types import ModuleType
 from pymoab import core
 
 from .MoabTemplateManager import MoabTemplateManager
+from .TreePreprocessor import TreePreprocessor
 
 
 class Mesh:
@@ -10,6 +11,8 @@ class Mesh:
     def __init__(self, mb) -> None:
         self.mb = mb
 
+    def export(self, filename):
+        self.mb.write_file(filename)
 
 class Grid:
 
@@ -62,3 +65,10 @@ class MeshBackend:
 
     def get_include_dirs(self):
         return []
+
+    def tree_preprocess(self, root):
+        preprocessor = TreePreprocessor(root)
+        preprocessor.run()
+
+    def export(self, mesh, filename):
+        mesh.export(filename)

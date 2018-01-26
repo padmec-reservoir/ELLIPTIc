@@ -26,9 +26,18 @@ class Map(Computer):
 
 
 class GetField(Map):
+    # TODO: FixMe! This is depending on MOAB!
+    class TagArg:
+        def __init__(self, field_name):
+            self.var_name = field_name + "_TAG"
+
+        def __repr__(self):
+            return self.var_name
 
     def __init__(self, field_name):
-        super().__init__("get_field", field_name=field_name)
+        super().__init__("get_field", tag_handle=GetField.TagArg(field_name))
+
+        self.field_name = field_name
 
 
 class PutScalar(Map):
