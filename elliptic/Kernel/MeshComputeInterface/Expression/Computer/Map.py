@@ -25,7 +25,7 @@ class Map(Computer):
         return rendered_template
 
 
-class GetField(Map):
+class GetScalarField(Map):
     # TODO: FixMe! This is depending on MOAB!
     class TagArg:
         def __init__(self, field_name):
@@ -35,7 +35,7 @@ class GetField(Map):
             return self.var_name
 
     def __init__(self, field_name):
-        super().__init__("get_field", tag_handle=GetField.TagArg(field_name))
+        super().__init__("get_field", tag_handle=GetScalarField.TagArg(field_name))
 
         self.field_name = field_name
 
@@ -44,3 +44,33 @@ class PutScalar(Map):
 
     def __init__(self, value):
         super().__init__("put_scalar", value=value)
+
+
+class GetCentroid(Map):
+
+    def __init__(self):
+        super().__init__("get_centroid")
+
+
+class NormDist(Map):
+
+    def __init__(self, other):
+        super().__init__("norm_dist", other=other.unique_id)
+
+
+class ScalarProd(Map):
+
+    def __init__(self, other):
+        super().__init__("scalar_prod", other=other.unique_id)
+
+
+class ScalarSum(Map):
+
+    def __init__(self, other):
+        super().__init__("scalar_sum", other=other.unique_id)
+
+
+class ScalarDiv(Map):
+
+    def __init__(self, other):
+        super().__init__("scalar_div", other=other.unique_id)

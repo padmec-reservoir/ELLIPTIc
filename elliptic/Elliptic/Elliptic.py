@@ -9,7 +9,6 @@ class Elliptic:
 
     def run_kernel(self, mci):
         kernel_module = mci.get_built_module()
-        import pdb; pdb.set_trace()
         self.mesh_backend.run_kernel(kernel_module, self._mesh)
 
     def get_mesh_template_manager(self):

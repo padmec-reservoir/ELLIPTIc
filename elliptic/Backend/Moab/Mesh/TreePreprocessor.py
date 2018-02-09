@@ -1,6 +1,6 @@
 from elliptic.Kernel.MeshComputeInterface.Expression.Expression import StatementRoot
 from elliptic.Kernel.MeshComputeInterface.Expression.Manager import PutField
-from elliptic.Kernel.MeshComputeInterface.Expression.Computer.Map import GetField
+from elliptic.Kernel.MeshComputeInterface.Expression.Computer.Map import GetScalarField
 from .Expression import DeclareVariable, CreateField, DeclareExistingField
 
 
@@ -23,7 +23,7 @@ class TreePreprocessor:
     def _preprocess_node(self, node):
         if isinstance(node, PutField):
             self._preprocess_field(node, CreateField)
-        elif isinstance(node, GetField):
+        elif isinstance(node, GetScalarField):
             self._preprocess_field(node, DeclareExistingField)
 
     def _add_declare_node(self, node, var_name, var_type="double"):
