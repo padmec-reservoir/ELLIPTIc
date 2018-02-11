@@ -1,4 +1,4 @@
-__all__ = ['MeshComputeInterface', 'Selector']
+__all__ = ['MCI', 'Expression']
 
-from .MeshComputeInterface import MeshComputeInterface
-from . import Selector
+from .MCI import MCI
+from . import Expression

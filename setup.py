@@ -19,8 +19,10 @@ setup(
     maintainer='Guilherme Caminha',
     maintainer_email='gpkc@cin.ufpe.br',
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
-    install_requires=['numpy', 'colorlog', 'configobj'],
+    tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker',
+                   'mypy'],
+    install_requires=['numpy', 'colorlog', 'configobj', 'anytree', 'jinja2',
+                      'cython', 'typing_extensions'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions
