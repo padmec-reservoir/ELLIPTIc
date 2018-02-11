@@ -1,5 +1,7 @@
 from anytree import NodeMixin
-from typing import Type, TypeVar, Iterable
+from typing import Type, TypeVar, Iterable, Dict, List, Union
+
+from ..BackendBuilder import BackendBuilderSubClass, BackendDelegate, ContextType
 
 
 class EllipticNode(NodeMixin):
@@ -9,8 +11,8 @@ class EllipticNode(NodeMixin):
     def __init__(self) -> None:
         super().__init__()
 
-        self.children: Iterable
-        self.name: str
+        self.children: Iterable = tuple()
+        self.name: str = ''
 
         self.unique_id = EllipticNode.last_id
         EllipticNode.last_id += 1
@@ -30,9 +32,6 @@ class EllipticNode(NodeMixin):
 
         exporter.to_picture(filename)
 
-    def render(self, template_manager, child: str, backend_builder) -> str:
-        raise NotImplementedError
-
 
 ExpressionSubClass = TypeVar('ExpressionSubClass', bound='ExpressionBase')
 
@@ -51,6 +50,25 @@ class ExpressionBase(EllipticNode):
 
         return expr
 
+    def get_delegate_obj(self, backend_builder: BackendBuilderSubClass) -> BackendDelegate:
+        raise NotImplementedError
+
+    def render(self,
+               template_manager,
+               child: str,
+               backend_builder: BackendBuilderSubClass,
+               context: ContextType) -> str:
+        delegate_obj = self.get_delegate_obj(backend_builder)
+
+        delegate_obj.update_context(backend_builder, context)
+        template_file = delegate_obj.get_template_file(backend_builder)
+        template = template_manager.get_template(template_file)
+
+        kwargs = delegate_obj.template_kwargs(backend_builder, context)
+        rendered_template = template.render(child=child, **kwargs)
+
+        return rendered_template
+
 
 class StatementRoot(ExpressionBase):
 
@@ -61,10 +79,5 @@ class StatementRoot(ExpressionBase):
     def _shape(self) -> str:
         return "shape=doubleoctagon"
 
-    def render(self, template_manager, child, backend_builder) -> str:
-        template_file = backend_builder.base()
-        template = template_manager.get_template(template_file)
-
-        rendered_template = template.render(child=child)
-
-        return rendered_template
+    def get_delegate_obj(self, backend_builder):
+        return backend_builder.base_delegate()

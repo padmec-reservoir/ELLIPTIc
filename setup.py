@@ -22,7 +22,7 @@ setup(
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker',
                    'mypy'],
     install_requires=['numpy', 'colorlog', 'configobj', 'anytree', 'jinja2',
-                      'cython'],
+                      'cython', 'typing_extensions'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions

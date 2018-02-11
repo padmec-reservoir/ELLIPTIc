@@ -1,6 +1,7 @@
 import pytest
 
-from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase, StatementRoot
+from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendDelegate
 
 
 class TestEllipticNode:
@@ -12,16 +13,10 @@ class TestEllipticNode:
         assert first_node.unique_id == 0
         assert second_node.unique_id == 1
 
-    def test_render_returns_child(self, mocker):
-        node = EllipticNode()
-
-        with pytest.raises(NotImplementedError):
-            node.render(template_manager=None, child='', backend_builder=None)
-
 
 class TestExpressionBase:
 
-    def test_call(self, mocker):
+    def test_call(self):
         class ExpressionStub(ExpressionBase):
             def __init__(self, arg):
                 super().__init__()
@@ -36,14 +31,20 @@ class TestExpressionBase:
         assert expression.children[0] is expr
         assert len(expression.children) == 1
 
-
-class TestStatementRoot:
-
     def test_render(self, mocker):
-        statement_root = StatementRoot()
+        backend_delegate = mocker.Mock(spec=BackendDelegate)
+        backend_delegate.get_template_file.return_value = mocker.sentinel.template_file
+        backend_delegate.template_kwargs.return_value = {}
 
-        backend_builder = mocker.Mock()
-        backend_builder.base.return_value = mocker.sentinel.template_file
+        class ExpressionStub(ExpressionBase):
+            def get_delegate_obj(self, _):
+                return backend_delegate
+
+        expression = ExpressionStub()
+
+        context = mocker.sentinel.context
+
+        backend_builder = mocker.sentinel.backend_builder
 
         template = mocker.Mock()
         template.render.return_value = mocker.sentinel.rendered_template
@@ -53,11 +54,15 @@ class TestStatementRoot:
 
         child = mocker.sentinel.child
 
-        rendered_template = statement_root.render(template_manager=template_manager,
-                                                  child=child,
-                                                  backend_builder=backend_builder)
+        rendered_template = expression.render(template_manager=template_manager,
+                                              child=child,
+                                              backend_builder=backend_builder,
+                                              context=context)
 
         assert rendered_template is mocker.sentinel.rendered_template
 
-
-
+        backend_delegate.update_context.assert_called_once_with(backend_builder,
+                                                                mocker.sentinel.context)
+        backend_delegate.get_template_file.assert_called_once_with(backend_builder)
+        backend_delegate.template_kwargs.assert_called_once_with(backend_builder,
+                                                                 mocker.sentinel.context)

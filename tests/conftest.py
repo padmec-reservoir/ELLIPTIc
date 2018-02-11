@@ -54,5 +54,5 @@ def solver_backend(request, solver_backend_mod):
 def elliptic_(request, mesh_backend, solver_backend):
     el = Elliptic.Elliptic(mesh_backend=mesh_backend,
                            solver_backend=solver_backend)
-
     return el
+

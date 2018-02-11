@@ -36,7 +36,7 @@ class EllipticTemplateManager:
 
     @classmethod
     def render(cls, template_file, **kwargs):
-        template = self.get_template(template_file)
+        template = cls.get_template(template_file)
         return template.render(**kwargs)
 
 
@@ -52,6 +52,7 @@ class TreeBuild:
         self.backend_builder = backend_builder
         self.libraries = libraries
         self.include_dirs = include_dirs
+        self.built_module: ModuleType = None
 
     def build(self, root: StatementRoot) -> ModuleType:
         cython_dir = tempfile.mkdtemp(prefix=self.build_dir_prefix)
@@ -60,7 +61,7 @@ class TreeBuild:
 
         module_name = module_path.split('/')[-1].strip('.pyx')
 
-        full_rendered_template = self._render_tree(root)
+        full_rendered_template = self._render_tree(node=root, context={})
 
         with os.fdopen(module_fd, 'w') as f:
             f.write(full_rendered_template)
@@ -76,7 +77,7 @@ class TreeBuild:
 
         return self.built_module
 
-    def _render_tree(self, node: EllipticNode) -> str:
+    def _render_tree(self, node: EllipticNode, context) -> str:
         child: ExpressionBase
         children_rendered_templates: List[str] = []
 
@@ -85,9 +86,9 @@ class TreeBuild:
             children_rendered_templates.append(built_node)
 
         group_template = EllipticTemplateManager.get_template("nodegroup.etp")
-        rendered_group = group_template.render(
-            node_templates=children_rendered_templates)
+        rendered_group = group_template.render(node_templates=children_rendered_templates)
 
         return node.render(self.template_manager,
                            rendered_group,
-                           self.backend_builder)
+                           self.backend_builder,
+                           context)
