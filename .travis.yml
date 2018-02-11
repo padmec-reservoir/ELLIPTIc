@@ -14,7 +14,7 @@ before_install:
 - docker build -t elliptic docker/elliptic/
 
 install:
-- pip install coveralls-python colorlog
+- pip install coveralls colorlog
 
 script:
 - docker run elliptic /bin/bash -c "cd ELLIPTIc; python setup.py test"
