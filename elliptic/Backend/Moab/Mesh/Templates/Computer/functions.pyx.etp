@@ -1,0 +1,11 @@
+
+cdef double get_field(Core* mb, EntityHandle ent, Tag tag_handle):
+    cdef double data
+    mb.tag_get_data(tag_handle, &ent, 1, <void*> &data)
+
+    print(data)
+
+    return data
+
+cdef double put_scalar(Core* mb, EntityHandle ent, double value):
+    return value

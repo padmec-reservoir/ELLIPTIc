@@ -1,0 +1,2 @@
+mb.tag_get_handle("{{ name }}", {{ name }}_TAG)
+{{ child }}
