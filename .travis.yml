@@ -24,7 +24,7 @@ after_success:
 # https://github.com/pytest-dev/pytest-cov/issues/146
 - docker cp `docker ps -l -q`:/home/scientific/ELLIPTIc/.coverage .coverage.docker
 - coverage combine --append
-- coveralls --data_file=.coverage --config_file=.coveragerc
+- coveralls
 - docker tag elliptic padmec/elliptic:1.0
 - if [ "$TRAVIS_BRANCH" == "master" ]; then
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
