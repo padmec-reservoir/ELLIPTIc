@@ -1,10 +1,9 @@
 # Authors:
 # Guilherme Caminha <gpkc@cin.ufpe.br>
 
-FROM gpkc/pymoab-pytrilinos
+FROM padmec/pymoab-pytrilinos:3.6
 MAINTAINER Guilherme Caminha <gpkc@cin.ufpe.br>
 
-RUN easy_install pytest configobj
 RUN git clone https://github.com/gpkc/ELLIPTIc.git
 WORKDIR $HOME/ELLIPTIc
 

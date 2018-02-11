@@ -11,5 +11,6 @@ ELLIPTIc.egg-info/
 .coverage
 *.pyc
 *.c
+.mypy_cache/
 
 docs/build

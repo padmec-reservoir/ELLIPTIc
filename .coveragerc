@@ -2,3 +2,6 @@
 source =
     .
     /home/scientific/ELLIPTIc
+
+[run]
+omit = *.etp

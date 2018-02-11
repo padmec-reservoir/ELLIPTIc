@@ -7,18 +7,22 @@ extensions = []
 
 if USE_CYTHON:
     extensions = [
-        Extension("*", ["elliptic/Kernel/*.py"]),
-        Extension("*", ["elliptic/Mesh/*.py"])
+        Extension("*", ["elliptic/Kernel/MeshComputeInterface/*.pyx"])
     ]
     from Cython.Build import cythonize
     extensions = cythonize(extensions)
 
 setup(
     name="ELLIPTIc",
-    version='0.2.0',
+    version='1.0.0',
+    url='https://github.com/padmec-reservoir/ELLIPTIc',
+    maintainer='Guilherme Caminha',
+    maintainer_email='gpkc@cin.ufpe.br',
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker'],
-    install_requires=['numpy', 'colorlog'],
+    tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker',
+                   'mypy'],
+    install_requires=['numpy', 'colorlog', 'configobj', 'anytree', 'jinja2',
+                      'cython', 'typing_extensions'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions

@@ -1,0 +1,6 @@
+def execute(arg):
+    print(arg)
+
+    {% if child %}
+    {{ child|indent }}
+    {% endif %}
