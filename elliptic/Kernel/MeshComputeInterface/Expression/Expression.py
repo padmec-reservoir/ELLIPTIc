@@ -1,5 +1,5 @@
 from anytree import NodeMixin
-from typing import Dict, Any, Type
+from typing import Type, TypeVar, Iterable
 
 
 class EllipticNode(NodeMixin):
@@ -9,6 +9,7 @@ class EllipticNode(NodeMixin):
     def __init__(self) -> None:
         super().__init__()
 
+        self.children: Iterable
         self.name: str
 
         self.unique_id = EllipticNode.last_id
@@ -30,8 +31,10 @@ class EllipticNode(NodeMixin):
         exporter.to_picture(filename)
 
     def render(self, template_manager, child: str, backend_builder) -> str:
-        return child
-        #raise NotImplementedError
+        raise NotImplementedError
+
+
+ExpressionSubClass = TypeVar('ExpressionSubClass', bound='ExpressionBase')
 
 
 class ExpressionBase(EllipticNode):
@@ -40,8 +43,8 @@ class ExpressionBase(EllipticNode):
         super().__init__()
 
     def __call__(self,
-                 expr_type: Type['ExpressionBase'],
-                 **kwargs) -> 'ExpressionBase':
+                 expr_type: Type[ExpressionSubClass],
+                 **kwargs) -> ExpressionSubClass:
         expr = expr_type(**kwargs)
 
         self.children += (expr,)
@@ -49,23 +52,14 @@ class ExpressionBase(EllipticNode):
         return expr
 
 
-class StatementRoot(EllipticNode):
-
-    def _shape(self) -> str:
-        return "shape=doubleoctagon"
+class StatementRoot(ExpressionBase):
 
     def __init__(self) -> None:
         super(StatementRoot, self).__init__()
         self.name = "stmt_root"
 
-    def __call__(self,
-                 expr_type: Type[ExpressionBase],
-                 **kwargs) -> 'ExpressionBase':
-        expr = expr_type(**kwargs)
-
-        self.children += (expr,)
-
-        return expr
+    def _shape(self) -> str:
+        return "shape=doubleoctagon"
 
     def render(self, template_manager, child, backend_builder) -> str:
         template_file = backend_builder.base()
