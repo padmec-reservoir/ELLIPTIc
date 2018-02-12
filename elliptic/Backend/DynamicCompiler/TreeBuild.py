@@ -8,8 +8,7 @@ from jinja2 import Environment, PackageLoader, Template
 from .utils import (build_extension, elliptic_cythonize,
                     import_extension)
 from elliptic.Kernel.MeshComputeInterface.Expression import (StatementRoot,
-                                                             ExpressionBase,
-                                                             EllipticNode)
+                                                             ExpressionBase)
 
 
 class TemplateManagerBase:
@@ -83,7 +82,7 @@ class TreeBuild:
         with node.visit(self.backend_builder, context) as delegate_obj:
 
             for child in node.children:
-                built_node: str = self._render_tree(child)
+                built_node: str = self._render_tree(child, context)
                 children_rendered_templates.append(built_node)
 
             group_template = EllipticTemplateManager.get_template("nodegroup.etp")
