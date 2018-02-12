@@ -31,38 +31,27 @@ class TestExpressionBase:
         assert expression.children[0] is expr
         assert len(expression.children) == 1
 
-    def test_render(self, mocker):
-        backend_delegate = mocker.Mock(spec=BackendDelegate)
-        backend_delegate.get_template_file.return_value = mocker.sentinel.template_file
-        backend_delegate.template_kwargs.return_value = {}
+    def test_visit(self, mocker):
+        context = {}
+        backend_builder = mocker.sentinel.backend_builder
+
+        class DelegateStub:
+            def get_template_file(self):
+                pass
+            def template_kwargs(self, _):
+                pass
+            def context_enter(self, context):
+                context[5] = 10
+            def context_exit(self, context):
+                context[5] = 5
 
         class ExpressionStub(ExpressionBase):
             def get_delegate_obj(self, _):
-                return backend_delegate
+                return DelegateStub()
 
         expression = ExpressionStub()
 
-        context = mocker.sentinel.context
+        with expression.visit(backend_builder, context) as delegate_obj:
+            assert context[5] == 10
 
-        backend_builder = mocker.sentinel.backend_builder
-
-        template = mocker.Mock()
-        template.render.return_value = mocker.sentinel.rendered_template
-
-        template_manager = mocker.Mock()
-        template_manager.get_template.return_value = template
-
-        child = mocker.sentinel.child
-
-        rendered_template = expression.render(template_manager=template_manager,
-                                              child=child,
-                                              backend_builder=backend_builder,
-                                              context=context)
-
-        assert rendered_template is mocker.sentinel.rendered_template
-
-        backend_delegate.update_context.assert_called_once_with(backend_builder,
-                                                                mocker.sentinel.context)
-        backend_delegate.get_template_file.assert_called_once_with(backend_builder)
-        backend_delegate.template_kwargs.assert_called_once_with(backend_builder,
-                                                                 mocker.sentinel.context)
+        assert context[5] == 5

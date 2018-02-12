@@ -27,7 +27,6 @@ class TemplateManagerBase:
 
 
 class EllipticTemplateManager:
-
     jinja2_env = Environment(loader=PackageLoader(__package__, 'Templates'))
 
     @classmethod
@@ -77,18 +76,22 @@ class TreeBuild:
 
         return self.built_module
 
-    def _render_tree(self, node: EllipticNode, context) -> str:
+    def _render_tree(self, node: ExpressionBase, context) -> str:
         child: ExpressionBase
         children_rendered_templates: List[str] = []
 
-        for child in node.children:
-            built_node: str = self._render_tree(child)
-            children_rendered_templates.append(built_node)
+        with node.visit(self.backend_builder, context) as delegate_obj:
 
-        group_template = EllipticTemplateManager.get_template("nodegroup.etp")
-        rendered_group = group_template.render(node_templates=children_rendered_templates)
+            for child in node.children:
+                built_node: str = self._render_tree(child)
+                children_rendered_templates.append(built_node)
 
-        return node.render(self.template_manager,
-                           rendered_group,
-                           self.backend_builder,
-                           context)
+            group_template = EllipticTemplateManager.get_template("nodegroup.etp")
+            rendered_group = group_template.render(node_templates=children_rendered_templates)
+
+            rendered_node = node.render(self.template_manager,
+                                        rendered_group,
+                                        delegate_obj,
+                                        context)
+
+        return rendered_node

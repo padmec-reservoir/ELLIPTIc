@@ -1,5 +1,7 @@
+from contextlib import contextmanager
+
 from anytree import NodeMixin
-from typing import Type, TypeVar, Iterable, Dict, List, Union
+from typing import Type, TypeVar, Iterable, Iterator
 
 from ..BackendBuilder import BackendBuilderSubClass, BackendDelegate, ContextType
 
@@ -56,18 +58,25 @@ class ExpressionBase(EllipticNode):
     def render(self,
                template_manager,
                child: str,
-               backend_builder: BackendBuilderSubClass,
+               delegate_obj: BackendDelegate,
                context: ContextType) -> str:
-        delegate_obj = self.get_delegate_obj(backend_builder)
 
-        delegate_obj.update_context(backend_builder, context)
-        template_file = delegate_obj.get_template_file(backend_builder)
+        template_file = delegate_obj.get_template_file()
         template = template_manager.get_template(template_file)
 
-        kwargs = delegate_obj.template_kwargs(backend_builder, context)
+        kwargs = delegate_obj.template_kwargs(context)
         rendered_template = template.render(child=child, **kwargs)
 
         return rendered_template
+
+    @contextmanager
+    def visit(self, backend_builder: BackendBuilderSubClass, context: ContextType) -> Iterator[BackendDelegate]:
+        delegate_obj = self.get_delegate_obj(backend_builder)
+
+        # BackendDelegate does not implement a context manager so that it can be a simpler protocol
+        delegate_obj.context_enter(context)
+        yield delegate_obj
+        delegate_obj.context_exit(context)
 
 
 class StatementRoot(ExpressionBase):
