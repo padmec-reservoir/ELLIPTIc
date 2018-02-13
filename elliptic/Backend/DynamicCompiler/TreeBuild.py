@@ -76,11 +76,11 @@ class TreeBuild:
         return self.built_module
 
     def _render_tree(self, node: ExpressionBase, context) -> str:
-        child: ExpressionBase
         children_rendered_templates: List[str] = []
 
-        with node.visit(self.backend_builder, context) as delegate_obj:
+        with node.visit(self.backend_builder, context) as context_delegate:
 
+            child: ExpressionBase
             for child in node.children:
                 built_node: str = self._render_tree(child, context)
                 children_rendered_templates.append(built_node)
@@ -90,7 +90,7 @@ class TreeBuild:
 
             rendered_node = node.render(self.template_manager,
                                         rendered_group,
-                                        delegate_obj,
+                                        context_delegate,
                                         context)
 
         return rendered_node

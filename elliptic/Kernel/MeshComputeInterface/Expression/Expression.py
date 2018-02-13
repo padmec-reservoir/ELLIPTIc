@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from anytree import NodeMixin
 from typing import Type, TypeVar, Iterable, Iterator
 
-from ..BackendBuilder import BackendBuilderSubClass, BackendDelegate, ContextType
+from ..BackendBuilder import BackendBuilderSubClass, ContextDelegate, ContextType
 
 
 class EllipticNode(NodeMixin):
@@ -52,31 +52,31 @@ class ExpressionBase(EllipticNode):
 
         return expr
 
-    def get_delegate_obj(self, backend_builder: BackendBuilderSubClass) -> BackendDelegate:
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
         raise NotImplementedError
 
     def render(self,
                template_manager,
                child: str,
-               delegate_obj: BackendDelegate,
+               context_delegate: ContextDelegate,
                context: ContextType) -> str:
 
-        template_file = delegate_obj.get_template_file()
+        template_file = context_delegate.get_template_file()
         template = template_manager.get_template(template_file)
 
-        kwargs = delegate_obj.template_kwargs(context)
+        kwargs = context_delegate.template_kwargs(context)
         rendered_template = template.render(child=child, **kwargs)
 
         return rendered_template
 
     @contextmanager
-    def visit(self, backend_builder: BackendBuilderSubClass, context: ContextType) -> Iterator[BackendDelegate]:
-        delegate_obj = self.get_delegate_obj(backend_builder)
+    def visit(self, backend_builder: BackendBuilderSubClass, context: ContextType) -> Iterator[ContextDelegate]:
+        context_delegate = self.get_context_delegate(backend_builder)
 
-        # BackendDelegate does not implement a context manager so that it can be a simpler protocol
-        delegate_obj.context_enter(context)
-        yield delegate_obj
-        delegate_obj.context_exit(context)
+        # ContextDelegate does not implement a context manager so that it can be a simpler protocol
+        context_delegate.context_enter(context)
+        yield context_delegate
+        context_delegate.context_exit(context)
 
 
 class StatementRoot(ExpressionBase):
@@ -88,5 +88,5 @@ class StatementRoot(ExpressionBase):
     def _shape(self) -> str:
         return "shape=doubleoctagon"
 
-    def get_delegate_obj(self, backend_builder):
+    def get_context_delegate(self, backend_builder):
         return backend_builder.base_delegate()

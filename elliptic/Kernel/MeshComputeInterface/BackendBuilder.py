@@ -10,7 +10,7 @@ BackendBuilderSubClass = TypeVar('BackendBuilderSubClass', bound=BackendBuilder)
 ContextType = Dict[str, Union[str, List[str]]]
 
 
-class BackendDelegate(Protocol):
+class ContextDelegate(Protocol):
 
     def get_template_file(self):
         ...
