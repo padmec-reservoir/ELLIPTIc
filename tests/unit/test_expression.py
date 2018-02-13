@@ -3,8 +3,10 @@ from contextlib import contextmanager
 import pytest
 
 from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase
+from elliptic.Kernel.MeshComputeInterface.Expression.Selector import Interface
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Filter import Where
+from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Selector import Selector
 
 
 class TestEllipticNode:
@@ -100,3 +102,13 @@ class TestFilter:
         args = {'a': 1, 'b': 2}
         with _test_expression(mocker, delegate_stub, 'where_delegate', Where, **args) as ret:
             ret['backend_builder'].where_delegate.assert_called_once_with(conditions=args.items())
+
+
+class TestInterface:
+
+    def test_interface(self, mocker, delegate_stub):
+        to_ent = mocker.Mock(spec=Selector)
+        to_ent.unique_id = 5
+
+        with _test_expression(mocker, delegate_stub, 'interface_delegate', Interface, to_ent=to_ent) as ret:
+            ret['backend_builder'].interface_delegate.assert_called_once_with(to_ent=5)
