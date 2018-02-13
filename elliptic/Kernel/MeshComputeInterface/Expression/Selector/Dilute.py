@@ -1,3 +1,4 @@
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendBuilderSubClass, ContextDelegate
 from .Selector import Selector
 
 
@@ -5,6 +6,9 @@ class Dilute(Selector):
 
     def __init__(self):
         super().__init__()
+
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        raise NotImplementedError
 
 
 class ByEnt(Dilute):
@@ -15,14 +19,8 @@ class ByEnt(Dilute):
         self.dim = dim
         self.name = f"By Ent({dim})"
 
-    def render(self, template_manager, child, backend_builder) -> str:
-        template_file = backend_builder.by_ent()
-        template = template_manager.get_template(template_file)
-
-        rendered_template = template.render(dim=self.dim,
-                                            child=child)
-
-        return rendered_template
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.by_ent_delegate(dim=self.dim)
 
 
 class ByAdj(Dilute):
@@ -33,3 +31,7 @@ class ByAdj(Dilute):
         self.bridge_dim = bridge_dim
         self.to_dim = to_dim
         self.name = f"By Adj(bridge_dim={bridge_dim}, to_dim={to_dim})"
+
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.by_adj_delegate(bridge_dim=self.bridge_dim,
+                                               to_dim=self.to_dim)

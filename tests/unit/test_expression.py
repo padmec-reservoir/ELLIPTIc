@@ -1,7 +1,9 @@
+from contextlib import contextmanager
+
 import pytest
 
 from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendDelegate
+from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
 
 
 class TestEllipticNode:
@@ -12,6 +14,24 @@ class TestEllipticNode:
 
         assert first_node.unique_id == 0
         assert second_node.unique_id == 1
+
+
+@pytest.fixture()
+def delegate_stub():
+    class DelegateStub:
+        def get_template_file(self):
+            pass
+
+        def template_kwargs(self, _):
+            pass
+
+        def context_enter(self, context):
+            context[5] = 10
+
+        def context_exit(self, context):
+            context[5] = 5
+
+    return DelegateStub
 
 
 class TestExpressionBase:
@@ -31,27 +51,39 @@ class TestExpressionBase:
         assert expression.children[0] is expr
         assert len(expression.children) == 1
 
-    def test_visit(self, mocker):
+    def test_visit(self, mocker, delegate_stub):
         context = {}
         backend_builder = mocker.sentinel.backend_builder
 
-        class DelegateStub:
-            def get_template_file(self):
-                pass
-            def template_kwargs(self, _):
-                pass
-            def context_enter(self, context):
-                context[5] = 10
-            def context_exit(self, context):
-                context[5] = 5
-
         class ExpressionStub(ExpressionBase):
-            def get_delegate_obj(self, _):
-                return DelegateStub()
+            def get_context_delegate(self, backend_builder):
+                return delegate_stub()
 
         expression = ExpressionStub()
 
-        with expression.visit(backend_builder, context) as delegate_obj:
+        with expression.visit(backend_builder, context) as context_delegate:
             assert context[5] == 10
 
         assert context[5] == 5
+
+
+def _test_expression(mocker, delegate_stub_, delegate_fun, test_cls, **cls_kwargs):
+    inst = test_cls(**cls_kwargs)
+    backend_builder = mocker.Mock()
+    getattr(backend_builder, delegate_fun).return_value = delegate_stub_()
+    context = {}
+
+    with inst.visit(backend_builder, context) as context_delegate:
+        assert context[5] == 10
+        getattr(backend_builder, delegate_fun).assert_called_once_with(**cls_kwargs)
+
+    assert context[5] == 5
+
+
+class TestDilute:
+
+    def test_by_ent(self, mocker, delegate_stub):
+        _test_expression(mocker, delegate_stub, 'by_ent_delegate', ByEnt, dim=3)
+
+    def test_by_adj(self, mocker, delegate_stub):
+        _test_expression(mocker, delegate_stub, 'by_adj_delegate', ByAdj, bridge_dim=2, to_dim=3)
