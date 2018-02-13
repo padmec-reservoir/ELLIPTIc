@@ -4,6 +4,7 @@ import pytest
 
 from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
+from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Filter import Where
 
 
 class TestEllipticNode:
@@ -67,6 +68,7 @@ class TestExpressionBase:
         assert context[5] == 5
 
 
+@contextmanager
 def _test_expression(mocker, delegate_stub_, delegate_fun, test_cls, **cls_kwargs):
     inst = test_cls(**cls_kwargs)
     backend_builder = mocker.Mock()
@@ -75,7 +77,8 @@ def _test_expression(mocker, delegate_stub_, delegate_fun, test_cls, **cls_kwarg
 
     with inst.visit(backend_builder, context) as context_delegate:
         assert context[5] == 10
-        getattr(backend_builder, delegate_fun).assert_called_once_with(**cls_kwargs)
+        yield {'backend_builder': backend_builder,
+               'expression': inst}
 
     assert context[5] == 5
 
@@ -83,7 +86,17 @@ def _test_expression(mocker, delegate_stub_, delegate_fun, test_cls, **cls_kwarg
 class TestDilute:
 
     def test_by_ent(self, mocker, delegate_stub):
-        _test_expression(mocker, delegate_stub, 'by_ent_delegate', ByEnt, dim=3)
+        with _test_expression(mocker, delegate_stub, 'by_ent_delegate', ByEnt, dim=3) as ret:
+            ret['backend_builder'].by_ent_delegate.assert_called_once_with(dim=3)
 
     def test_by_adj(self, mocker, delegate_stub):
-        _test_expression(mocker, delegate_stub, 'by_adj_delegate', ByAdj, bridge_dim=2, to_dim=3)
+        with _test_expression(mocker, delegate_stub, 'by_adj_delegate', ByAdj, bridge_dim=2, to_dim=3) as ret:
+            ret['backend_builder'].by_adj_delegate.assert_called_once_with(bridge_dim=2, to_dim=3)
+
+
+class TestFilter:
+
+    def test_where(self, mocker, delegate_stub):
+        args = {'a': 1, 'b': 2}
+        with _test_expression(mocker, delegate_stub, 'where_delegate', Where, **args) as ret:
+            ret['backend_builder'].where_delegate.assert_called_once_with(conditions=args.items())

@@ -1,3 +1,4 @@
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
 from .Selector import Selector
 
 
@@ -5,6 +6,9 @@ class Filter(Selector):
 
     def __init__(self):
         super().__init__()
+
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        raise NotImplementedError
 
 
 class Where(Filter):
@@ -19,11 +23,5 @@ class Where(Filter):
             conditions_str = conditions_str + '\n' + k + "=" + str(v)
         self.name = "Where" + conditions_str
 
-    def render(self, template_manager, child, backend_builder) -> str:
-        template_file = backend_builder.where()
-        template = template_manager.get_template(template_file)
-
-        rendered_template = template.render(conditions=self.conditions.items(),
-                                            child=child)
-
-        return rendered_template
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.where_delegate(conditions=self.conditions.items())
