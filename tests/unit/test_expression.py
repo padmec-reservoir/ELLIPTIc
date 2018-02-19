@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import pytest
 
 from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase
+from elliptic.Kernel.MeshComputeInterface.Expression.Manager import PutField
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector import Interface
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Filter import Where
@@ -112,3 +113,14 @@ class TestInterface:
 
         with _test_expression(mocker, delegate_stub, 'interface_delegate', Interface, to_ent=to_ent) as ret:
             ret['backend_builder'].interface_delegate.assert_called_once_with(to_ent=5)
+
+
+class TestManager:
+
+    def test_put_field(self, mocker, delegate_stub):
+        with _test_expression(mocker, delegate_stub, 'put_field_delegate', PutField, field_name='test') as ret:
+            ret['backend_builder'].put_field_delegate.assert_called_once_with(field_name='test')
+
+
+class TestMatrix:
+    pass
