@@ -4,6 +4,8 @@ import pytest
 
 from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, ExpressionBase
 from elliptic.Kernel.MeshComputeInterface.Expression.Manager import PutField
+from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction
+from elliptic.Kernel.MeshComputeInterface.Expression.Computer.Map import Map
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector import Interface
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Filter import Where
@@ -115,6 +117,7 @@ class TestInterface:
             ret['backend_builder'].interface_delegate.assert_called_once_with(to_ent=5)
 
 
+
 class TestManager:
 
     def test_put_field(self, mocker, delegate_stub):
@@ -124,3 +127,30 @@ class TestManager:
 
 class TestMatrix:
     pass
+
+
+
+class TestMap:
+
+    def test_map(self, mocker, delegate_stub):
+        args = {'a': 1, 'b': 2}
+        mapping_function = mocker.Mock()
+        mapping_function.name = "test"
+        mapping_function.process_fun_args.return_value = args
+        mapping_function.kwargs = args
+
+        with _test_expression(mocker, delegate_stub, 'map_delegate', Map, mapping_function=mapping_function) as ret:
+            ret['backend_builder'].map_delegate.assert_called_once_with(mapping_function=mapping_function,
+                                                                        fargs=args.items())
+
+
+class TestMapFunctions:
+
+    def test_map_functions(self, mocker, delegate_stub):
+        from inspect import getmembers, isclass
+        from elliptic.Kernel.MeshComputeInterface.Expression.Computer import MapFunctions
+
+        functions_list = [getattr(MapFunctions, o[0]) for o in getmembers(MapFunctions) if isclass(o[1])]
+
+        for fun in functions_list:
+            assert issubclass(fun, EllipticFunction)
