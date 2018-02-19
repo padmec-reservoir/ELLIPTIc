@@ -6,6 +6,7 @@ from elliptic.Kernel.MeshComputeInterface.Expression import EllipticNode, Expres
 from elliptic.Kernel.MeshComputeInterface.Expression.Manager import PutField
 from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction
 from elliptic.Kernel.MeshComputeInterface.Expression.Computer.Map import Map
+from elliptic.Kernel.MeshComputeInterface.Expression.Manager.Matrix import Create, FillColumns, FillDiag, Solve
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector import Interface
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Filter import Where
@@ -151,4 +152,21 @@ class TestManager:
 
 
 class TestMatrix:
-    pass
+
+    def test_create(self, mocker, delegate_stub):
+        with _test_expression(mocker, delegate_stub, 'create_matrix_delegate', Create, field_name='test') as ret:
+            ret['backend_builder'].create_matrix_delegate.assert_called_once_with(field_name='test')
+
+    def test_fill_columns(self, mocker, delegate_stub):
+        matrix = mocker.sentinel.matrix
+        with _test_expression(mocker, delegate_stub, 'fill_columns_delegate', FillColumns, matrix=matrix) as ret:
+            ret['backend_builder'].fill_columns_delegate.assert_called_once_with(matrix=matrix)
+
+    def test_fill_diag(self, mocker, delegate_stub):
+        matrix = mocker.sentinel.matrix
+        with _test_expression(mocker, delegate_stub, 'fill_diag_delegate', FillDiag, matrix=matrix) as ret:
+            ret['backend_builder'].fill_diag_delegate.assert_called_once_with(matrix=matrix)
+
+    def test_solve(self, mocker, delegate_stub):
+        with _test_expression(mocker, delegate_stub, 'solve_delegate', Solve) as ret:
+            ret['backend_builder'].solve_delegate.assert_called_once()

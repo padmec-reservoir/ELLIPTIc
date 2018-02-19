@@ -1,3 +1,4 @@
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
 from .Manager import Manager
 
 
@@ -16,6 +17,9 @@ class Create(Matrix):
 
         self.name = "Create Matrix"
 
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.create_matrix_delegate(field_name=self.field_name)
+
 
 class FillColumns(Matrix):
 
@@ -25,6 +29,9 @@ class FillColumns(Matrix):
         self.matrix = matrix
 
         self.name = "Fill Columns"
+
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.fill_columns_delegate(matrix=self.matrix)
 
 
 class FillDiag(Matrix):
@@ -36,6 +43,9 @@ class FillDiag(Matrix):
 
         self.name = "Fill Diagonal"
 
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.fill_diag_delegate(matrix=self.matrix)
+
 
 class Solve(Matrix):
 
@@ -43,3 +53,6 @@ class Solve(Matrix):
         super().__init__()
 
         self.name = "Solve"
+
+    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+        return backend_builder.solve_delegate()
