@@ -1,5 +1,5 @@
 from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
-from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction
+from .EllipticFunction import EllipticFunction
 from .Computer import Computer
 
 
