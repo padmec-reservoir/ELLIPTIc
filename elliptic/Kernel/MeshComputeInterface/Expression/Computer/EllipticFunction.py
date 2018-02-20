@@ -1,4 +1,4 @@
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendBuilderSubClass
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendBuilder
 
 
 class EllipticFunction:
@@ -7,7 +7,7 @@ class EllipticFunction:
         self.name = name
         self.kwargs = kwargs
 
-    def process_fun_args(self, backend_builder: BackendBuilderSubClass):
+    def process_fun_args(self, backend_builder: BackendBuilder):
         return getattr(backend_builder, self.name)(**self.kwargs)
 
 

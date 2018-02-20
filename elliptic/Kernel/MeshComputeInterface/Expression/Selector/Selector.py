@@ -1,4 +1,3 @@
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
 from ..Expression import ExpressionBase
 
 

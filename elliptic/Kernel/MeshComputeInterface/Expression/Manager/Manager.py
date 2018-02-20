@@ -1,4 +1,4 @@
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilder
 from ..Expression import ExpressionBase
 
 
@@ -17,5 +17,5 @@ class PutField(Manager):
 
         self.name = "PutField " + '\n' + field_name
 
-    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
         return backend_builder.put_field_delegate(field_name=self.field_name)

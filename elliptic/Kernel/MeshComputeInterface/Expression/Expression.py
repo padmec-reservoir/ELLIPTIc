@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from anytree import NodeMixin
 from typing import Type, TypeVar, Iterable, Iterator
 
-from ..BackendBuilder import BackendBuilderSubClass, ContextDelegate, ContextType
+from ..BackendBuilder import BackendBuilder, ContextDelegate, ContextType
 
 
 class EllipticNode(NodeMixin):
@@ -52,7 +52,7 @@ class ExpressionBase(EllipticNode):
 
         return expr
 
-    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
         raise NotImplementedError
 
     def render(self,
@@ -70,7 +70,7 @@ class ExpressionBase(EllipticNode):
         return rendered_template
 
     @contextmanager
-    def visit(self, backend_builder: BackendBuilderSubClass, context: ContextType) -> Iterator[ContextDelegate]:
+    def visit(self, backend_builder: BackendBuilder, context: ContextType) -> Iterator[ContextDelegate]:
         context_delegate = self.get_context_delegate(backend_builder)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
@@ -88,5 +88,5 @@ class StatementRoot(ExpressionBase):
     def _shape(self) -> str:
         return "shape=doubleoctagon"
 
-    def get_context_delegate(self, backend_builder):
+    def get_context_delegate(self, backend_builder) -> ContextDelegate:
         return backend_builder.base_delegate()

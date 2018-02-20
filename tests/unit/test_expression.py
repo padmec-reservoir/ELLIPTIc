@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from itertools import repeat
 
 import pytest
 
@@ -7,7 +8,7 @@ from elliptic.Kernel.MeshComputeInterface.Expression.Computer.Reduce import Redu
 from elliptic.Kernel.MeshComputeInterface.Expression.Manager import PutField
 from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction, EllipticReduce
 from elliptic.Kernel.MeshComputeInterface.Expression.Computer.Map import Map
-from elliptic.Kernel.MeshComputeInterface.Expression.Manager.Matrix import Create, FillColumns, FillDiag, Solve
+from elliptic.Kernel.MeshComputeInterface.Expression.Manager.Matrix import Create, FillColumns, FillDiag, Solve, Matrix
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector import Interface
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt, ByAdj
 from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Filter import Where
@@ -73,6 +74,38 @@ class TestExpressionBase:
             assert context[5] == 10
 
         assert context[5] == 5
+
+    def test_get_context_delegate_raises_NotImplementedError(self):
+        expression = ExpressionBase()
+
+        with pytest.raises(NotImplementedError):
+            expression.get_context_delegate(None)
+
+    def test_render(self, mocker):
+        context = {"a": 1, "b": 2}
+        child = "child"
+        kwargs = {"arg1": 1, "arg2": 2}
+
+        template = mocker.Mock()
+        template.render.return_value = mocker.sentinel.rendered_template
+
+        template_manager = mocker.Mock()
+        template_manager.get_template.return_value = template
+
+        context_delegate = mocker.Mock()
+        context_delegate.get_template_file.return_value = mocker.sentinel.template_file
+        context_delegate.template_kwargs.return_value = kwargs
+
+        expression = ExpressionBase()
+
+        rendered_template = expression.render(template_manager, child, context_delegate, context)
+
+        assert rendered_template is mocker.sentinel.rendered_template
+
+        context_delegate.get_template_file.assert_called_once()
+        template_manager.get_template.assert_called_once_with(mocker.sentinel.template_file)
+        context_delegate.template_kwargs.assert_called_once_with(context)
+        template.render.assert_called_once_with(child=child, **kwargs)
 
 
 @contextmanager
@@ -160,6 +193,11 @@ class TestFunctions:
         for fun in functions_list:
             assert issubclass(fun, fun_class)
 
+            argnames = fun.__init__.__code__.co_varnames[1:]
+            args = dict(zip(argnames, repeat(None)))
+
+            fun(**args)
+
     def test_map_functions(self):
         from elliptic.Kernel.MeshComputeInterface.Expression.Computer import MapFunctions
         self._test_functions(EllipticFunction, MapFunctions)
@@ -183,14 +221,18 @@ class TestMatrix:
             ret['backend_builder'].create_matrix_delegate.assert_called_once_with(field_name='test')
 
     def test_fill_columns(self, mocker, delegate_stub):
-        matrix = mocker.sentinel.matrix
+        matrix = mocker.Mock(spec=Matrix)
+        matrix.unique_id = 5
+
         with _test_expression(mocker, delegate_stub, 'fill_columns_delegate', FillColumns, matrix=matrix) as ret:
-            ret['backend_builder'].fill_columns_delegate.assert_called_once_with(matrix=matrix)
+            ret['backend_builder'].fill_columns_delegate.assert_called_once_with(matrix=5)
 
     def test_fill_diag(self, mocker, delegate_stub):
-        matrix = mocker.sentinel.matrix
+        matrix = mocker.Mock(spec=Matrix)
+        matrix.unique_id = 5
+
         with _test_expression(mocker, delegate_stub, 'fill_diag_delegate', FillDiag, matrix=matrix) as ret:
-            ret['backend_builder'].fill_diag_delegate.assert_called_once_with(matrix=matrix)
+            ret['backend_builder'].fill_diag_delegate.assert_called_once_with(matrix=5)
 
     def test_solve(self, mocker, delegate_stub):
         with _test_expression(mocker, delegate_stub, 'solve_delegate', Solve) as ret:

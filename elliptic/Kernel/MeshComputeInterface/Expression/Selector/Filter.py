@@ -1,4 +1,4 @@
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilder
 from .Selector import Selector
 
 
@@ -20,5 +20,5 @@ class Where(Filter):
             conditions_str = conditions_str + '\n' + k + "=" + str(v)
         self.name = "Where" + conditions_str
 
-    def get_context_delegate(self, backend_builder: BackendBuilderSubClass) -> ContextDelegate:
+    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
         return backend_builder.where_delegate(conditions=self.conditions.items())

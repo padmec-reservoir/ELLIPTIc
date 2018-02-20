@@ -1,5 +1,4 @@
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilderSubClass
-from ..Expression import ExpressionBase
+from elliptic.Kernel.MeshComputeInterface.Expression import ExpressionBase
 
 
 class Computer(ExpressionBase):
