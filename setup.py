@@ -1,17 +1,6 @@
 from setuptools import setup, find_packages, Extension
 
 
-USE_CYTHON = False
-
-extensions = []
-
-if USE_CYTHON:
-    extensions = [
-        Extension("*", ["elliptic/Kernel/MeshComputeInterface/*.pyx"])
-    ]
-    from Cython.Build import cythonize
-    extensions = cythonize(extensions)
-
 setup(
     name="ELLIPTIc",
     version='1.0.0',
@@ -24,6 +13,6 @@ setup(
     install_requires=['colorlog', 'configobj', 'anytree', 'typing_extensions', 'jinja2',
                       'cypyler'],
     packages=find_packages(),
-    license='LICENSE',
-    ext_modules=extensions
+    license="MIT license",
+    ext_modules=[]
 )
