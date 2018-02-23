@@ -1,12 +1,9 @@
-import os
-import tempfile
 from types import ModuleType
 from typing import List
 
+from cypyler import TMPCypyler
 from jinja2 import Environment, PackageLoader, Template
 
-from .utils import (build_extension, elliptic_cythonize,
-                    import_extension)
 from elliptic.Kernel.MeshComputeInterface.Expression import (StatementRoot,
                                                              ExpressionBase)
 
@@ -53,25 +50,11 @@ class TreeBuild:
         self.built_module: ModuleType = None
 
     def build(self, root: StatementRoot) -> ModuleType:
-        cython_dir = tempfile.mkdtemp(prefix=self.build_dir_prefix)
-        module_fd, module_path = tempfile.mkstemp(
-            suffix='.pyx', dir=cython_dir)
-
-        module_name = module_path.split('/')[-1].strip('.pyx')
-
         full_rendered_template = self._render_tree(node=root, context={})
 
-        with os.fdopen(module_fd, 'w') as f:
-            f.write(full_rendered_template)
+        cp = TMPCypyler(self.build_dir_prefix, self.libraries, self.include_dirs)
 
-        extensions = elliptic_cythonize(module_name, module_path,
-                                        include_dirs=self.include_dirs,
-                                        libraries=self.libraries)
-
-        built_ext = build_extension(extensions[0], cython_dir)
-        ext_path = built_ext.get_ext_fullpath(module_name)
-
-        self.built_module = import_extension(module_name, ext_path)
+        cp.build(full_rendered_template)
 
         return self.built_module
 

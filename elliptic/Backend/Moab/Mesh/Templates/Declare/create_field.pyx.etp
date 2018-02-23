@@ -1,2 +1,0 @@
-mb.tag_get_handle("{{ name }}", {{ size }}, MB_TYPE_DOUBLE, {{ name }}_TAG, MB_TAG_SPARSE | MB_TAG_CREAT, NULL, NULL)
-{{ child }}

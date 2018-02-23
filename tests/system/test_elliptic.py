@@ -1,5 +1,5 @@
 
 class TestElliptic(object):
 
-    def test_elliptic(self, elliptic_):
+    def test_elliptic(self):
         pass

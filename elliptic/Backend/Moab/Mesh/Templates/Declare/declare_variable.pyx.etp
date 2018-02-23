@@ -1,2 +1,0 @@
-cdef {{ var_type }} {{ var_name }}
-{{ child }}

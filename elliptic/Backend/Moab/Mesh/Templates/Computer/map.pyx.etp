@@ -1,3 +1,0 @@
-current_val = {{ function }}(mb, current_entity{% for arg, val in fargs %}, {{ arg }}={{ val.__repr__() }}{% endfor %})
-
-{{ child }}

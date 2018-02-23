@@ -1,3 +1,0 @@
-{% for node in node_templates %}
-{{ node }}
-{% endfor %}

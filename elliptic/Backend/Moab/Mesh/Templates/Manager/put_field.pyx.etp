@@ -1,3 +1,0 @@
-mb.tag_set_data({{ field_name }}_TAG, &current_entity, 1, &current_val)
-
-{{ child }}

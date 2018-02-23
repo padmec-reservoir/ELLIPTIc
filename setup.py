@@ -21,8 +21,8 @@ setup(
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker',
                    'mypy'],
-    install_requires=['numpy', 'colorlog', 'configobj', 'anytree', 'jinja2',
-                      'cython', 'typing_extensions'],
+    install_requires=['colorlog', 'configobj', 'anytree', 'typing_extensions', 'jinja2',
+                      'cypyler'],
     packages=find_packages(),
     license='LICENSE',
     ext_modules=extensions

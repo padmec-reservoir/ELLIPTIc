@@ -1,2 +1,0 @@
-if {% for condition, value in conditions %} ({{ condition }}(mb, current_entity) == {{ value }}) {% if not loop.last %} and {% endif %}{% endfor %}:
-{{ child|indent }}
