@@ -17,7 +17,7 @@ class Elliptic:
     def get_mesh_backend_builder(self):
         return self.mesh_backend.get_backend_builder()
 
-    def get_mesh_template_libs(self):
+    def get_mesh_backend_libs(self):
         return self.mesh_backend.get_libraries()
 
     def get_mesh_backend_include_dirs(self):

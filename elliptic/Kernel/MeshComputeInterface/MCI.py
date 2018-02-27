@@ -24,7 +24,7 @@ class ExprContext:
 
 class MCI:
 
-    def __init__(self, elliptic: Elliptic.Elliptic) -> None:
+    def __init__(self, elliptic: Elliptic) -> None:
         self.elliptic = elliptic
         self.built = False
         self.building = False
