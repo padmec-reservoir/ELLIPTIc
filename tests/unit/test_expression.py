@@ -25,24 +25,6 @@ class TestEllipticNode:
         assert second_node.unique_id == 1
 
 
-@pytest.fixture()
-def delegate_stub():
-    class DelegateStub:
-        def get_template_file(self):
-            pass
-
-        def template_kwargs(self, _):
-            pass
-
-        def context_enter(self, context):
-            context[5] = 10
-
-        def context_exit(self, context):
-            context[5] = 5
-
-    return DelegateStub
-
-
 class TestExpressionBase:
 
     def test_call(self):

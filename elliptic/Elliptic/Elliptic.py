@@ -29,8 +29,5 @@ class Elliptic:
     def set_mesh(self, mesh):
         self._mesh = mesh
 
-    def tree_preprocess(self, root):
-        self.mesh_backend.tree_preprocess(root)
-
     def export(self, filename):
         self.mesh_backend.export(self._mesh, filename)

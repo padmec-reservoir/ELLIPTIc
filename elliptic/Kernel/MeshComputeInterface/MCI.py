@@ -1,6 +1,7 @@
 from types import ModuleType
 
 from elliptic import Elliptic
+from elliptic.Kernel.TreeBuilder import TreeBuild
 from .Expression import StatementRoot
 
 
@@ -22,35 +23,39 @@ class ExprContext:
             self._mci.build(self.root)
 
 
+class MCIException(Exception):
+    pass
+
+
+class MCIBuildError(MCIException):
+    """Exception raised when an error related to a MCI build process happens.
+    """
+
+
 class MCI:
 
     def __init__(self, elliptic: Elliptic) -> None:
         self.elliptic = elliptic
         self.built = False
         self.building = False
+        self.built_module = None
 
     def root(self) -> ExprContext:
-        if not self.built:
+        if not self.built and not self.building:
             self.building = True
             return ExprContext(self)
         else:
-            raise
+            raise MCIBuildError("Can't get root while or after building a MCI tree.")
 
     def get_built_module(self) -> ModuleType:
         if not self.built:
-            raise
+            raise MCIBuildError("Can't get the built module before finishing building the MCI tree.")
         return self.built_module
 
     def build(self, root: StatementRoot):
-        from elliptic.Backend.DynamicCompiler.TreeBuild import TreeBuild
-
-        # Give a chance for the backend to modify the tree structure if needed
-        self.elliptic.tree_preprocess(root)
-
-        # Then proceed to compile the tree
         template_manager = self.elliptic.get_mesh_template_manager()
         backend_builder = self.elliptic.get_mesh_backend_builder()
-        backend_libs = self.elliptic.get_mesh_template_libs()
+        backend_libs = self.elliptic.get_mesh_backend_libs()
         include_dirs = self.elliptic.get_mesh_backend_include_dirs()
         tree_builder = TreeBuild(template_manager, backend_builder,
                                  backend_libs, include_dirs)

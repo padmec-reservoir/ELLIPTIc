@@ -3,24 +3,53 @@ import pytest
 from elliptic.Kernel.MeshComputeInterface import MCI
 from elliptic.Kernel.MeshComputeInterface.Expression import (Selector,
                                                              Computer, Manager)
+from elliptic.Kernel.MeshComputeInterface.MCI import MCIBuildError
 
 
-@pytest.fixture()
-def mci(request, elliptic_) -> MCI:
-    mci_ = MCI(elliptic_)
+class TestMCI:
 
-    return mci_
+    def test_root(self, mci, mocker):
+        mocker.patch('elliptic.Kernel.TreeBuilder.TreeBuild.build')
+        assert not mci.building
+        assert not mci.built
 
+        with mci.root() as root:
+            assert mci.building
+            assert not mci.built
 
-@pytest.fixture()
-def mesh(request, elliptic_):
-    import os
-    mesh_filename = os.path.join(os.path.dirname(__file__), 'cube_small.h5m')
-    mesh_ = elliptic_.mesh_builder().read_file(mesh_filename)
+        assert not mci.building
+        assert mci.built
 
-    elliptic_.set_mesh(mesh_)
+    def test_root_raises_MCIBuildError(self, mci, mocker):
+        mocker.patch('elliptic.Kernel.TreeBuilder.TreeBuild.build')
 
-    return mesh_
+        with mci.root() as root:
+            with pytest.raises(MCIBuildError):
+                with mci.root() as root2:
+                    pass
+
+    def test_get_built_module(self, mci, mocker):
+        tree_build = mocker.patch('elliptic.Kernel.TreeBuilder.TreeBuild.build')
+        tree_build.return_value = mocker.sentinel.built_module
+
+        with mci.root() as root:
+            pass
+
+        assert mci.get_built_module() is mocker.sentinel.built_module
+
+    def test_get_built_module_raises_MCIBuildError(self, mci, mocker):
+        mocker.patch('elliptic.Kernel.TreeBuilder.TreeBuild.build')
+
+        with pytest.raises(MCIBuildError):
+            mci.get_built_module()
+
+    def test_build(self, mci, elliptic, mocker):
+        tree_build = mocker.patch('elliptic.Kernel.TreeBuilder.TreeBuild.build')
+
+        with mci.root() as root:
+            pass
+
+        tree_build.assert_called_once()
 
 
 class TestExpression:
