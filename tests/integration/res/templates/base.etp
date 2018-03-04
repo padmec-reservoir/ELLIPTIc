@@ -1,0 +1,7 @@
+
+def test_fun():
+    base_str = '{{ a }} {{ b }}'
+
+    {{ child }}
+
+    return base_str

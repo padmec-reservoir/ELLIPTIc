@@ -1,11 +1,17 @@
+from collections import defaultdict
 from types import ModuleType
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from cypyler import TMPCypyler
 from jinja2 import Environment, PackageLoader, Template
 
-from elliptic.Kernel.MeshComputeInterface.Expression import (StatementRoot,
-                                                             ExpressionBase)
+if TYPE_CHECKING:
+    from elliptic.Kernel.MeshComputeInterface.Expression import (StatementRoot,
+                                                                 ExpressionBase)
+
+NODEGROUP_TEMPLATE = ("{% for node in node_templates %}"
+                      "{{ node }}"
+                      "{% endfor %}")
 
 
 class TemplateManagerBase:
@@ -19,19 +25,6 @@ class TemplateManagerBase:
 
     def render(self, template_file: str, **kwargs: str) -> str:
         template = self.get_template(template_file)
-        return template.render(**kwargs)
-
-
-class EllipticTemplateManager:
-    jinja2_env = Environment(loader=PackageLoader(__package__, 'Templates'))
-
-    @classmethod
-    def get_template(cls, template_file):
-        return cls.jinja2_env.get_template(template_file)
-
-    @classmethod
-    def render(cls, template_file, **kwargs):
-        template = cls.get_template(template_file)
         return template.render(**kwargs)
 
 
@@ -49,26 +42,25 @@ class TreeBuild:
         self.include_dirs = include_dirs
         self.built_module: ModuleType = None
 
-    def build(self, root: StatementRoot) -> ModuleType:
-        full_rendered_template = self._render_tree(node=root, context={})
+    def build(self, root: 'StatementRoot') -> ModuleType:
+        full_rendered_template = self._render_tree(node=root, context=defaultdict(list))
 
         cp = TMPCypyler(self.build_dir_prefix, self.libraries, self.include_dirs)
 
-        cp.build(full_rendered_template)
+        self.built_module = cp.build(full_rendered_template)
 
         return self.built_module
 
-    def _render_tree(self, node: ExpressionBase, context) -> str:
+    def _render_tree(self, node: 'ExpressionBase', context) -> str:
         children_rendered_templates: List[str] = []
 
         with node.visit(self.backend_builder, context) as context_delegate:
-
-            child: ExpressionBase
+            child: 'ExpressionBase'
             for child in node.children:
                 built_node: str = self._render_tree(child, context)
                 children_rendered_templates.append(built_node)
 
-            group_template = EllipticTemplateManager.get_template("nodegroup.etp")
+            group_template = Template(NODEGROUP_TEMPLATE)
             rendered_group = group_template.render(node_templates=children_rendered_templates)
 
             rendered_node = node.render(self.template_manager,

@@ -21,8 +21,7 @@ class TestEllipticNode:
         first_node = EllipticNode()
         second_node = EllipticNode()
 
-        assert first_node.unique_id == 0
-        assert second_node.unique_id == 1
+        assert first_node.unique_id != second_node.unique_id
 
 
 class TestExpressionBase:

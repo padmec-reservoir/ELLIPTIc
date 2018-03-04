@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction, EllipticReduce
 
 
-ContextType = Dict[str, Union[str, List[str]]]
+ContextType = Dict[str, List[str]]
 
 
 class ContextDelegate(Protocol):
