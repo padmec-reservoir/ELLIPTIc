@@ -11,5 +11,5 @@ class Interface(Selector):
 
         self.name = f"Interface({self.to_id})"
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
-        return backend_builder.interface_delegate(to_ent=self.to_id)
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+        return backend_builder.interface_delegate(context=context, to_ent=self.to_id)

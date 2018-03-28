@@ -17,8 +17,8 @@ class Create(Matrix):
 
         self.name = "Create Matrix"
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
-        return backend_builder.create_matrix_delegate(field_name=self.field_name)
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+        return backend_builder.create_matrix_delegate(context=context, field_name=self.field_name)
 
 
 class FillColumns(Matrix):
@@ -30,8 +30,8 @@ class FillColumns(Matrix):
 
         self.name = "Fill Columns"
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
-        return backend_builder.fill_columns_delegate(matrix=self.matrix_id)
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+        return backend_builder.fill_columns_delegate(context=context, matrix=self.matrix_id)
 
 
 class FillDiag(Matrix):
@@ -43,8 +43,8 @@ class FillDiag(Matrix):
 
         self.name = "Fill Diagonal"
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
-        return backend_builder.fill_diag_delegate(matrix=self.matrix_id)
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+        return backend_builder.fill_diag_delegate(context=context, matrix=self.matrix_id)
 
 
 class Solve(Matrix):
@@ -54,5 +54,5 @@ class Solve(Matrix):
 
         self.name = "Solve"
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
-        return backend_builder.solve_delegate()
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+        return backend_builder.solve_delegate(context=context)

@@ -12,7 +12,8 @@ class Reduce(Computer):
 
         self.name = "Reduce " + reducing_function.name
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
         processed_fkwargs = self.reducing_function.process_fun_args(backend_builder)
-        return backend_builder.reduce_delegate(reducing_function=self.reducing_function,
+        return backend_builder.reduce_delegate(context=context,
+                                               reducing_function=self.reducing_function,
                                                fargs=processed_fkwargs.items())

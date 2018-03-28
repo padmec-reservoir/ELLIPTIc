@@ -4,80 +4,81 @@ and have no relation with the expected MCI behavior.
 """
 import pytest
 
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, ContextType
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, ContextType, BackendBuilder
 from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction, EllipticReduce
 from elliptic.Kernel.TreeBuilder import TemplateManagerBase
 
 
-class SimpleBackendBuilder:
+class SimpleBackendBuilder(BackendBuilder):
 
-    def base_delegate(self) -> ContextDelegate:
-        class Delegate:
+    def base_delegate(self, context) -> ContextDelegate:
+        class Delegate(ContextDelegate):
 
             def get_template_file(self):
                 return 'base.etp'
 
             def template_kwargs(self, context: ContextType):
-                return {'a': context['a'][-1], 'b': context['b'][-1]}
+                return {'a': self.get_value('a'),
+                        'b': self.get_value('b')}
 
             def context_enter(self, context: ContextType):
-                context['a'].append('x')
-                context['b'].append('a')
-                context['cur_var'].append('base_str')
+                self.put_value('a', 'x')
+                self.put_value('b', 'a')
+                self.put_value('cur_var', 'base_str')
 
             def context_exit(self, context: ContextType):
-                context['a'].pop()
-                context['b'].pop()
-                context['cur_var'].pop()
+                self.pop_value('a')
+                self.pop_value('b')
+                self.pop_value('cur_var')
 
-        return Delegate()
+        return Delegate(context)
 
-    def interface_delegate(self, to_ent: int) -> ContextDelegate:
+    def interface_delegate(self, context, to_ent: int) -> ContextDelegate:
         raise NotImplementedError
 
-    def by_ent_delegate(self, dim: int) -> ContextDelegate:
-        class Delegate:
+    def by_ent_delegate(self, context, dim: int) -> ContextDelegate:
+        class Delegate(ContextDelegate):
 
             def get_template_file(self):
                 return 'by_ent.etp'
 
             def template_kwargs(self, context: ContextType):
-                return {'append_var': context['cur_var'][-1],
-                        'append_val': context['a'][-1]}
+                return {'append_var': self.get_value('cur_var'),
+                        'append_val': self.get_value('a')}
 
             def context_enter(self, context: ContextType):
-                context['a'].append(str(dim))
+                self.put_value('a', str(dim))
 
             def context_exit(self, context: ContextType):
-                context['a'].pop()
+                self.pop_value('a')
 
-        return Delegate()
+        return Delegate(context)
 
-    def by_adj_delegate(self, bridge_dim: int, to_dim: int) -> ContextDelegate:
+    def by_adj_delegate(self, context, bridge_dim: int, to_dim: int) -> ContextDelegate:
         raise NotImplementedError
 
-    def where_delegate(self, conditions) -> ContextDelegate:
+    def where_delegate(self, context, conditions) -> ContextDelegate:
         raise NotImplementedError
 
-    def map_delegate(self, mapping_function: EllipticFunction, fargs) -> ContextDelegate:
+    def map_delegate(self, context, mapping_function: EllipticFunction, fargs) -> ContextDelegate:
         raise NotImplementedError
 
-    def reduce_delegate(self, reducing_function: EllipticReduce, fargs) -> ContextDelegate:
+    def reduce_delegate(self, context, reducing_function: EllipticReduce, fargs) -> ContextDelegate:
         raise NotImplementedError
 
-    def put_field_delegate(self, field_name: str) -> ContextDelegate:
+    def put_field_delegate(self, context, field_name: str) -> ContextDelegate:
         raise NotImplementedError
 
-    def create_matrix_delegate(self, field_name: str) -> ContextDelegate:
+    def create_matrix_delegate(self, context, field_name: str) -> ContextDelegate:
         raise NotImplementedError
 
-    def fill_columns_delegate(self, matrix: int) -> ContextDelegate:
+    def fill_columns_delegate(self, context, matrix: int) -> ContextDelegate:
         raise NotImplementedError
 
-    def fill_diag_delegate(self, matrix: int) -> ContextDelegate:
+    def fill_diag_delegate(self, context, matrix: int) -> ContextDelegate:
         raise NotImplementedError
 
-    def solve_delegate(self) -> ContextDelegate:
+    def solve_delegate(self, context) -> ContextDelegate:
         raise NotImplementedError
 
 

@@ -20,5 +20,5 @@ class Where(Filter):
             conditions_str = conditions_str + '\n' + k + "=" + str(v)
         self.name = "Where" + conditions_str
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
-        return backend_builder.where_delegate(conditions=self.conditions.items())
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+        return backend_builder.where_delegate(context=context, conditions=self.conditions.items())

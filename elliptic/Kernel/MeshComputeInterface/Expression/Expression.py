@@ -52,7 +52,7 @@ class ExpressionBase(EllipticNode):
 
         return expr
 
-    def get_context_delegate(self, backend_builder: BackendBuilder) -> ContextDelegate:
+    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
         raise NotImplementedError
 
     def render(self,
@@ -71,7 +71,7 @@ class ExpressionBase(EllipticNode):
 
     @contextmanager
     def visit(self, backend_builder: BackendBuilder, context: ContextType) -> Iterator[ContextDelegate]:
-        context_delegate = self.get_context_delegate(backend_builder)
+        context_delegate = self.get_context_delegate(context, backend_builder)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
         context_delegate.context_enter(context)
@@ -88,5 +88,5 @@ class StatementRoot(ExpressionBase):
     def _shape(self) -> str:
         return "shape=doubleoctagon"
 
-    def get_context_delegate(self, backend_builder) -> ContextDelegate:
-        return backend_builder.base_delegate()
+    def get_context_delegate(self, context, backend_builder) -> ContextDelegate:
+        return backend_builder.base_delegate(context=context)
