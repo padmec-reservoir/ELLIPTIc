@@ -58,13 +58,12 @@ class ExpressionBase(EllipticNode):
     def render(self,
                template_manager,
                child: str,
-               context_delegate: ContextDelegate,
-               context: ContextType) -> str:
+               context_delegate: ContextDelegate) -> str:
 
         template_file = context_delegate.get_template_file()
         template = template_manager.get_template(template_file)
 
-        kwargs = context_delegate.template_kwargs(context)
+        kwargs = context_delegate.template_kwargs()
         rendered_template = template.render(child=child, **kwargs)
 
         return rendered_template
@@ -74,9 +73,9 @@ class ExpressionBase(EllipticNode):
         context_delegate = self.get_context_delegate(context, backend_builder)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
-        context_delegate.context_enter(context)
+        context_delegate.context_enter()
         yield context_delegate
-        context_delegate.context_exit(context)
+        context_delegate.context_exit()
 
 
 class StatementRoot(ExpressionBase):

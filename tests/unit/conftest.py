@@ -2,6 +2,7 @@ import pytest
 
 from elliptic import Elliptic
 from elliptic.Kernel.MeshComputeInterface import MCI
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate
 
 
 @pytest.fixture()
@@ -33,17 +34,17 @@ def mci(elliptic) -> MCI:
 
 @pytest.fixture()
 def delegate_stub():
-    class DelegateStub:
+    class DelegateStub(ContextDelegate):
         def get_template_file(self):
             pass
 
-        def template_kwargs(self, _):
+        def template_kwargs(self):
             pass
 
-        def context_enter(self, context):
-            context[5] = 10
+        def context_enter(self):
+            self.put_value('a', 10)
 
-        def context_exit(self, context):
-            context[5] = 5
+        def context_exit(self):
+            self.pop_value('a')
 
     return DelegateStub

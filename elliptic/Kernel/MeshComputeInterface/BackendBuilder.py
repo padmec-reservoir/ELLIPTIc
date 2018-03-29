@@ -29,15 +29,15 @@ class ContextDelegate(ABC):
         pass
 
     @abstractmethod
-    def template_kwargs(self, context: ContextType):
+    def template_kwargs(self):
         pass
 
     @abstractmethod
-    def context_enter(self, context: ContextType):
+    def context_enter(self):
         pass
 
     @abstractmethod
-    def context_exit(self, context: ContextType):
+    def context_exit(self):
         pass
 
 

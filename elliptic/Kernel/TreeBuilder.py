@@ -65,7 +65,5 @@ class TreeBuild:
 
             rendered_node = node.render(self.template_manager,
                                         rendered_group,
-                                        context_delegate,
-                                        context)
-
+                                        context_delegate)
         return rendered_node

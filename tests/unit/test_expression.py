@@ -1,3 +1,4 @@
+from collections import defaultdict
 from contextlib import contextmanager
 from itertools import repeat
 
@@ -42,19 +43,19 @@ class TestExpressionBase:
         assert len(expression.children) == 1
 
     def test_visit(self, mocker, delegate_stub):
-        context = {}
+        context = defaultdict(list)
         backend_builder = mocker.sentinel.backend_builder
 
         class ExpressionStub(ExpressionBase):
             def get_context_delegate(self, context, backend_builder):
-                return delegate_stub()
+                return delegate_stub(context)
 
         expression = ExpressionStub()
 
         with expression.visit(backend_builder, context) as context_delegate:
-            assert context[5] == 10
+            assert context['a'] == [10]
 
-        assert context[5] == 5
+        assert not context['a']
 
     def test_get_context_delegate_raises_NotImplementedError(self):
         expression = ExpressionBase()
@@ -79,13 +80,13 @@ class TestExpressionBase:
 
         expression = ExpressionBase()
 
-        rendered_template = expression.render(template_manager, child, context_delegate, context)
+        rendered_template = expression.render(template_manager, child, context_delegate)
 
         assert rendered_template is mocker.sentinel.rendered_template
 
         context_delegate.get_template_file.assert_called_once()
         template_manager.get_template.assert_called_once_with(mocker.sentinel.template_file)
-        context_delegate.template_kwargs.assert_called_once_with(context)
+        context_delegate.template_kwargs.assert_called_once()
         template.render.assert_called_once_with(child=child, **kwargs)
 
 
@@ -93,26 +94,26 @@ class TestExpressionBase:
 def _test_expression(mocker, delegate_stub_, delegate_fun, test_cls, **cls_kwargs):
     inst = test_cls(**cls_kwargs)
     backend_builder = mocker.Mock()
-    getattr(backend_builder, delegate_fun).return_value = delegate_stub_()
-    context = {}
+    context = defaultdict(list)
+    getattr(backend_builder, delegate_fun).return_value = delegate_stub_(context)
 
     with inst.visit(backend_builder, context) as context_delegate:
-        assert context[5] == 10
+        assert context['a'] == [10]
         yield {'backend_builder': backend_builder,
                'expression': inst}
 
-    assert context[5] == 5
+    assert not context['a']
 
 
 class TestDilute:
 
     def test_by_ent(self, mocker, delegate_stub):
         with _test_expression(mocker, delegate_stub, 'by_ent_delegate', ByEnt, dim=3) as ret:
-            ret['backend_builder'].by_ent_delegate.assert_called_once_with(context={5: 10}, dim=3)
+            ret['backend_builder'].by_ent_delegate.assert_called_once_with(context={'a': [10]}, dim=3)
 
     def test_by_adj(self, mocker, delegate_stub):
         with _test_expression(mocker, delegate_stub, 'by_adj_delegate', ByAdj, bridge_dim=2, to_dim=3) as ret:
-            ret['backend_builder'].by_adj_delegate.assert_called_once_with(context={5: 10}, bridge_dim=2, to_dim=3)
+            ret['backend_builder'].by_adj_delegate.assert_called_once_with(context={'a': [10]}, bridge_dim=2, to_dim=3)
 
 
 class TestFilter:
@@ -120,7 +121,7 @@ class TestFilter:
     def test_where(self, mocker, delegate_stub):
         args = {'a': 1, 'b': 2}
         with _test_expression(mocker, delegate_stub, 'where_delegate', Where, **args) as ret:
-            ret['backend_builder'].where_delegate.assert_called_once_with(context={5: 10}, conditions=args.items())
+            ret['backend_builder'].where_delegate.assert_called_once_with(context={'a': [10]}, conditions=args.items())
 
 
 class TestInterface:
@@ -130,7 +131,7 @@ class TestInterface:
         to_ent.unique_id = 5
 
         with _test_expression(mocker, delegate_stub, 'interface_delegate', Interface, to_ent=to_ent) as ret:
-            ret['backend_builder'].interface_delegate.assert_called_once_with(context={5: 10}, to_ent=5)
+            ret['backend_builder'].interface_delegate.assert_called_once_with(context={'a': [10]}, to_ent=5)
 
 
 class TestMap:
@@ -143,7 +144,7 @@ class TestMap:
         mapping_function.kwargs = args
 
         with _test_expression(mocker, delegate_stub, 'map_delegate', Map, mapping_function=mapping_function) as ret:
-            ret['backend_builder'].map_delegate.assert_called_once_with(context={5: 10},
+            ret['backend_builder'].map_delegate.assert_called_once_with(context={'a': [10]},
                                                                         mapping_function=mapping_function,
                                                                         fargs=args.items())
 
@@ -160,7 +161,7 @@ class TestReduce:
 
         with _test_expression(mocker, delegate_stub, 'reduce_delegate',
                               Reduce, reducing_function=reducing_function) as ret:
-            ret['backend_builder'].reduce_delegate.assert_called_once_with(context={5: 10},
+            ret['backend_builder'].reduce_delegate.assert_called_once_with(context={'a': [10]},
                                                                            reducing_function=reducing_function,
                                                                            fargs=mod_args.items())
 
@@ -194,28 +195,28 @@ class TestManager:
 
     def test_put_field(self, mocker, delegate_stub):
         with _test_expression(mocker, delegate_stub, 'put_field_delegate', PutField, field_name='test') as ret:
-            ret['backend_builder'].put_field_delegate.assert_called_once_with(context={5: 10}, field_name='test')
+            ret['backend_builder'].put_field_delegate.assert_called_once_with(context={'a': [10]}, field_name='test')
 
 
 class TestMatrix:
 
     def test_create(self, mocker, delegate_stub):
         with _test_expression(mocker, delegate_stub, 'create_matrix_delegate', Create, field_name='test') as ret:
-            ret['backend_builder'].create_matrix_delegate.assert_called_once_with(context={5: 10}, field_name='test')
+            ret['backend_builder'].create_matrix_delegate.assert_called_once_with(context={'a': [10]}, field_name='test')
 
     def test_fill_columns(self, mocker, delegate_stub):
         matrix = mocker.Mock(spec=Matrix)
         matrix.unique_id = 5
 
         with _test_expression(mocker, delegate_stub, 'fill_columns_delegate', FillColumns, matrix=matrix) as ret:
-            ret['backend_builder'].fill_columns_delegate.assert_called_once_with(context={5: 10}, matrix=5)
+            ret['backend_builder'].fill_columns_delegate.assert_called_once_with(context={'a': [10]}, matrix=5)
 
     def test_fill_diag(self, mocker, delegate_stub):
         matrix = mocker.Mock(spec=Matrix)
         matrix.unique_id = 5
 
         with _test_expression(mocker, delegate_stub, 'fill_diag_delegate', FillDiag, matrix=matrix) as ret:
-            ret['backend_builder'].fill_diag_delegate.assert_called_once_with(context={5: 10}, matrix=5)
+            ret['backend_builder'].fill_diag_delegate.assert_called_once_with(context={'a': [10]}, matrix=5)
 
     def test_solve(self, mocker, delegate_stub):
         with _test_expression(mocker, delegate_stub, 'solve_delegate', Solve) as ret:

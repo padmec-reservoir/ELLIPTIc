@@ -17,16 +17,16 @@ class SimpleBackendBuilder(BackendBuilder):
             def get_template_file(self):
                 return 'base.etp'
 
-            def template_kwargs(self, context: ContextType):
+            def template_kwargs(self):
                 return {'a': self.get_value('a'),
                         'b': self.get_value('b')}
 
-            def context_enter(self, context: ContextType):
+            def context_enter(self):
                 self.put_value('a', 'x')
                 self.put_value('b', 'a')
                 self.put_value('cur_var', 'base_str')
 
-            def context_exit(self, context: ContextType):
+            def context_exit(self):
                 self.pop_value('a')
                 self.pop_value('b')
                 self.pop_value('cur_var')
@@ -42,14 +42,14 @@ class SimpleBackendBuilder(BackendBuilder):
             def get_template_file(self):
                 return 'by_ent.etp'
 
-            def template_kwargs(self, context: ContextType):
+            def template_kwargs(self):
                 return {'append_var': self.get_value('cur_var'),
                         'append_val': self.get_value('a')}
 
-            def context_enter(self, context: ContextType):
+            def context_enter(self):
                 self.put_value('a', str(dim))
 
-            def context_exit(self, context: ContextType):
+            def context_exit(self):
                 self.pop_value('a')
 
         return Delegate(context)
