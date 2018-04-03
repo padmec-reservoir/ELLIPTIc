@@ -14,6 +14,7 @@ class ContextDelegate(ABC):
 
     def __init__(self, context):
         self.context = context
+        self.child = ""
 
     def put_value(self, name, value):
         self.context[name].append(value)
@@ -23,6 +24,9 @@ class ContextDelegate(ABC):
 
     def pop_value(self, name):
         self.context[name].pop()
+
+    def clear_values(self, name):
+        self.context[name].clear()
 
     @abstractmethod
     def get_template_file(self):
