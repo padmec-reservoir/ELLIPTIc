@@ -1,5 +1,5 @@
 from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, BackendBuilder
-from ..Expression import ExpressionBase
+from elliptic.Kernel.Expression import ExpressionBase
 
 
 class Manager(ExpressionBase):

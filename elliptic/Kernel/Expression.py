@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from anytree import NodeMixin
 from typing import Type, TypeVar, Iterable, Iterator
 
-from ..BackendBuilder import BackendBuilder, ContextDelegate, ContextType
+from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendBuilder, ContextDelegate, ContextType
 
 
 class EllipticNode(NodeMixin):

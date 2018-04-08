@@ -1,4 +1,4 @@
-from ..Expression import ExpressionBase
+from elliptic.Kernel.Expression import ExpressionBase
 
 
 class Selector(ExpressionBase):
