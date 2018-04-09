@@ -1,4 +1,3 @@
-__all__ = ['Elliptic', 'Kernel', 'Preprocess']
+__all__ = ['Kernel', 'Preprocess']
 
-from .Elliptic.Elliptic import Elliptic
 from . import Kernel

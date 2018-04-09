@@ -4,12 +4,13 @@ and have no relation with the expected MCI behavior.
 """
 import pytest
 
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate, ContextType, BackendBuilder
-from elliptic.Kernel.MeshComputeInterface.Expression.Computer import EllipticFunction, EllipticReduce
+from elliptic.Kernel.Context import ContextDelegate
+from elliptic.Kernel.Contract import DSLContract
+from elliptic.Kernel.Expression import ExpressionBase
 from elliptic.Kernel.TreeBuilder import TemplateManagerBase
 
 
-class SimpleBackendBuilder(BackendBuilder):
+class SimpleDSLContract(DSLContract):
 
     def base_delegate(self, context) -> ContextDelegate:
         class Delegate(ContextDelegate):
@@ -18,68 +19,50 @@ class SimpleBackendBuilder(BackendBuilder):
                 return 'base.etp'
 
             def template_kwargs(self):
-                return {'a': self.get_value('a'),
-                        'b': self.get_value('b')}
+                return {'a': self.context.get_value('a'),
+                        'b': self.context.get_value('b')}
 
             def context_enter(self):
-                self.put_value('a', 'x')
-                self.put_value('b', 'a')
-                self.put_value('cur_var', 'base_str')
+                self.context.put_value('a', 'x')
+                self.context.put_value('b', 'a')
+                self.context.put_value('cur_var', 'base_str')
 
             def context_exit(self):
-                self.pop_value('a')
-                self.pop_value('b')
-                self.pop_value('cur_var')
+                self.context.pop_value('a')
+                self.context.pop_value('b')
+                self.context.pop_value('cur_var')
 
         return Delegate(context)
 
-    def interface_delegate(self, context, to_ent: int) -> ContextDelegate:
-        raise NotImplementedError
-
-    def by_ent_delegate(self, context, dim: int) -> ContextDelegate:
+    def expression_delegate(self, context, arg: int) -> ContextDelegate:
         class Delegate(ContextDelegate):
 
             def get_template_file(self):
-                return 'by_ent.etp'
+                return 'expression.etp'
 
             def template_kwargs(self):
-                return {'append_var': self.get_value('cur_var'),
-                        'append_val': self.get_value('a')}
+                return {'append_var': self.context.get_value('cur_var'),
+                        'append_val': self.context.get_value('a')}
 
             def context_enter(self):
-                self.put_value('a', str(dim))
+                self.context.put_value('a', str(arg))
 
             def context_exit(self):
-                self.pop_value('a')
+                self.context.pop_value('a')
 
         return Delegate(context)
 
-    def by_adj_delegate(self, context, bridge_dim: int, to_dim: int) -> ContextDelegate:
-        raise NotImplementedError
 
-    def where_delegate(self, context, conditions) -> ContextDelegate:
-        raise NotImplementedError
+class Expression(ExpressionBase):
 
-    def map_delegate(self, context, mapping_function: EllipticFunction, fargs) -> ContextDelegate:
-        raise NotImplementedError
+    def __init__(self, arg):
+        super().__init__()
 
-    def reduce_delegate(self, context, reducing_function: EllipticReduce, fargs) -> ContextDelegate:
-        raise NotImplementedError
+        self.arg = arg
+        self.name = f"Expression({arg})"
 
-    def put_field_delegate(self, context, field_name: str) -> ContextDelegate:
-        raise NotImplementedError
-
-    def create_matrix_delegate(self, context, field_name: str) -> ContextDelegate:
-        raise NotImplementedError
-
-    def fill_columns_delegate(self, context, matrix: int) -> ContextDelegate:
-        raise NotImplementedError
-
-    def fill_diag_delegate(self, context, matrix: int) -> ContextDelegate:
-        raise NotImplementedError
-
-    def solve_delegate(self, context) -> ContextDelegate:
-        raise NotImplementedError
+    def get_context_delegate(self, context, dsl_contract: SimpleDSLContract) -> ContextDelegate:
+        return dsl_contract.expression_delegate(context=context, arg=self.arg)
 
 
 @pytest.fixture()
@@ -90,7 +73,12 @@ def template_manager():
 
 
 @pytest.fixture()
-def simple_backend_builder():
-    backend_builder = SimpleBackendBuilder()
+def simple_dsl_contract():
+    backend_builder = SimpleDSLContract()
 
     return backend_builder
+
+
+@pytest.fixture()
+def expression():
+    return Expression

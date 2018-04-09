@@ -1,8 +1,7 @@
 import pytest
 
-from elliptic import Elliptic
-from elliptic.Kernel.MeshComputeInterface import MCI
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import ContextDelegate
+from elliptic.Kernel.Context import ContextDelegate
+from elliptic.Kernel.DSL import DSLMeta, DSL
 
 
 @pytest.fixture()
@@ -18,18 +17,25 @@ def mesh_backend(mocker):
 
 
 @pytest.fixture()
-def elliptic(mocker, mesh_backend):
-    elliptic_ = Elliptic(mesh_backend, mocker.Mock())
-    elliptic_.set_mesh(mocker.sentinel.mesh)
+def dsl_meta_stub():
+    class DSLMetaStub(DSLMeta):
+        def libs(self):
+            return []
 
-    return elliptic_
+        def include_dirs(self):
+            return []
+
+    return DSLMetaStub
 
 
 @pytest.fixture()
-def mci(elliptic) -> MCI:
-    mci_ = MCI(elliptic)
+def dsl(mocker, dsl_meta_stub) -> DSL:
+    template_manager = mocker.sentinel.template_manager
+    dsl_contract = mocker.sentinel.dsl_contract
 
-    return mci_
+    dsl_ = DSL(template_manager, dsl_contract, dsl_meta_stub())
+
+    return dsl_
 
 
 @pytest.fixture()
@@ -42,9 +48,9 @@ def delegate_stub():
             pass
 
         def context_enter(self):
-            self.put_value('a', 10)
+            self.context.put_value('a', '10')
 
         def context_exit(self):
-            self.pop_value('a')
+            self.context.pop_value('a')
 
     return DelegateStub

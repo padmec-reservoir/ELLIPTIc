@@ -1,13 +1,12 @@
 from collections import defaultdict
 from types import ModuleType
-from typing import List, TYPE_CHECKING
+from typing import List
 
 from cypyler import TMPCypyler
 from jinja2 import Environment, PackageLoader, Template
 
-if TYPE_CHECKING:
-    from elliptic.Kernel.MeshComputeInterface.Expression import (StatementRoot,
-                                                                 ExpressionBase)
+from .Context import Context
+from .Expression import StatementRoot, ExpressionBase
 
 NODEGROUP_TEMPLATE = ("{% for node in node_templates %}"
                       "{{ node }}"
@@ -42,8 +41,8 @@ class TreeBuild:
         self.include_dirs = include_dirs
         self.built_module: ModuleType = None
 
-    def build(self, root: 'StatementRoot') -> ModuleType:
-        full_rendered_template = self._render_tree(node=root, context=defaultdict(list))
+    def build(self, root: StatementRoot) -> ModuleType:
+        full_rendered_template = self._render_tree(node=root, context=Context())
 
         cp = TMPCypyler(self.build_dir_prefix, self.libraries, self.include_dirs)
 
@@ -51,11 +50,11 @@ class TreeBuild:
 
         return self.built_module
 
-    def _render_tree(self, node: 'ExpressionBase', context) -> str:
+    def _render_tree(self, node: ExpressionBase, context: Context) -> str:
         children_rendered_templates: List[str] = []
 
         with node.visit(self.backend_builder, context) as context_delegate:
-            child: 'ExpressionBase'
+            child: ExpressionBase
             for child in node.children:
                 built_node: str = self._render_tree(child, context)
                 children_rendered_templates.append(built_node)

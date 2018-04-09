@@ -1,5 +1,4 @@
-from elliptic.Kernel.MeshComputeInterface.Expression import StatementRoot
-from elliptic.Kernel.MeshComputeInterface.Expression.Selector.Dilute import ByEnt
+from elliptic.Kernel.Expression import StatementRoot
 from elliptic.Kernel.TreeBuilder import TreeBuild
 
 
@@ -13,18 +12,18 @@ class TestTemplateManagerBase:
 
 class TestTreeBuilder:
 
-    def test_render_single_node(self, template_manager, simple_backend_builder):
-        tree_builder = TreeBuild(template_manager, simple_backend_builder)
+    def test_render_single_node(self, template_manager, simple_dsl_contract):
+        tree_builder = TreeBuild(template_manager, simple_dsl_contract)
         statement_root = StatementRoot()
 
         built_module = tree_builder.build(statement_root)
 
         assert built_module.test_fun() == 'x a'
 
-    def test_render_two_node(self, template_manager, simple_backend_builder):
-        tree_builder = TreeBuild(template_manager, simple_backend_builder)
+    def test_render_two_node(self, template_manager, expression, simple_dsl_contract):
+        tree_builder = TreeBuild(template_manager, simple_dsl_contract)
         statement_root = StatementRoot()
-        statement_root.children = (ByEnt(2),)
+        statement_root.children = (expression(2),)
 
         built_module = tree_builder.build(statement_root)
 

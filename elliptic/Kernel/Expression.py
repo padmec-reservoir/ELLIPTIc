@@ -3,7 +3,8 @@ from contextlib import contextmanager
 from anytree import NodeMixin
 from typing import Type, TypeVar, Iterable, Iterator
 
-from elliptic.Kernel.MeshComputeInterface.BackendBuilder import BackendBuilder, ContextDelegate, ContextType
+from .Contract import DSLContract
+from .Context import ContextDelegate, Context
 
 
 class EllipticNode(NodeMixin):
@@ -52,7 +53,7 @@ class ExpressionBase(EllipticNode):
 
         return expr
 
-    def get_context_delegate(self, context, backend_builder: BackendBuilder) -> ContextDelegate:
+    def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
         raise NotImplementedError
 
     def render(self,
@@ -69,8 +70,8 @@ class ExpressionBase(EllipticNode):
         return rendered_template
 
     @contextmanager
-    def visit(self, backend_builder: BackendBuilder, context: ContextType) -> Iterator[ContextDelegate]:
-        context_delegate = self.get_context_delegate(context, backend_builder)
+    def visit(self, dsl_contract: DSLContract, context: Context) -> Iterator[ContextDelegate]:
+        context_delegate = self.get_context_delegate(context, dsl_contract)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
         context_delegate.context_enter()
@@ -87,5 +88,5 @@ class StatementRoot(ExpressionBase):
     def _shape(self) -> str:
         return "shape=doubleoctagon"
 
-    def get_context_delegate(self, context, backend_builder) -> ContextDelegate:
-        return backend_builder.base_delegate(context=context)
+    def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
+        return dsl_contract.base_delegate(context=context)
