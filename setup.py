@@ -12,6 +12,10 @@ setup(
                    'mypy'],
     install_requires=['colorlog', 'configobj', 'anytree', 'typing_extensions', 'jinja2',
                       'cypyler'],
+    extras_require={
+        'docs': [
+            'sphinx',
+            'sphinx_autodoc_typehints']},
     packages=find_packages(),
     license="MIT license",
     ext_modules=[]
