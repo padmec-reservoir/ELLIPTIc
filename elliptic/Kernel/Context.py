@@ -63,8 +63,8 @@ class ContextDelegate(ABC):
     Also defines the context state changes when the corresponding expression node is visited
     and exited.
 
-    :ivar context: `Context` instance.
-    :type context: Context
+    Attributes:
+        context (:class:`Context`): Context instance.
     """
 
     def __init__(self, context: Context):

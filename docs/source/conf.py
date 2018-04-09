@@ -18,7 +18,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- General configuration ------------------------------------------------
 
@@ -33,22 +33,19 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'sphinx.ext.viewcode',
               'sphinx.ext.mathjax',
-              'sphinx_autodoc_typehints']
+              'sphinx_autodoc_typehints',
+              'sphinx.ext.intersphinx']
 
 napoleon_include_init_with_doc = False
 napoleon_include_special_with_doc = True
 autodoc_mock_imports = []
 
+nitpicky = True
 
-def linkcode_resolve(domain, info):
-    if domain != 'py':
-        return None
-    if not info['module']:
-        return None
-    filename = info['module'].replace('.', '/')
-    print(info)
-    return "https://github.com/gpkc/padmec_preprocessor/blob/master/%s.py" %\
-           filename
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'anytree': ('http://anytree.readthedocs.io/en/latest/', None)
+}
 
 
 # Add any paths that contain templates here, relative to this directory.

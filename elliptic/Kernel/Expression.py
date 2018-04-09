@@ -8,6 +8,8 @@ from .Context import ContextDelegate, Context
 
 
 class EllipticNode(NodeMixin):
+    """Base class for representing a node in the DSL tree.
+    """
 
     last_id: int = 0
 
@@ -27,6 +29,10 @@ class EllipticNode(NodeMixin):
         return "shape=box"
 
     def export_tree(self, filename: str) -> None:
+        """Exports a graphical representation of the DSL tree.
+
+        This method can be called from any tree node. The tree root will always be used.
+        """
         from anytree.exporter import DotExporter
 
         exporter = DotExporter(self.root,
@@ -40,6 +46,8 @@ ExpressionSubClass = TypeVar('ExpressionSubClass', bound='ExpressionBase')
 
 
 class ExpressionBase(EllipticNode):
+    """Base class for building DSL expressions.
+    """
 
     def __init__(self) -> None:
         super().__init__()
@@ -47,6 +55,8 @@ class ExpressionBase(EllipticNode):
     def __call__(self,
                  expr_type: Type[ExpressionSubClass],
                  **kwargs) -> ExpressionSubClass:
+        """Inserts a new node in the DSL tree.
+        """
         expr = expr_type(**kwargs)
 
         self.children += (expr,)
@@ -54,12 +64,16 @@ class ExpressionBase(EllipticNode):
         return expr
 
     def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
+        """Returns the context delegate for this expression.
+        """
         raise NotImplementedError
 
     def render(self,
                template_manager,
                child: str,
                context_delegate: ContextDelegate) -> str:
+        """Render the expression generated code.
+        """
 
         template_file = context_delegate.get_template_file()
         template = template_manager.get_template(template_file)
@@ -71,6 +85,12 @@ class ExpressionBase(EllipticNode):
 
     @contextmanager
     def visit(self, dsl_contract: DSLContract, context: Context) -> Iterator[ContextDelegate]:
+        """Used when an expression node is visited in the DSL tree.
+
+        Calls the :class:`context delegate <elliptic.Kernel.Context.ContextDelegate>`
+        :meth:`~elliptic.Kernel.Context.ContextDelegate.context_enter`
+        and :meth:`~elliptic.Kernel.Context.ContextDelegate.context_exit` methods.
+        """
         context_delegate = self.get_context_delegate(context, dsl_contract)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
@@ -80,6 +100,8 @@ class ExpressionBase(EllipticNode):
 
 
 class StatementRoot(ExpressionBase):
+    """Represents the root of the DSL statement.
+    """
 
     def __init__(self) -> None:
         super(StatementRoot, self).__init__()
@@ -89,4 +111,6 @@ class StatementRoot(ExpressionBase):
         return "shape=doubleoctagon"
 
     def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
+        """Returns the base delegate from the given :class:`~elliptic.Kernel.Contract.DSLContract` instance.
+        """
         return dsl_contract.base_delegate(context=context)
