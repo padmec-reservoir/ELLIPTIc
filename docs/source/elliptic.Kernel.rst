@@ -1,25 +1,46 @@
 elliptic.Kernel package
 =======================
 
-elliptic.Kernel.KernelBase module
+elliptic.Kernel.Context module
+------------------------------
+
+.. automodule:: elliptic.Kernel.Context
+    :members:
+    :show-inheritance:
+    :noindex:
+
+
+elliptic.Kernel.Contract module
+-------------------------------
+
+.. automodule:: elliptic.Kernel.Contract
+    :members:
+    :show-inheritance:
+    :noindex:
+
+
+elliptic.Kernel.DSL module
+--------------------------
+
+.. automodule:: elliptic.Kernel.DSL
+    :members:
+    :show-inheritance:
+    :noindex:
+
+
+elliptic.Kernel.Expression module
 ---------------------------------
 
-.. automodule:: elliptic.Kernel.KernelBase
+.. automodule:: elliptic.Kernel.Expression
     :members:
     :show-inheritance:
+    :noindex:
 
 
-elliptic.Kernel.EntityKernelMixins module
------------------------------------------
+elliptic.Kernel.TreeBuilder module
+----------------------------------
 
-.. automodule:: elliptic.Kernel.EntityKernelMixins
+.. automodule:: elliptic.Kernel.TreeBuilder
     :members:
     :show-inheritance:
-
-
-elliptic.Kernel.ArrayKernelMixins module
-----------------------------------------
-
-.. automodule:: elliptic.Kernel.ArrayKernelMixins
-    :members:
-    :show-inheritance:
+    :noindex:

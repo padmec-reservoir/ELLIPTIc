@@ -2,9 +2,6 @@ Packages
 ========
 
 .. toctree::
-  :caption: Packages:
+    :caption: Packages:
 
-  elliptic.Kernel
-  elliptic.Mesh
-  elliptic.Physical
-  elliptic.Solver
+    elliptic.Kernel

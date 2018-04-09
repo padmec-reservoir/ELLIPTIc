@@ -32,11 +32,12 @@ sys.path.insert(0, os.path.abspath('../..'))
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'sphinx.ext.viewcode',
-              'sphinx.ext.mathjax']
+              'sphinx.ext.mathjax',
+              'sphinx_autodoc_typehints']
 
 napoleon_include_init_with_doc = False
 napoleon_include_special_with_doc = True
-autodoc_mock_imports = ['PyTrilinos', 'numpy', 'pymoab']
+autodoc_mock_imports = []
 
 
 def linkcode_resolve(domain, info):
@@ -45,7 +46,7 @@ def linkcode_resolve(domain, info):
     if not info['module']:
         return None
     filename = info['module'].replace('.', '/')
-    print info
+    print(info)
     return "https://github.com/gpkc/padmec_preprocessor/blob/master/%s.py" %\
            filename
 
@@ -64,7 +65,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'elliptic'
-copyright = u'2017, Universidade Federal de Pernambuco'
+copyright = u'2018, Universidade Federal de Pernambuco'
 author = u'Guilherme Caminha'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -166,6 +167,6 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'elliptic', u'ELLIPTIc Documentation',
-     author, 'elliptic', 'One line description of project.',
+     author, 'elliptic', 'The Extensible LIbrary for Physical simulaTIons.',
      'Miscellaneous'),
 ]
