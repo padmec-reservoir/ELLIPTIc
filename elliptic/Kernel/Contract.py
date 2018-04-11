@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from .Context import ContextDelegate
+from .Context import ContextDelegate, Context
 
 
 class DSLContract(ABC):
@@ -11,10 +11,13 @@ class DSLContract(ABC):
     """
 
     @abstractmethod
-    def base_delegate(self, context) -> ContextDelegate:
+    def base_delegate(self, context: Context) -> ContextDelegate:
         """Returns the context delegate for the DSL base context handling.
 
         The base context delegate could be used, for example, to declare variables and initialize
         dependencies for the generated code.
+
+        Parameters:
+            context: A context object.
         """
         raise NotImplementedError

@@ -31,11 +31,18 @@ class Context:
 
     def put_value(self, name: str, value: str) -> None:
         """Pushes the value `value` to a stack named `name`.
+
+        Parameters:
+            name: Stack name.
+            value: Value to be pushed into the stack.
         """
         self.context[name].append(value)
 
     def get_value(self, name: str) -> str:
         """Gets the front value of the stack named `name`.
+
+        Parameters:
+            name: Stack name.
         """
         try:
             return self.context[name][-1]
@@ -44,6 +51,9 @@ class Context:
 
     def pop_value(self, name: str) -> None:
         """Pops the front value of the stack named `name`.
+
+        Parameters:
+            name: Stack name.
         """
         try:
             self.context[name].pop()
@@ -52,6 +62,9 @@ class Context:
 
     def clear_values(self, name: str) -> None:
         """Clears the stack named `name`.
+
+        Parameters:
+            name: Stack name.
         """
         self.context[name].clear()
 
@@ -64,7 +77,10 @@ class ContextDelegate(ABC):
     and exited.
 
     Attributes:
-        context (:class:`Context`): Context instance.
+        context: Context instance.
+
+    Parameters:
+        context: Context instance.
     """
 
     def __init__(self, context: Context):

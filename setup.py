@@ -15,7 +15,8 @@ setup(
     extras_require={
         'docs': [
             'sphinx',
-            'sphinx_autodoc_typehints']},
+            'sphinx_autodoc_typehints',
+            'sphinx_rtd_theme']},
     packages=find_packages(),
     license="MIT license",
     ext_modules=[]

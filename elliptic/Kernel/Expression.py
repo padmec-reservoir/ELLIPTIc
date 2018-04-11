@@ -32,6 +32,9 @@ class EllipticNode(NodeMixin):
         """Exports a graphical representation of the DSL tree.
 
         This method can be called from any tree node. The tree root will always be used.
+
+        Parameters:
+            filename: Name for the exported image file.
         """
         from anytree.exporter import DotExporter
 
@@ -56,6 +59,11 @@ class ExpressionBase(EllipticNode):
                  expr_type: Type[ExpressionSubClass],
                  **kwargs) -> ExpressionSubClass:
         """Inserts a new node in the DSL tree.
+
+        Parameters:
+            expr_type: A expression type. A new node will be created with this type.
+            kwargs: The keyword arguments to be passed when creating the new node
+                (i.e. to the `expr_type` constructor).
         """
         expr = expr_type(**kwargs)
 
@@ -65,6 +73,10 @@ class ExpressionBase(EllipticNode):
 
     def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
         """Returns the context delegate for this expression.
+
+        Parameters:
+            context: A context object.
+            dsl_contract: The DSL contract.
         """
         raise NotImplementedError
 
@@ -73,6 +85,11 @@ class ExpressionBase(EllipticNode):
                child: str,
                context_delegate: ContextDelegate) -> str:
         """Render the expression generated code.
+
+        Parameters:
+            template_manager: A `TemplateManagerBase` instance.
+            child: The rendered template corresponding to this node's child.
+            context_delegate: The context delegate for the DSL.
         """
 
         template_file = context_delegate.get_template_file()
@@ -84,12 +101,16 @@ class ExpressionBase(EllipticNode):
         return rendered_template
 
     @contextmanager
-    def visit(self, dsl_contract: DSLContract, context: Context) -> Iterator[ContextDelegate]:
-        """Used when an expression node is visited in the DSL tree.
+    def visit(self, context: Context, dsl_contract: DSLContract) -> Iterator[ContextDelegate]:
+        """Context manager used when an expression node is visited in the DSL tree.
 
         Calls the :class:`context delegate <elliptic.Kernel.Context.ContextDelegate>`
         :meth:`~elliptic.Kernel.Context.ContextDelegate.context_enter`
         and :meth:`~elliptic.Kernel.Context.ContextDelegate.context_exit` methods.
+
+        Parameters:
+            dsl_contract: The DSL contract.
+            context: A context object.
         """
         context_delegate = self.get_context_delegate(context, dsl_contract)
 
@@ -112,5 +133,9 @@ class StatementRoot(ExpressionBase):
 
     def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
         """Returns the base delegate from the given :class:`~elliptic.Kernel.Contract.DSLContract` instance.
+
+        Parameters:
+            context: A context object.
+            dsl_contract: The DSL contract.
         """
         return dsl_contract.base_delegate(context=context)

@@ -44,6 +44,11 @@ class DSLBuildError(DSLException):
 
 class DSL:
     """Defines the interface for interacting with a DSL.
+
+    Parameters:
+        template_manager: A `TemplateManagerBase` subinstance.
+        dsl_contract: A DSL Contract.
+        dsl_meta: A `DSLMeta` instance.
     """
 
     def __init__(self,
@@ -84,6 +89,9 @@ class DSL:
         """Builds a DSL tree, generating the corresponding code, given the DSL tree root.
 
         The DSL tree root should always be a StatementRoot instance.
+
+        Parameters:
+            root: The DSL tree root.
         """
         tree_builder = TreeBuild(self.template_manager, self.dsl_contract,
                                  self.dsl_meta.libs(), self.dsl_meta.include_dirs())
