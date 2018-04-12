@@ -3,8 +3,9 @@ from contextlib import contextmanager
 from types import ModuleType
 from typing import List, Iterator
 
-from elliptic.Kernel.Contract import DSLContract
-from .TreeBuilder import TreeBuild, TemplateManagerBase
+from .Contract import DSLContract
+from .TemplateManager import TemplateManagerBase
+from .TreeBuilder import TreeBuild
 from .Expression import StatementRoot
 
 
@@ -61,7 +62,7 @@ class DSL:
 
         self.built = False
         self.building = False
-        self.built_module = None
+        self.built_module: ModuleType = None
 
     @contextmanager
     def root(self) -> Iterator[StatementRoot]:

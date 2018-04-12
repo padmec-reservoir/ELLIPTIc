@@ -1,10 +1,11 @@
-from collections import defaultdict
 from types import ModuleType
 from typing import List
 
 from cypyler import TMPCypyler
-from jinja2 import Environment, PackageLoader, Template
+from jinja2 import Template
 
+from .Contract import DSLContract
+from .TemplateManager import TemplateManagerBase
 from .Context import Context
 from .Expression import StatementRoot, ExpressionBase
 
@@ -13,35 +14,35 @@ NODEGROUP_TEMPLATE = ("{% for node in node_templates %}"
                       "{% endfor %}")
 
 
-class TemplateManagerBase:
-
-    def __init__(self, package: str, templates_folder: str) -> None:
-        self.jinja2_env = Environment(
-            loader=PackageLoader(package, templates_folder))
-
-    def get_template(self, template_file: str) -> Template:
-        return self.jinja2_env.get_template(template_file)
-
-    def render(self, template_file: str, **kwargs: str) -> str:
-        template = self.get_template(template_file)
-        return template.render(**kwargs)
-
-
 class TreeBuild:
+    """Class responsible for processing a DSL tree and consolidating the generated Cython code.
+
+    Parameters:
+        template_manager: A template manager object.
+        dsl_contract: A dsl contract object.
+        libraries: A list containing any libraries that should be statically linked.
+        include_dirs: A list containing extra include directories.
+            `Cypyler` adds numpy includes by default.
+    """
     build_dir_prefix = 'elliptic__'
 
     def __init__(self,
                  template_manager: TemplateManagerBase,
-                 backend_builder,
-                 libraries=None,
-                 include_dirs=None) -> None:
+                 dsl_contract: DSLContract,
+                 libraries: List[str]=None,
+                 include_dirs: List[str]=None) -> None:
         self.template_manager = template_manager
-        self.backend_builder = backend_builder
+        self.dsl_contract = dsl_contract
         self.libraries = libraries
         self.include_dirs = include_dirs
         self.built_module: ModuleType = None
 
     def build(self, root: StatementRoot) -> ModuleType:
+        """Processes the DSL tree and returns the built Cython module.
+
+        Parameters:
+            root: The DSL tree root.
+        """
         full_rendered_template = self._render_tree(node=root, context=Context())
 
         cp = TMPCypyler(self.build_dir_prefix, self.libraries, self.include_dirs)
@@ -53,7 +54,7 @@ class TreeBuild:
     def _render_tree(self, node: ExpressionBase, context: Context) -> str:
         children_rendered_templates: List[str] = []
 
-        with node.visit(context, self.backend_builder) as context_delegate:
+        with node.visit(context, self.dsl_contract) as context_delegate:
             child: ExpressionBase
             for child in node.children:
                 built_node: str = self._render_tree(child, context)

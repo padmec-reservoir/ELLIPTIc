@@ -72,7 +72,7 @@ class TestExpressionBase:
 
         expression = ExpressionStub()
 
-        with expression.visit(backend_builder, context) as context_delegate:
+        with expression.visit(context, backend_builder) as context_delegate:
             assert context.get_value('a') == '10'
 
         with pytest.raises(ContextException):

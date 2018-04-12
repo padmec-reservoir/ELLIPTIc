@@ -4,4 +4,4 @@ Packages
 .. toctree::
     :caption: Packages:
 
-    elliptic.Kernel
+    packages/elliptic.Kernel
