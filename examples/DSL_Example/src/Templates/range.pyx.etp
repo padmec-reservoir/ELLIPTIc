@@ -1,0 +1,8 @@
+while {{ index }} < {{ count }}:
+    {{ variable }} = {{ counter }}
+
+    {{child|indent}}
+    print({{variable}})
+
+    {{ counter }} += 1
+    {{ index }} += 1

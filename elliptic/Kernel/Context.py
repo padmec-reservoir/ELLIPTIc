@@ -27,7 +27,7 @@ class Context:
     """
 
     def __init__(self) -> None:
-        self.context: Dict[str, List[str]] = defaultdict(list)
+        self.context: Dict[str, List[Any]] = defaultdict(list)
 
     def put_value(self, name: str, value: str) -> None:
         """Pushes the value `value` to a stack named `name`.

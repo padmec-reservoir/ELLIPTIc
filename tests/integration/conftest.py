@@ -1,7 +1,3 @@
-"""
-These delegates are arbitrarily defined just for testing,
-and have no relation with the expected MCI behavior.
-"""
 import pytest
 
 from elliptic.Kernel.Context import ContextDelegate

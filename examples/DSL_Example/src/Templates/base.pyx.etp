@@ -1,0 +1,12 @@
+from libcpp.list cimport list as cpplist
+
+def get_arr():
+    cdef cpplist[unsigned long int] arr
+
+    {% for (var_type, var_name, initial_value) in declare_variables %}
+    cdef {{ var_type }} {{ var_name }} = {{ initial_value }}
+    {% endfor %}
+
+    {{child|indent}}
+
+    return arr
