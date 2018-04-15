@@ -11,20 +11,45 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gpkc/ELLIPTIc/master/LICENSE)
 
 <p align="center">
-  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="600"/>
+  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/pic.png" width="500"/>
 </p>
 
 
 # Description
-**ELLIPTIc**, The ExtensibLe LIbrary for Physical simulaTIons, is a library / framework for prototyping, testing and running large scale physical simulations. Please notice that this package is not yet ready for production. Currently, only Python 3.6 is fully supported.
+**ELLIPTIc**, The ExtensibLe LIbrary for Physical simulaTIons, is a library / framework for creating reusable and extensible
+[Domain Specific Languages (DSL)](https://martinfowler.com/bliki/DomainSpecificLanguage.html) for scientific purposes.
 
-It is built on top of Python, and uses the [PyMoab](https://bitbucket.org/fathomteam/moab/overview) and [PyTrilinos](https://github.com/trilinos/Trilinos) libraries to handle the internal mesh data structure, and matrix solving, respectively.
+ELLIPTIc's workflow is as follows:
 
-Parallelism through MPI is not being developed, since the PyMoab library doesn't yet support it.
+* An ELLIPTIc DSL contract is created to define how the DSL syntax looks like. This DSL contract defines the operations
+that will be available when using the DSL.
+* A DSL implementation is built based on the DSL contract. The DSL implementation tells ELLIPTIc how to generate the
+corresponding Cython code.
+* When using ELLIPTIc-based DSLs, a tree-like intermediate representation is built.
+* This intermediate representation is used to generate optimized Cython code.
 
-# Dependencies
-* [PyMoab](https://bitbucket.org/fathomteam/moab/overview)
-* [PyTrilinos](https://github.com/trilinos/Trilinos)
+# DSL Syntax
+
+ELLIPTIc-based DSLs use a [Fluent Interface](https://martinfowler.com/bliki/FluentInterface.html) syntax. This allows
+for elegant development of algorithms.
+
+Below is an example of how using an ELLIPTIc-based DSL to iterate in a unstructured mesh would look like:
+
+```python
+dsl = DSL(...)  # Instatiating a DSL object
+
+
+with dsl.root() as root:
+    all_ents = root.Entities(dim=3).Adjacencies(bridge_dim=2, to_dim=3)  # Operation chaining
+    internal_ents = all_ents.Where(boundary=False)  # Continuing an operation chain
+    boundary_ents = all_ents.Where(boundary=True)  # Operation branching
+    
+    perm_ents = internal_ents.GetField(name="permeability")
+    dirichlet = boundary_ents.GetField(name="dirichlet")
+    neumann = boundary_ents.GetField(name="neumann")
+
+dsl.get_built_module().run()  # Run the generated Cython code
+```
 
 # Documentation
 Please refer to the [documentation page](http://elliptic.readthedocs.io/en/latest/).
