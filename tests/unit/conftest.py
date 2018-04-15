@@ -31,7 +31,7 @@ def dsl_meta_stub():
 @pytest.fixture()
 def dsl(mocker, dsl_meta_stub) -> DSL:
     template_manager = mocker.sentinel.template_manager
-    dsl_contract = mocker.sentinel.dsl_contract
+    dsl_contract = mocker.Mock()
 
     dsl_ = DSL(template_manager, dsl_contract, dsl_meta_stub())
 

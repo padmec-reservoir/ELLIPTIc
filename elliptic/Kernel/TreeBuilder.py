@@ -4,10 +4,9 @@ from typing import List
 from cypyler import TMPCypyler
 from jinja2 import Template
 
-from .Contract import DSLContract
 from .TemplateManager import TemplateManagerBase
 from .Context import Context
-from .Expression import StatementRoot, ExpressionBase
+from .Expression import Expression
 
 NODEGROUP_TEMPLATE = ("{% for node in node_templates %}"
                       "{{ node }}"
@@ -28,16 +27,14 @@ class TreeBuild:
 
     def __init__(self,
                  template_manager: TemplateManagerBase,
-                 dsl_contract: DSLContract,
                  libraries: List[str]=None,
                  include_dirs: List[str]=None) -> None:
         self.template_manager = template_manager
-        self.dsl_contract = dsl_contract
         self.libraries = libraries
         self.include_dirs = include_dirs
         self.built_module: ModuleType = None
 
-    def build(self, root: StatementRoot) -> ModuleType:
+    def build(self, root: Expression) -> ModuleType:
         """Processes the DSL tree and returns the built Cython module.
 
         Parameters:
@@ -51,11 +48,11 @@ class TreeBuild:
 
         return self.built_module
 
-    def _render_tree(self, node: ExpressionBase, context: Context) -> str:
+    def _render_tree(self, node: Expression, context: Context) -> str:
         children_rendered_templates: List[str] = []
 
-        with node.visit(context, self.dsl_contract) as context_delegate:
-            child: ExpressionBase
+        with node.visit(context) as context_delegate:
+            child: Expression
             for child in node.children:
                 built_node: str = self._render_tree(child, context)
                 children_rendered_templates.append(built_node)

@@ -1,9 +1,8 @@
 from contextlib import contextmanager
 
 from anytree import NodeMixin
-from typing import Type, TypeVar, Iterable, Iterator
+from typing import Iterable, Iterator
 
-from .Contract import DSLContract
 from .Context import ContextDelegate, Context
 
 
@@ -22,11 +21,13 @@ class EllipticNode(NodeMixin):
         self.unique_id = EllipticNode.last_id
         EllipticNode.last_id += 1
 
+        self.shape = "shape=box"
+
     def _name_func(self) -> str:
         return str(self.unique_id) + '\n' + self.name
 
     def _shape(self) -> str:
-        return "shape=box"
+        return self.shape
 
     def export_tree(self, filename: str) -> None:
         """Exports a graphical representation of the DSL tree.
@@ -45,40 +46,25 @@ class EllipticNode(NodeMixin):
         exporter.to_picture(filename)
 
 
-ExpressionSubClass = TypeVar('ExpressionSubClass', bound='ExpressionBase')
-
-
-class ExpressionBase(EllipticNode):
+class Expression(EllipticNode):
     """Base class for building DSL expressions.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, context_delegate, display_name="", display_args=None) -> None:
         super().__init__()
 
-    def __call__(self,
-                 expr_type: Type[ExpressionSubClass],
-                 **kwargs) -> ExpressionSubClass:
-        """Inserts a new node in the DSL tree.
+        if not display_args:
+            display_args = {}
 
-        Parameters:
-            expr_type: A expression type. A new node will be created with this type.
-            kwargs: The keyword arguments to be passed when creating the new node
-                (i.e. to the `expr_type` constructor).
-        """
-        expr = expr_type(**kwargs)
+        args_str = ""
+        for k, v in display_args.items():
+            args_str = f"{args_str}\n{k}={v}"
+        self.name = f"{display_name}{args_str}"
 
+        self.context_delegate = context_delegate
+
+    def add_child(self, expr: 'Expression'):
         self.children += (expr,)
-
-        return expr
-
-    def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
-        """Returns the context delegate for this expression.
-
-        Parameters:
-            context: A context object.
-            dsl_contract: The DSL contract.
-        """
-        raise NotImplementedError
 
     def render(self,
                template_manager,
@@ -101,7 +87,7 @@ class ExpressionBase(EllipticNode):
         return rendered_template
 
     @contextmanager
-    def visit(self, context: Context, dsl_contract: DSLContract) -> Iterator[ContextDelegate]:
+    def visit(self, context: Context) -> Iterator[ContextDelegate]:
         """Context manager used when an expression node is visited in the DSL tree.
 
         Calls the :class:`context delegate <elliptic.Kernel.Context.ContextDelegate>`
@@ -109,33 +95,11 @@ class ExpressionBase(EllipticNode):
         and :meth:`~elliptic.Kernel.Context.ContextDelegate.context_exit` methods.
 
         Parameters:
-            dsl_contract: The DSL contract.
             context: A context object.
         """
-        context_delegate = self.get_context_delegate(context, dsl_contract)
+        context_delegate = self.context_delegate(context)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
         context_delegate.context_enter()
         yield context_delegate
         context_delegate.context_exit()
-
-
-class StatementRoot(ExpressionBase):
-    """Represents the root of the DSL statement.
-    """
-
-    def __init__(self) -> None:
-        super(StatementRoot, self).__init__()
-        self.name = "stmt_root"
-
-    def _shape(self) -> str:
-        return "shape=doubleoctagon"
-
-    def get_context_delegate(self, context: Context, dsl_contract: DSLContract) -> ContextDelegate:
-        """Returns the base delegate from the given :class:`~elliptic.Kernel.Contract.DSLContract` instance.
-
-        Parameters:
-            context: A context object.
-            dsl_contract: The DSL contract.
-        """
-        return dsl_contract.base_delegate(context=context)

@@ -2,13 +2,13 @@ import pytest
 
 from elliptic.Kernel.Context import ContextDelegate
 from elliptic.Kernel.Contract import DSLContract
-from elliptic.Kernel.Expression import ExpressionBase
+from elliptic.Kernel.Expression import Expression
 from elliptic.Kernel.TreeBuilder import TemplateManagerBase
 
 
-class SimpleDSLContract(DSLContract):
+class SimpleDSLImpl:
 
-    def base_delegate(self, context) -> ContextDelegate:
+    def base_delegate(self):
         class Delegate(ContextDelegate):
 
             def get_template_file(self):
@@ -28,9 +28,9 @@ class SimpleDSLContract(DSLContract):
                 self.context.pop_value('b')
                 self.context.pop_value('cur_var')
 
-        return Delegate(context)
+        return Delegate
 
-    def expression_delegate(self, context, arg: int) -> ContextDelegate:
+    def test_delegate(self, arg: int):
         class Delegate(ContextDelegate):
 
             def get_template_file(self):
@@ -46,19 +46,13 @@ class SimpleDSLContract(DSLContract):
             def context_exit(self):
                 self.context.pop_value('a')
 
-        return Delegate(context)
+        return Delegate
 
 
-class Expression(ExpressionBase):
+class SimpleDSLContract(DSLContract[SimpleDSLImpl]):
 
-    def __init__(self, arg):
-        super().__init__()
-
-        self.arg = arg
-        self.name = f"Expression({arg})"
-
-    def get_context_delegate(self, context, dsl_contract: SimpleDSLContract) -> ContextDelegate:
-        return dsl_contract.expression_delegate(context=context, arg=self.arg)
+    def Test(self, arg):
+        return self.append_tree(Expression(self.dsl_impl.test_delegate(arg), "Test"))
 
 
 @pytest.fixture()
@@ -70,11 +64,6 @@ def template_manager():
 
 @pytest.fixture()
 def simple_dsl_contract():
-    backend_builder = SimpleDSLContract()
+    dsl_contract = SimpleDSLContract(SimpleDSLImpl())
 
-    return backend_builder
-
-
-@pytest.fixture()
-def expression():
-    return Expression
+    return dsl_contract

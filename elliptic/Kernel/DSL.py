@@ -3,10 +3,10 @@ from contextlib import contextmanager
 from types import ModuleType
 from typing import List, Iterator
 
+from elliptic.Kernel.Expression import Expression
 from .Contract import DSLContract
 from .TemplateManager import TemplateManagerBase
 from .TreeBuilder import TreeBuild
-from .Expression import StatementRoot
 
 
 class DSLMeta(ABC):
@@ -65,7 +65,7 @@ class DSL:
         self.built_module: ModuleType = None
 
     @contextmanager
-    def root(self) -> Iterator[StatementRoot]:
+    def root(self) -> Iterator[DSLContract]:
         """Entry point for building expressions.
 
         Should be used as a context manager, using the `with` statement.
@@ -73,7 +73,7 @@ class DSL:
         if not self.built and not self.building:
             self.building = True
 
-            root_ = StatementRoot()
+            root_ = self.dsl_contract.Base()
             yield root_
             self._build(root_)
         else:
@@ -86,7 +86,7 @@ class DSL:
             raise DSLBuildError("Can't get the built module before finishing building the DSL tree.")
         return self.built_module
 
-    def _build(self, root: StatementRoot):
+    def _build(self, root: Expression):
         """Builds a DSL tree, generating the corresponding code, given the DSL tree root.
 
         The DSL tree root should always be a StatementRoot instance.
@@ -94,7 +94,7 @@ class DSL:
         Parameters:
             root: The DSL tree root.
         """
-        tree_builder = TreeBuild(self.template_manager, self.dsl_contract,
+        tree_builder = TreeBuild(self.template_manager,
                                  self.dsl_meta.libs(), self.dsl_meta.include_dirs())
 
         self.built_module = tree_builder.build(root)

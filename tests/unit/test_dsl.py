@@ -1,6 +1,5 @@
 import pytest
 
-from elliptic.Kernel.Contract import DSLContract
 from elliptic.Kernel.DSL import DSLBuildError, DSLMeta
 
 
@@ -48,13 +47,6 @@ class TestDSL:
             pass
 
         tree_build.assert_called_once()
-
-
-class TestDSLContract:
-
-    def test_dsl_contract_raises_TypeError(self):
-        with pytest.raises(TypeError):
-            DSLContract()
 
 
 class TestDSLMeta:

@@ -1,10 +1,7 @@
-from collections import defaultdict
-from contextlib import contextmanager
-
 import pytest
 
 from elliptic.Kernel.Context import Context, ContextException
-from elliptic.Kernel.Expression import EllipticNode, ExpressionBase, StatementRoot
+from elliptic.Kernel.Expression import EllipticNode, Expression
 
 
 class TestEllipticNode:
@@ -38,51 +35,32 @@ class TestEllipticNode:
         exporter_obj.to_picture.assert_called_once_with('filename.png')
 
 
-class TestStatementRoot:
-    def test_shape(self):
-        root: StatementRoot = StatementRoot()
+class TestExpression:
 
-        assert root._shape() == "shape=doubleoctagon"
+    def test_name_args(self):
+        expression = Expression(None, 'test_name', {'a': '1', 'b': '2'})
 
+        assert expression.name == 'test_name\na=1\nb=2'
 
-class TestExpressionBase:
+    def test_add_child(self):
+        expression1 = Expression(None)
+        expression2 = Expression(None)
 
-    def test_call(self):
-        class ExpressionStub(ExpressionBase):
-            def __init__(self, arg):
-                super().__init__()
-                self.arg = arg
+        expression1.add_child(expression2)
 
-        expression: ExpressionBase = ExpressionBase()
+        assert expression1.children[0] is expression2
+        assert len(expression1.children) == 1
 
-        expr = expression(ExpressionStub, arg=5)
-
-        assert isinstance(expr, ExpressionStub)
-        assert expr.arg == 5
-        assert expression.children[0] is expr
-        assert len(expression.children) == 1
-
-    def test_visit(self, mocker, delegate_stub):
+    def test_visit(self, delegate_stub):
         context = Context()
-        backend_builder = mocker.sentinel.backend_builder
 
-        class ExpressionStub(ExpressionBase):
-            def get_context_delegate(self, context, backend_builder):
-                return delegate_stub(context)
+        expression = Expression(delegate_stub)
 
-        expression = ExpressionStub()
-
-        with expression.visit(context, backend_builder) as context_delegate:
+        with expression.visit(context) as context_delegate:
             assert context.get_value('a') == '10'
 
         with pytest.raises(ContextException):
             context.get_value('a')
-
-    def test_get_context_delegate_raises_NotImplementedError(self):
-        expression: ExpressionBase = ExpressionBase()
-
-        with pytest.raises(NotImplementedError):
-            expression.get_context_delegate(None, None)
 
     def test_render(self, mocker):
         child = "child"
@@ -98,7 +76,7 @@ class TestExpressionBase:
         context_delegate.get_template_file.return_value = mocker.sentinel.template_file
         context_delegate.template_kwargs.return_value = kwargs
 
-        expression: ExpressionBase = ExpressionBase()
+        expression = Expression(context_delegate)
 
         rendered_template = expression.render(template_manager, child, context_delegate)
 
