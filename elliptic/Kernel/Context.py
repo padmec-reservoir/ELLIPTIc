@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Union, Iterable
 from abc import ABC, abstractmethod
 
 
@@ -29,7 +29,7 @@ class Context:
     def __init__(self) -> None:
         self.context: Dict[str, List[Any]] = defaultdict(list)
 
-    def put_value(self, name: str, value: str) -> None:
+    def put_value(self, name: str, value: Union[str, Iterable[str]]) -> None:
         """Pushes the value `value` to a stack named `name`.
 
         Parameters:
@@ -78,13 +78,16 @@ class ContextDelegate(ABC):
 
     Attributes:
         context: Context instance.
+        unique_id: A unique id that can be used to identify values that were created from this context delegate.
 
     Parameters:
         context: Context instance.
+        unique_id: A unique id.
     """
 
-    def __init__(self, context: Context):
-        self.context = context
+    def __init__(self, context: Context, unique_id: int):
+        self.context: Context = context
+        self.unique_id: int = unique_id
         self.child = ""
 
     @abstractmethod

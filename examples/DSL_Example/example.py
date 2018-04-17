@@ -1,12 +1,12 @@
 from elliptic.Kernel.DSL import DSL
 
 from src.DSL import VectorTemplateManager, VectorContract, VectorMeta
-from src.Expressions import Range
+from src.DSLImpl import VectorImplementation
 
 
 dsl = DSL(VectorTemplateManager(),
-          VectorContract(),
-          VectorDSL())
+          VectorContract(VectorImplementation()),
+          VectorMeta())
 
 
 with dsl.root() as root:

@@ -75,7 +75,7 @@ class DSL:
 
             root_ = self.dsl_contract.Base()
             yield root_
-            self._build(root_)
+            self._build(root_.expr)
         else:
             raise DSLBuildError("Can't get root while or after building a DSL tree.")
 

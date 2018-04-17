@@ -97,7 +97,7 @@ class Expression(EllipticNode):
         Parameters:
             context: A context object.
         """
-        context_delegate = self.context_delegate(context)
+        context_delegate = self.context_delegate(context, self.unique_id)
 
         # ContextDelegate does not implement a context manager so that it can be a simpler protocol
         context_delegate.context_enter()

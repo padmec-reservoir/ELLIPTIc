@@ -1,16 +1,26 @@
-from typing import TypeVar, Generic
+from abc import ABC, abstractmethod
+from typing import TypeVar, Generic, Type
 
+from elliptic.Kernel.Context import ContextDelegate
 from elliptic.Kernel.Expression import Expression
 
 
-DSLImplementation = TypeVar('DSLImplementation')
+class DSLImplementation(ABC):
+
+    @abstractmethod
+    def base_delegate(self) -> Type[ContextDelegate]:
+        raise NotImplementedError
 
 
-class DSLContract(Generic[DSLImplementation]):
-    """Defines the abstract contract of the DSL.
+DSLImplementationSubclass = TypeVar('DSLImplementationSubclass', bound=DSLImplementation)
+DSLContractSubclass = TypeVar('DSLContractSubclass', bound='DSLContract')
 
-    The DSL abstract contract is the set of operations that the DSL supports, plus a base member.
-    Each member should return an instance of a concrete implementation of the ContextDelegate class.
+
+class DSLContract(Generic[DSLImplementationSubclass]):
+    """Defines the contract of the DSL.
+
+    The DSL contract is the set of operations that the DSL supports, plus a base operation.
+    Each operation should create an `Expression` instance and call `append_tree` with the created expression.
 
     Parameters:
         dsl_impl: DSL Implementation object.
@@ -22,11 +32,11 @@ class DSLContract(Generic[DSLImplementation]):
         expr: Current DSL operation.
     """
 
-    def __init__(self, dsl_impl: DSLImplementation, expr: Expression=None):
-        self.dsl_impl: DSLImplementation = dsl_impl
+    def __init__(self, dsl_impl: DSLImplementationSubclass, expr: Expression=None):
+        self.dsl_impl: DSLImplementationSubclass = dsl_impl
         self.expr: Expression = expr
 
-    def append_tree(self, expr: Expression):
+    def append_tree(self: DSLContractSubclass, expr: Expression) -> DSLContractSubclass:
         """Inserts the given expression to the expression tree and returns a new DSLContract
         bounded to the given expression.
         """
@@ -37,7 +47,7 @@ class DSLContract(Generic[DSLImplementation]):
             self.expr.add_child(expr)
             return self.__class__(self.dsl_impl, expr)
 
-    def Base(self):
+    def Base(self: DSLContractSubclass) -> DSLContractSubclass:
         """Returns the context delegate for the DSL base context handling.
 
         The base context delegate could be used, for example, to declare variables and initialize
