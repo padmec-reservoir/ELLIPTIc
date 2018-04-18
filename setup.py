@@ -3,7 +3,6 @@ from setuptools import setup, find_packages, Extension
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
-
 setup(
     author="Guilherme Caminha",
     author_email='gpkc@cin.ufpe.br',
