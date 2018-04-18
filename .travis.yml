@@ -23,3 +23,14 @@ after_failure:
 - wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
 - chmod +x send.sh
 - ./send.sh failure $WEBHOOK_URL
+
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: gpkc
+  password:
+    secure: qOd9hZ1ZsXP8RFIHo/OM/Je6NepUiQ09LtGA9V6+KqMDmQ5TWYMXKfvyRQfoSeQPHgBcJlY5b2wkqxf/w8pEuYqEApLikY4f94RxkKEScrYY1fRLNkHtjkUZ/rE5sukt98yapU8Vo/ZA9Q/qVHab4355j3uyC6J50YZFBaRTUtaKFr5BGgbj3cNvB4iJHZ9lA0TgYBDYzTPQWD+RXjkOyZXXNaATMTySG4vR+cNmboGhoGsgtfiIdq/qfAAZ8GyVDymbKUIvn3VNOWncyro/amDIrMJjB989gzcogq9WgqoHAdb9Xa+QvwvdZvBD8it8QERPlRvZDFXKWt8Gwzep5zjWAOb5GHsGjroCc0hWkBFu8SVNigYT7oBTpPVkRf15dL8RM4JjtZ9q4GMdWiW0u4Gq0ghOpZKOxiQinhsHAvgCIfQp+Ht6ebkGnUEnO7N9+pFx63l+dmJY+uo4NZu0Gq8PpQz/oASgfsLDU4v4w52FA7wVuNWp0unhT0YzhsFZiohBMP9KiUk2nqSsA4OKw2PKyqclsJuzEw/oGqRz12T1s9Hf1qkyQnw5yOhq2mvKxxFJWWTaaZZPKk0TKV+AE24Iee033cQS0vJ/shmaSF5nreETNRfvaY/iljA9X5Su85jKURpzl0APiHojILATYbNipKr1dysL2req/aMVOO8=
+  on:
+    tags: true
+    repo: gpkc/ELLIPTIc
+    python: 3.6
