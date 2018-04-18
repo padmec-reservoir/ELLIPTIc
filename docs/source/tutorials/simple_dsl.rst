@@ -367,20 +367,20 @@ dependencies, such as include files and libraries that should be linked during t
 In our case, we are using plain Cython, so the DSL Meta class will be simple. Our template manager
 will simply tell ELLIPTIc to look for templates in the `Templates` folder.
 
+.. code:: python
 
-class VectorTemplateManager(TemplateManagerBase):
+    class VectorTemplateManager(TemplateManagerBase):
 
-    def __init__(self) -> None:
-        super().__init__(__package__, 'Templates')
+        def __init__(self) -> None:
+            super().__init__(__package__, 'Templates')
 
+    class VectorMeta(DSLMeta):
 
-class VectorMeta(DSLMeta):
+        def include_dirs(self) -> List[str]:
+            return []
 
-    def include_dirs(self) -> List[str]:
-        return []
-
-    def libs(self) -> List[str]:
-        return []
+        def libs(self) -> List[str]:
+            return []
 
 Running the Example
 -------------------
