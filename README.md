@@ -26,7 +26,7 @@ that will be available when using the DSL.
 * A DSL implementation is built based on the DSL contract. The DSL implementation tells ELLIPTIc how to generate the
 corresponding Cython code.
 * When using ELLIPTIc-based DSLs, a tree-like intermediate representation is built.
-* This intermediate representation is used to generate optimized Cython code.
+* This intermediate representation is used together with the DSL implementation to generate Cython code.
 
 # DSL Syntax
 
@@ -50,6 +50,13 @@ with dsl.root() as root:
 
 dsl.get_built_module().run()  # Run the generated Cython code
 ```
+
+It is also possible to export the intermediate representation to a image file, allowing for visual debugging:
+
+<p align="center">
+  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/tree_example.png" width="500"/>
+</p>
+
 
 # Documentation
 Please refer to the [documentation page](http://elliptic.readthedocs.io/en/latest/).
