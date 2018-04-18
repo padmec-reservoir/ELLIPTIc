@@ -1,0 +1,3 @@
+{{ variable }} = {{ variable }} * {{ scalar }}
+
+{{ child }}

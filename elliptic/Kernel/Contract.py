@@ -6,9 +6,17 @@ from elliptic.Kernel.Expression import Expression
 
 
 class DSLImplementation(ABC):
+    """Abstract class that defines a DSL Implementation. Should be used to connect the
+    corresponding :class:`Context Delegates <elliptic.Kernel.Context.ContextDelegate>`.
+    """
 
     @abstractmethod
     def base_delegate(self) -> Type[ContextDelegate]:
+        """Returns the context delegate for the DSL base context handling.
+
+        The base context delegate could be used, for example, to declare variables and initialize
+        dependencies for the generated code.
+        """
         raise NotImplementedError
 
 
@@ -48,10 +56,7 @@ class DSLContract(Generic[DSLImplementationSubclass]):
             return self.__class__(self.dsl_impl, expr)
 
     def Base(self: DSLContractSubclass) -> DSLContractSubclass:
-        """Returns the context delegate for the DSL base context handling.
-
-        The base context delegate could be used, for example, to declare variables and initialize
-        dependencies for the generated code.
+        """Base operation. Called by default from ELLIPTIc before any other operation.
         """
         expr = Expression(self.dsl_impl.base_delegate(), "Base")
         expr.shape = "shape=doubleoctagon"

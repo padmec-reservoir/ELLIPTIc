@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from anytree import NodeMixin
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, Type
 
 from .Context import ContextDelegate, Context
 
@@ -48,9 +48,14 @@ class EllipticNode(NodeMixin):
 
 class Expression(EllipticNode):
     """Base class for building DSL expressions.
+
+    Parameters:
+        context_delegate: A context delegate object responsible for generating some Cython code.
+        display_name: The name that will be displayed when this Expression is rendered into a picture.
+        display_args: The arguments that will be displayed below this Expression name in the rendered picture.
     """
 
-    def __init__(self, context_delegate, display_name="", display_args=None) -> None:
+    def __init__(self, context_delegate: Type[ContextDelegate], display_name="", display_args=None) -> None:
         super().__init__()
 
         if not display_args:

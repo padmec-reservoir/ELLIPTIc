@@ -1,8 +1,7 @@
 while {{ index }} < {{ count }}:
     {{ variable }} = {{ counter }}
 
-    {{child|indent}}
-    print({{variable}})
+    {{ child|indent }}
 
     {{ counter }} += 1
     {{ index }} += 1

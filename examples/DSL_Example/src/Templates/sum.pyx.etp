@@ -1,0 +1,3 @@
+{{ acc_variable }} = {{ acc_variable }} + {{ variable }}
+
+{{ child }}
