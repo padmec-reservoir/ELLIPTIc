@@ -1,6 +1,12 @@
-<p align="center">
-  <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/logo.png"/>
-</p>
+.. raw:: html
+
+    <p align="center">
+      <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/logo.png"/>
+    </p>
+
+
+.. image:: https://img.shields.io/pypi/v/cypyler.svg
+        :target: https://pypi.python.org/pypi/cypyler
 
 ---
 
