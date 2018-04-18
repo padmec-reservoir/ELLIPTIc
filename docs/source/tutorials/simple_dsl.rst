@@ -6,6 +6,8 @@ a :class:`DSL Implementation <elliptic.Kernel.Contract.DSLImplementation>`.
 
 Using the created DSL will also be covered by this tutorial.
 
+The full example can be found at the `examples/DSL_Example` folder.
+
 Defining the DSL Contract
 -------------------------
 The first step is to define the DSL design by creating a class that inherits from
