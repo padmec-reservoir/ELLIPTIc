@@ -17,7 +17,7 @@ setup(
     description="A tool for building DSLs for scientific purposes.",
     name="ELLIPTIc",
     long_description=readme,
-    version='1.0.0',
+    version='1.0.1',
     url='https://github.com/padmec-reservoir/ELLIPTIc',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-cov', 'pytest-mock', 'pytest-faker',
@@ -32,4 +32,5 @@ setup(
     packages=find_packages(),
     license="MIT license",
     zip_safe=False,
+    include_package_data=True
 )

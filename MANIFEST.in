@@ -1,1 +1,8 @@
-include elliptic/Kernel/MeshComputeInterface/Templates/*
+include LICENSE README.rst
+recursive-exclude * __pycache__
+recursive-exclude * *.pyc
+recursive-exclude * *.pyo
+recursive-exclude * *.orig
+prune doc*
+prune tests*
+prune examples*
