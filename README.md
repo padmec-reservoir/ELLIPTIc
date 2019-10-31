@@ -2,6 +2,8 @@
   <img src="https://cdn.rawgit.com/gpkc/ELLIPTIc/master/logo.png"/>
 </p>
 
+**This project is no longer maintained**
+
 ---
 
 [![Build Status](https://travis-ci.org/padmec-reservoir/ELLIPTIc.svg?branch=master)](https://travis-ci.org/padmec-reservoir/ELLIPTIc)
